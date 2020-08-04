@@ -6,429 +6,274 @@ require APPPATH . 'libraries/REST_Controller.php';
 
 class KTP_Api extends REST_Controller {
 
-    
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('master/Desc_model');
-        $this->load->library('Token_Validation');
+        // validate token
+        $this->token = AUTHORIZATION::validateToken();
+        // load model
+        $this->load->model('KTP_Model');
+        $this->load->model('Global_Model');
+        
+        $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         
     }
 
+    // provinsi
     public function show_all_get()
     {
-        // request header authorization
-        $token = $this->input->get_request_header('Authorization');
-        // jika ada header token
-        if($token){
-            
-            //cek validasi token
-            if($this->token_validation->check($token)){
-                
-                $json = json_decode(file_get_contents('php://input'), true);
-                // cara mendeklarasikannya
-                // echo $data['n_desc'];
-                
-                if (!$json) {
-                    // $id_card_owner_group_int   = $_POST['id_card_owner_group_int'];
-                    // response failed
-                    $this->response([
-                        'status_boo' => false,
-                        'message_var' => 'Format data yang dikirim harus json array'
-                    ], REST_Controller::HTTP_NOT_ACCEPTABLE);
+        $response = $this->KTP_Model->get()->result();
 
-                }else{
-
-                    // action untuk data post format json
-                    $id_card_owner_group_int   = $json['id_card_owner_group_int'];
-                    $data_post = array(
-                        'id_card_owner_group_int' => $id_card_owner_group_int 
-                    );
-
-                }
-
-                // show data
-                if($response = $this->People_model->show_all($id_card_owner_group_int)){
-
-                    if($response[0]->identity_number_var == null){
-                        // response success not found data
-                        $this->response([
-                            'status_boo' => false,
-                            'data' => $data_post,
-                            'message_var' => 'Data tidak ditemukan'
-                        ], REST_Controller::HTTP_PARTIAL_CONTENT);
-                    }else{
-                        //response success with data
-                        $this->response([
-                            'status_boo' => true,
-                            'data' => $response,
-                            'message_var' => 'Data ditemukan'
-                        ], REST_Controller::HTTP_OK);
-                    }
-                    
-                }else{
-                    // response failed
-                    $this->response([
-                        'status_boo' => false,
-                        'data' => $data_post,
-                        'message_var' => 'Data tidak ditemukan'
-                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
-                }
-                 
-            }else{
-                // response unauthorized karena token invalid
-                $this->response([
-                    'status_boo' => false,
-                    'message_var' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
-                ], REST_Controller::HTTP_UNAUTHORIZED);
-            }
-            
-        }else{
-            // response unauthorized karena token invalid
+        if($response){
+            //response success with data
             $this->response([
-                'status_boo' => false,
-                'message_var' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
-            ], REST_Controller::HTTP_UNAUTHORIZED);
+                'status' => true,
+                'message' => 'Data ditemukan',
+                'total_rows' => $this->KTP_Model->count(),
+                'last_update' => $this->KTP_Model->last_update()->result()[0]->created_at,
+                'data' => $response
+            ], REST_Controller::HTTP_OK);
+        }else{
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    // count
+    public function count_get()
+    {
+        $response['total_rows'] = $this->KTP_Model->count();
+        $response['last_update'] = $this->KTP_Model->last_update()->result()[0]->created_at;
+
+        if($response){
+            //response success with data
+            $this->response([
+                'status' => true,
+                'message' => 'Data ditemukan',
+                'data' => $response
+            ], REST_Controller::HTTP_OK);
+        }else{
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
 
     public function show_by_id_get()
     {
-        // request header authorization
-        $token = $this->input->get_request_header('Authorization');
-        // jika ada header token
-        if($token){
-            
-            //cek validasi token
-            if($this->token_validation->check($token)){
-                
-                $json = json_decode(file_get_contents('php://input'), true);
-                // cara mendeklarasikannya
-                // echo $data['n_desc'];
-                
-                if (!$json) {
-                    
-                    // response failed
-                    $this->response([
-                        'status_boo' => false,
-                        'message_var' => 'Format data yang dikirim harus json array'
-                    ], REST_Controller::HTTP_NOT_ACCEPTABLE);
+        $response = $this->KTP_Model->get()->result();
 
-                }else{
-
-                    // action untuk data post format json
-                    $identity_number_var      = $json['identity_number_var'];
-                    $id_card_owner_group_int   = $json['id_card_owner_group_int'];
-                    $data_post = array(
-                        'identity_number_var' => $identity_number_var,
-                        'id_card_owner_group_int' => $id_card_owner_group_int 
-                    );
-
-                }
-
-                // show data
-                if($response = $this->People_model->show($identity_number_var, $id_card_owner_group_int)){
-
-                    $output['identity_number_var']        = $response[0]->identity_number_var;
-                    $output['employee_name_var']          = $response[0]->employee_name_var;
-                    $output['employee_status_var']        = $response[0]->employee_status_var;
-                    $output['station_code_var']           = $response[0]->station_code_var;
-                    $output['work_unit_int']              = (int)$response[0]->work_unit_int;
-                    $output['work_unit_name_var']         = $response[0]->work_unit_name_var;
-                    $output['work_start_date_on_dtm']     = $response[0]->work_start_date_on_dtm;
-                    $output['work_end_date_on_dtm']       = $response[0]->work_end_date_on_dtm;
-                    $output['id_card_owner_group_int']    = (int)$response[0]->id_card_owner_group_int;
-                    $output['card_number_before_var']     = $response[0]->card_number_before_var;
-                    $output['card_owner_status_boo']      = $response[0]->card_owner_status_boo;
-                    $output['active_boo']                 = $response[0]->active_boo;
-                    // $output['note_var']                   = $response[0]->note_var;
-
-                    if ($response[0]->active_boo == 't' AND $response[0]->card_owner_status_boo == 't') {
-                        //response success with data
-                        $this->response([
-                            'status_boo' => true,
-                            'data' => $output,
-                            'message_var' => $response[0]->note_var
-                        ], REST_Controller::HTTP_OK);    
-                    }elseif ($response[0]->active_boo == 't' AND $response[0]->card_owner_status_boo == 'f') {
-                        //response success with data
-                        $this->response([
-                            'status_boo' => false,
-                            'data' => $output,
-                            'message_var' => $response[0]->note_var
-                        ], REST_Controller::HTTP_OK);    
-                    }else{
-                        $this->response([
-                            'status_boo' => false,
-                            'data' => $output,
-                            'message_var' => $response[0]->note_var
-                        ], REST_Controller::HTTP_PARTIAL_CONTENT);
-                    }
-                    
-                }else{
-                    // response failed
-                    $this->response([
-                        'status_boo' => false,
-                        'data' => $data_post,
-                        'message_var' => 'Data tidak ditemukan'
-                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
-                }
-                 
-            }else{
-                // response unauthorized karena token invalid
-                $this->response([
-                    'status_boo' => false,
-                    'message_var' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
-                ], REST_Controller::HTTP_UNAUTHORIZED);
-            }
-            
-        }else{
-            // response unauthorized karena token invalid
+        if($response){
+            //response success with data
             $this->response([
-                'status_boo' => false,
-                'message_var' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
-            ], REST_Controller::HTTP_UNAUTHORIZED);
+                'status' => true,
+                'message' => 'Data ditemukan',
+                'data' => $response
+            ], REST_Controller::HTTP_OK);
+        }else{
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
     
     public function create_post()
     {   
-        // request header authorization
-        $token = $this->input->get_request_header('Authorization');
-        // jika ada header token
-        if($token){
+        try {
             
-            //cek validasi token
-            if($this->token_validation->check($token)){
-                
-                $json = json_decode(file_get_contents('php://input'), true);
-                // cara mendeklarasikannya
-                // echo $data['n_desc'];
-                
-                if (!$json) {
-                    
-                    // action untuk data post form input
-                    // validasi
-                    $this->form_validation->set_rules('i_card_type', 'Type Kartu', 'trim');
-                    $this->form_validation->set_rules('c_desc', 'Kode Deskripsi', 'trim|required|min_length[1]|max_length[2]');
-                    $this->form_validation->set_rules('n_desc', 'Deskripsi', 'trim|min_length[2]|max_length[50]');
+            $_POST = json_decode($this->input->raw_input_stream, true);
 
-                    if ($this->form_validation->run() === false) {
-                        
-                        // Set response 
-                        $this->response([
-                            'status' => false,
-                            'message' => 'Parameter tidak diisi dengan benar'
-                        ], REST_Controller::HTTP_PAYMENT_REQUIRED); // parameter tidak valid
+            $nik = $this->input->post('nik');
+            $nama = $this->input->post('nama');
+            $tempat_lahir = $this->input->post('tempat_lahir');
+            $tgl_lahir = $this->input->post('tgl_lahir');
+            $jenis_kelamin = $this->input->post('jenis_kelamin');
+            $golongan_darah = $this->input->post('golongan_darah');
+            $provinsi = $this->input->post('provinsi');
+            $kabupaten = $this->input->post('kabupaten');
+            $kecamatan = $this->input->post('kecamatan');
+            $kelurahan = $this->input->post('kelurahan');
+            $kodepos = $this->input->post('kodepos');
+            $alamat = $this->input->post('alamat');
+            $rt = $this->input->post('rt');
+            $rw = $this->input->post('rw');
+            $status_perkawinan = $this->input->post('status_perkawinan');
+            $agama = $this->input->post('agama');
+            $pekerjaan = $this->input->post('pekerjaan');
+            $kewarganegaraan = $this->input->post('kewarganegaraan');
+            $created_by = $this->token->data->username;
 
-                    }
+            $post = array(
+                'nik' => $nik,
+                'nama' => strtoupper($nama),
+                'tempat_lahir' => strtoupper($tempat_lahir),
+                'tgl_lahir' => $tgl_lahir,
+                'jenis_kelamin' => strtoupper($jenis_kelamin),
+                'golongan_darah' => strtoupper($golongan_darah),
+                'provinsi' => strtoupper($provinsi),
+                'kabupaten' => strtoupper($kabupaten),
+                'kecamatan' => strtoupper($kecamatan),
+                'kelurahan' => strtoupper($kelurahan),
+                'kodepos' => strtoupper($kodepos),
+                'alamat' => strtoupper($alamat),
+                'rt' => $rt,
+                'rw' => $rw,
+                'status_perkawinan' => strtoupper($status_perkawinan),
+                'agama' => strtoupper($agama),
+                'pekerjaan' => strtoupper($pekerjaan),
+                'kewarganegaraan' => strtoupper($kewarganegaraan),
+                'created_by' => $created_by
+            ); 
 
-                    // retrieve data post
-                    $data_post = array(
-                        'i_card_type'   => $this->input->post('i_card_type'),
-                        'c_desc'        => $this->input->post('c_desc'),
-                        'n_desc'        => $this->input->post('n_desc')
-                    );
-                    
-                }else{
-
-                    // action untuk data post format json
-                    $data_post = array(
-                        'i_card_type'   => $json['i_card_type'],
-                        'c_desc'        => $json['c_desc'],
-                        'n_desc'        => $json['n_desc']
-                    );
-
-                }
-
-                // insert data macm.t_m_desc
-                if($this->Desc_model->insert($data_post)){
-                    //response success
-                    $this->response([
-                        'status' => true,
-                        'data' => [$data_post],
-                        'message' => 'Data berhasil disimpan'
-                    ], REST_Controller::HTTP_CREATED);
-
-                }else{
-                    // response failed
-                    $this->response([
-                        'status' => false,
-                        'data' => [$data_post],
-                        'message' => 'Gagal menyimpan data'
-                    ], REST_Controller::HTTP_NOT_ACCEPTABLE);
-                }
-                 
+            $save = $this->KTP_Model->insert($post);
+            if($save){
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil ditambahkan',
+                    'data' => $save
+                ], REST_Controller::HTTP_OK);
             }else{
-                // response unauthorized karena token invalid
+                // response failed
                 $this->response([
                     'status' => false,
-                    'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                    'message' => 'Data gagal ditambahkan',
+                    'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
             
-        }else{
-            // response unauthorized karena token invalid
+        } catch (\Throwable $th) {
+            // response failed
             $this->response([
                 'status' => false,
-                'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                'message' => $th,
+                'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
-        
     }
 
-    public function update_put()
+    public function update_put($id)
     {   
-        
-        // request header authorization
-        $token = $this->input->get_request_header('Authorization');
-        // jika ada header token
-        if($token){
-            //cek validasi token
-            if($this->token_validation->check($token)){
+        try {
+            
+            $_POST = json_decode($this->input->raw_input_stream, true);
 
-                $json = json_decode(file_get_contents('php://input'), true);
-                // cara mendeklarasikannya
-                // echo $data['n_desc'];
-                
-                if (!$json) {
-                    
-                    // action untuk data post form input
-                    // validasi
-                    $this->form_validation->set_rules('i_card_type', 'Type Kartu', 'trim');
-                    $this->form_validation->set_rules('c_desc', 'Kode Deskripsi', 'trim|required|min_length[1]|max_length[2]');
-                    $this->form_validation->set_rules('n_desc', 'Deskripsi', 'trim|min_length[2]|max_length[50]');
+            $nik = $this->input->post('nik');
+            $nama = $this->input->post('nama');
+            $tempat_lahir = $this->input->post('tempat_lahir');
+            $tgl_lahir = $this->input->post('tgl_lahir');
+            $jenis_kelamin = $this->input->post('jenis_kelamin');
+            $golongan_darah = $this->input->post('golongan_darah');
+            $provinsi = $this->input->post('provinsi');
+            $kabupaten = $this->input->post('kabupaten');
+            $kecamatan = $this->input->post('kecamatan');
+            $kelurahan = $this->input->post('kelurahan');
+            $kodepos = $this->input->post('kodepos');
+            $alamat = $this->input->post('alamat');
+            $rt = $this->input->post('rt');
+            $rw = $this->input->post('rw');
+            $status_perkawinan = $this->input->post('status_perkawinan');
+            $agama = $this->input->post('agama');
+            $pekerjaan = $this->input->post('pekerjaan');
+            $kewarganegaraan = $this->input->post('kewarganegaraan');
+            $updated_at =  $this->time_server;
+            $updated_by = $this->token->data->username;
 
-                    if ($this->form_validation->run() === false) {
-                        
-                        // Set response 
-                        $this->response([
-                            'status' => false,
-                            'message' => 'Parameter tidak diisi dengan benar'
-                        ], REST_Controller::HTTP_PAYMENT_REQUIRED); // parameter tidak valid
+            $post = array(
+                'nik' => $nik,
+                'nama' => strtoupper($nama),
+                'tempat_lahir' => strtoupper($tempat_lahir),
+                'tgl_lahir' => $tgl_lahir,
+                'jenis_kelamin' => strtoupper($jenis_kelamin),
+                'golongan_darah' => strtoupper($golongan_darah),
+                'provinsi' => strtoupper($provinsi),
+                'kabupaten' => strtoupper($kabupaten),
+                'kecamatan' => strtoupper($kecamatan),
+                'kelurahan' => strtoupper($kelurahan),
+                'kodepos' => strtoupper($kodepos),
+                'alamat' => strtoupper($alamat),
+                'rt' => $rt,
+                'rw' => $rw,
+                'status_perkawinan' => strtoupper($status_perkawinan),
+                'agama' => strtoupper($agama),
+                'pekerjaan' => strtoupper($pekerjaan),
+                'kewarganegaraan' => strtoupper($kewarganegaraan),
+                'updated_at' => $updated_at,
+                'updated_by' => $updated_by
+            ); 
 
-                    }
-
-                    // retrieve data post
-                    $data_post = array(
-                        'i_card_type'   => $this->input->post('i_card_type'),
-                        'c_desc'        => $this->input->post('c_desc'),
-                        'n_desc'        => $this->input->post('n_desc')
-                    );
-                    
-                }else{
-
-                    // action untuk data post format json
-                    $data_post = array(
-                        'i_card_type'   => $json['i_card_type'],
-                        'c_desc'        => $json['c_desc'],
-                        'n_desc'        => $json['n_desc']
-                    );
-
-                }
-
-                //cek id yang akan diupdate
-                $id = $this->uri->segment(4);
-
-                if ($id != '' OR $id == null) {
-                    
-                    // insert data macm.t_m_desc
-                    $count_update = $this->Desc_model->update($id, $data_post);
-
-                    return $count_update;
-                    if ($count_update > 0) {
-                        //response success
-                        $this->response([
-                            'status' => true,
-                            'data' => [$data_post],
-                            'message' => 'Data berhasil diupdate'
-                        ], REST_Controller::HTTP_OK);
-
-                    }else{
-                        // response failed
-                        $this->response([
-                            'status' => false,
-                            'data' => [$data_post],
-                            'message' => 'Gagal mengupdate data'
-                        ], REST_Controller::HTTP_NOT_MODIFIED);
-                    }
-                    
-                }else{
-                    // Set the response and exit
-                    $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST); // BAD_REQUEST (400) being the HTTP response code
-                }
-                
+            $update = $this->KTP_Model->update($post, $id);
+            if($update){
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil diperbaharui',
+                    'data' => $update
+                ], REST_Controller::HTTP_OK);
             }else{
-                // response unauthorized karena token invalid
+                // response failed
                 $this->response([
                     'status' => false,
-                    'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                    'message' => 'Data gagal diperbaharui',
+                    'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
             
-        }else{
-            // response unauthorized karena token invalid
+        } catch (\Throwable $th) {
+            // response failed
             $this->response([
                 'status' => false,
-                'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                'message' => $th,
+                'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
-        };
-        
+        }
     }
 
-    public function destroy_delete()
+    public function destroy_delete($id)
     {
-        
-        // request header authorization
-        $token = $this->input->get_request_header('Authorization');
-        // jika ada header token
-        if($token){
-            //cek validasi token
-            if($this->token_validation->check($token)){
-                
-                //cek id yang akan dihapus
-                $id = $this->uri->segment(4);
+        try {
+            
+            $deleted_at =  $this->time_server;
+            $deleted_by = $this->token->data->username;
 
-                if ($id != '' OR $id == null) {
-                    
-                    //lakukan sof delete
-                    $count_delete = $this->Desc_model->soft_delete($id);
-                    if ($count_delete > 0) {
-                        // data berhasil di soft delete
-                        $message = [
-                            'status' => true,
-                            'id' => $id,
-                            'message' => 'Data telah berhasil dihapus'
-                        ];
-                        $this->set_response($message, REST_Controller::HTTP_OK); 
-    
-                    }else{
-                        // tidak ada data yang di soft delete
-                        $message = [
-                            'status' => true,
-                            'message' => 'data dengan id '.$id.' tidak ditemukan'
-                        ];
-                        $this->set_response($message, REST_Controller::HTTP_NO_CONTENT); // NO_CONTENT (204) being the HTTP response code
-    
-                    }
+            $post = array(
+                'deleted_at' => $deleted_at,
+                'deleted_by' => $deleted_by
+            ); 
 
-                }else{
-                    // Set the response and exit
-                    $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST); // BAD_REQUEST (400) being the HTTP response code
-                }
+            $delete = $this->KTP_Model->delete($id);
+            if($delete){
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil dihapus',
+                    'data' => $delete
+                ], REST_Controller::HTTP_OK);
             }else{
-                // response unauthorized karena token invalid
+                // response failed
                 $this->response([
                     'status' => false,
-                    'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                    'message' => 'Data gagal dihapus',
+                    'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-
-        }else{
-            // response unauthorized karena token invalid
+            
+        } catch (\Throwable $th) {
+            // response failed
             $this->response([
                 'status' => false,
-                'message' => 'Sesi Telah Habis. Silakan Lakukan CLOSE SHIFT!'
+                'message' => $th,
+                'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }

@@ -12,13 +12,13 @@
     <link href="<?= base_url('assets/'); ?>vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/'); ?>vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/'); ?>vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+    <link href="<?= base_url('assets/'); ?>vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css">
     <link href="<?= base_url('assets/'); ?>vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/'); ?>vendor/datatables.net-fixedheader-bs4/css/fixedHeader.bootstrap4.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/'); ?>vendor/datatables.net-responsive/css/dataTables.responsive.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/'); ?>vendor/datatables.net-select/css/dataTables.select.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/'); ?>vendor/datatables.net-buttons/css/buttons.dataTables.min.css" rel="stylesheet">
     <link href="<?= base_url('assets/'); ?>css/katapanda.css" rel="stylesheet">
-
     <!-- style -->
     <style>
     @media (max-width: 600px) {
@@ -42,6 +42,26 @@
         height: 100px;
         overflow: auto;
     }
+
+    /* Just add this CSS to your project */
+
+    .dropzone {
+        border: 2px dashed #dedede;
+        border-radius: 5px;
+        background: #f5f5f5;
+    }
+
+    .dropzone i{
+    font-size: 5rem;
+    }
+
+    .dropzone .dz-message {
+        color: rgba(0,0,0,.54);
+        font-weight: 500;
+        font-size: initial;
+        text-transform: uppercase;
+    }
+
     </style>
 
     <!-- script -->

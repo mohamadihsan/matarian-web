@@ -1,7 +1,7 @@
 <!-- Register Content -->
 <div class="container-login">
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="col-xl-10 col-lg-12 col-md-9" style="max-width: 500px">
             <div class="card shadow-sm my-5">
                 <div class="card-header bg-custom text-center">
                     <h1 class="h4 text-white mb-0 card-title"><i class="fa fa-user"></i> Form Register</h1>
@@ -17,12 +17,16 @@
                                         <input type="text" name="fullname" class="form-control" id="fullname" placeholder="Enter Fullname">
                                     </div>
                                     <div class="form-group">
-                                        <label>Nickname <span class="text-danger">*</span></label>
-                                        <input type="text" name="nickname" class="form-control" id="nickname" placeholder="Enter Nickname">
+                                        <label>Nomor Telepon</label>
+                                        <input type="text" name="nomor_telepon" class="form-control" id="nomor_telepon" placeholder="Enter Nomor Telepon">
                                     </div>
                                     <div class="form-group">
                                         <label>Email <span class="text-danger">*</span></label>
                                         <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Username <span class="text-danger">*</span></label>
+                                        <input type="text" name="username" class="form-control" id="username" placeholder="Enter Username">
                                     </div>
                                     <div class="form-group">
                                         <label>Password <span class="text-danger">*</span></label>
@@ -59,7 +63,6 @@
         $("#registerForm").validate({
 			rules: {
 				fullname: "required",
-				nickname: "required",
 				username: {
 					required: true,
 					minlength: 2
@@ -80,7 +83,6 @@
 			},
 			messages: {
 				fullname: "Please enter your fullname",
-				nickname: "Please enter your nickname",
 				username: {
 					required: "Please enter a username",
 					minlength: "Your username must consist of at least 2 characters"
@@ -103,12 +105,27 @@
                 // bind data
                 let data = {
                     username: $('#username').val(),
+                    password: $('#password').val(),
+                    fullname: $('#fullname').val(),
+                    nomor_telepon: $('#nomor_telepon').val(),
+                    email: $('#email').val(),
                     password: $('#password').val()
                 }
                 // send request
-                axios.post('/api/web/v1/register', data)
+                axios.post('<?= site_url() ?>api/web/v1/register', data)
                 .then(function (response) {
-                    console.log(response);
+                    // console.log(response);
+                    let status = response.data.status;
+                    let message = response.data.message;
+                    let action = `create`;
+                    if (status) {
+                        // show message
+                        notification(action, 'info', message);
+                        $('#registerForm').trigger("reset");
+                    }else{
+                        // show message
+                        notification(action, 'error', 'Username or Email already exists');
+                    }
                 })
                 .catch(function (error) {
                     let messageError;
@@ -121,7 +138,7 @@
                     }
                     
                     // show message
-                    notification('login', 'error', messageError);
+                    notification('create', 'error', messageError);
                 })
                 .then(function () {
                     // stop loading

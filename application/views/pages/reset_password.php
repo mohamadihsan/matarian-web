@@ -1,7 +1,7 @@
 <!-- Login Content -->
 <div class="container-login">
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="col-xl-10 col-lg-12 col-md-9" style="max-width: 500px">
             <div class="card shadow-sm my-5">
                 <div class="card-header pt-4 text-center">
                     <h1 class="h4 text-gray-900 mb-0 card-title">
@@ -66,15 +66,24 @@
                 
                 // bind data
                 let data = {
-                    email: $('#email').val(),
-                    device_type: navigator.appVersion,
-                    ip_address: null
+                    email: $('#email').val()
                 }
                 
                 // send request
-                axios.post('/api/login', data)
+                axios.post('<?= site_url() ?>api/web/v1/reset-password', data)
                 .then(function (response) {
-                    console.log(response);
+                    // console.log(response);
+                    let status = response.data.status;
+                    let message = response.data.message;
+                    let action = `forgot`;
+                    if (status) {
+                        // show message
+                        notification(action, 'info', message);
+                        $('#resetPasswordForm').trigger("reset");
+                    }else{
+                        // show message
+                        notification(action, 'error', message);
+                    }
                 })
                 .catch(function (error) {
                     let messageError;

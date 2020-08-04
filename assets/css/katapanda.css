@@ -174,9 +174,9 @@ a:focus {
   background-image: linear-gradient(180deg, #6777EF 10%, #303f9f 100%);
   background-size: cover; */
   
-  background-color: #e52d27;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(10%, #e52d27), to(#e52d27));
-  background-image: linear-gradient(180deg, #e52d27 10%, #e52d27 100%);
+  background-color: #7AC4FD;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(10%, #7AC4FD), to(#7AC4FD));
+  background-image: linear-gradient(180deg, #7AC4FD 10%, #7AC4FD 100%);
   background-size: cover;
 }
 
@@ -323,7 +323,7 @@ a:focus {
 }
 
 .text-custom {
-  color: #e52d27 !important;
+  color: #7AC4FD !important;
 }
 
 
@@ -548,8 +548,8 @@ a:focus {
 }
 
 .topbar .dropdown-list .dropdown-header {
-  background-color: #e52d27;
-  border: 1px solid #e52d27;
+  background-color: #7AC4FD;
+  border: 1px solid #7AC4FD;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   color: #fff;
@@ -634,17 +634,17 @@ a:focus {
 
 .bg-navbar {
   /* background-color: #6777EF; */
-  background: #e52d27;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #b31217, #e52d27);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #b31217, #e52d27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #7AC4FD;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2196F3, #7AC4FD);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2196F3, #7AC4FD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .bg-custom {
   /* background-color: #6777EF; */
   color: #ffffff;
-  background: #e52d27;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #b31217, #e52d27);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #b31217, #e52d27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #7AC4FD;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2196F3, #7AC4FD);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2196F3, #7AC4FD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .bg-custom:hover {
@@ -1075,7 +1075,7 @@ a:focus {
 
   .sidebar.toggled .nav-item .collapse .collapse-inner .collapse-item.active,
   .sidebar.toggled .nav-item .collapsing .collapse-inner .collapse-item.active {
-    color: #e52d27;
+    color: #7AC4FD;
     font-weight: 800;
   }
 
@@ -1154,9 +1154,9 @@ a:focus {
 .sidebar-light .sidebar-brand {
   color: #fafafa;
   /* background-color: #4C60DA; */
-  background: #b31217;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #b31217, #b31217);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #b31217, #b31217); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #2196F3;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2196F3, #2196F3);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2196F3, #2196F3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
 
@@ -1490,7 +1490,7 @@ a:focus {
 }
 
 .error {
-  color: #e52d27;
+  color: #7AC4FD;
   font-size: 1rem;
   position: relative;
   line-height: 1;
@@ -1868,7 +1868,7 @@ a:focus {
 }
 
 footer.sticky-footer {
-  padding: 2rem 0;
+  padding: 1rem 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
   -webkit-box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
@@ -1898,7 +1898,11 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 .text-katapanda-sm {
-  font-size: smaller;
+  font-size: 12px;
+}
+
+.text-katapanda-xs {
+  font-size: 10px;
 }
 
 .text-katapanda-md {
@@ -1925,7 +1929,7 @@ button.dt-button {
 }
 
 button.dt-button:hover {
-  color: #e52d27;
+  color: #7AC4FD;
   font-weight: bolder;
   background-color: #6777ef;
   border-color: #6777ef;
@@ -2002,7 +2006,7 @@ button.dt-button:hover {
 
 .form-control:focus {
   /* border: 1px solid #6777ef; */
-  border: 1px solid #e52d27;
+  border: 1px solid #7AC4FD;
 }
 
 .input-group-append span {

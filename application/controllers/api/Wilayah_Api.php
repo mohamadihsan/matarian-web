@@ -16,6 +16,46 @@ class Wilayah_Api extends REST_Controller {
         
     }
 
+    // wilayah
+    public function index_post()
+    {
+        try {
+            $_POST = json_decode($this->input->raw_input_stream, true);
+
+            $param = array(
+                "provinsi" => $this->input->post('provinsi'),
+                "kabupaten" => $this->input->post('kabupaten'),
+                "kecamatan" => $this->input->post('kecamatan'),
+                "kelurahan" => $this->input->post('kelurahan')
+            );
+            
+            $response = $this->Wilayah_Model->wilayah($param)->result();
+    
+            if($response){
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data ditemukan',
+                    'data' => $response
+                ], REST_Controller::HTTP_OK);
+            }else{
+                // response success not found data
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+        
+    }
+
     // provinsi
     public function provinsi_get()
     {
@@ -38,10 +78,32 @@ class Wilayah_Api extends REST_Controller {
         }
     }
 
-    // kabupaten
-    public function kabupaten_get($param)
+    public function provinsi_post()
     {
-        $response = $this->Wilayah_Model->kabupaten($param)->result();
+        $selected = $this->post('provinsi');
+        $response = $this->Wilayah_Model->provinsi($selected)->result();
+
+        if($response){
+            //response success with data
+            $this->response([
+                'status' => true,
+                'message' => 'Data ditemukan',
+                'data' => $response
+            ], REST_Controller::HTTP_OK);
+        }else{
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    // kabupaten
+    public function kabupaten_get($param, $selected = null)
+    {
+        $response = $this->Wilayah_Model->kabupaten($param, $selected)->result();
 
         if($response){
             //response success with data
@@ -61,9 +123,9 @@ class Wilayah_Api extends REST_Controller {
     }
 
     // kecamatan
-    public function kecamatan_get($param)
+    public function kecamatan_get($param, $selected = null)
     {
-        $response = $this->Wilayah_Model->kecamatan($param)->result();
+        $response = $this->Wilayah_Model->kecamatan($param, $selected)->result();
 
         if($response){
             //response success with data
@@ -83,9 +145,9 @@ class Wilayah_Api extends REST_Controller {
     }
 
     // kelurahan
-    public function kelurahan_get($param)
+    public function kelurahan_get($param, $selected = null)
     {
-        $response = $this->Wilayah_Model->kelurahan($param)->result();
+        $response = $this->Wilayah_Model->kelurahan($param, $selected)->result();
 
         if($response){
             //response success with data
@@ -105,9 +167,9 @@ class Wilayah_Api extends REST_Controller {
     }
 
     // kode pos
-    public function kode_pos_get($param)
+    public function kode_pos_get($param, $selected = null)
     {
-        $response = $this->Wilayah_Model->kode_pos($param)->result();
+        $response = $this->Wilayah_Model->kode_pos($param, $selected)->result();
 
         if($response){
             //response success with data

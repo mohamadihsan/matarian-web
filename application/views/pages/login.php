@@ -1,7 +1,7 @@
 <!-- Login Content -->
 <div class="container-login">
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="col-xl-10 col-lg-12 col-md-9" style="max-width: 500px">
             <div class="card shadow-sm my-5">
                 <div class="card-header pt-4 text-center">
                     <h1 class="h4 text-gray-900 mb-0 card-title">
@@ -42,7 +42,7 @@
                                         <a class="font-weight-bold small" href="<?= site_url('register') ?>">Create an Account!</a>
                                     </div>
                                     <div class="p-2">
-                                        <a class="font-weight-bold small" href="<?= site_url('resetpassword') ?>">Forgot Password?</a>
+                                        <a class="font-weight-bold small" href="<?= site_url('reset-password') ?>">Forgot Password?</a>
                                     </div>
                                 </div>    
                                 <div class="d-flex justify-content-center">
@@ -61,6 +61,10 @@
 <script>
 
     $().ready(function() {
+        let ipAddress = null;
+        $.getJSON("https://jsonip.com", function (data) {
+            ipAddress = data.ip;
+        });
 
         // input focus
         $('#username').focus();
@@ -96,14 +100,21 @@
                     password: $('#password').val(),
                     remember_me: $('#rememberMe:checked').val() === 'on' ? true : false,
                     device_type: navigator.appVersion,
-                    ip_address: null
+                    ip_address: ipAddress
                 }
-                console.log(data);
+                // console.log(data);
                 
                 // send request
-                axios.post('/api/web/v1/login', data)
+                axios.post('<?= site_url() ?>api/web/v1/login', data)
                 .then(function (response) {
-                    console.log(response);
+                    // console.log(response);
+                    if (response.data.status) {
+                        window.location.replace('<?= site_url() ?>dashboard');
+                    } else {
+                        // show message
+                        notification('login', 'error', response.data.message);
+                    }
+
                 })
                 .catch(function (error) {
                     let messageError;

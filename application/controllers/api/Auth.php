@@ -52,7 +52,7 @@ class Auth extends REST_Controller
             $this->response([
                 'status' => false,
                 'message' => 'Verified!',
-                'data' => $this->dataToken->id
+                'data' => $this->dataToken
             ], REST_Controller::HTTP_OK);
         }
     }
