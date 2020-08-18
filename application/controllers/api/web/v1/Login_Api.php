@@ -9,6 +9,8 @@ class Login_Api extends REST_Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('cookie');
+        $this->load->library('encrypt');
         // load model
         $this->load->model('Global_Model');
         $this->load->model('User_Model');
@@ -30,7 +32,7 @@ class Login_Api extends REST_Controller {
             $remember_me = $this->input->post('remember_me');
             $device_type = $this->input->post('device_type');
             $ip_address = $this->input->post('ip_address');
-
+   
             // check username
             $check = $this->User_Model->check_username($username)->result();
             if ($check) {
@@ -75,6 +77,15 @@ class Login_Api extends REST_Controller {
                         
                         // set token on session
                         $_SESSION['auth'] = $data;
+
+                        // remember me
+                        if(!empty($remember_me)) {
+                            set_cookie ("loginId", $username, time()+ (10 * 365 * 24 * 60 * 60));  
+                            set_cookie ("loginPass", $this->encrypt->encode($password),  time()+ (10 * 365 * 24 * 60 * 60));
+                        } else {
+                            set_cookie ("loginId",""); 
+                            set_cookie ("loginPass","");
+                        }        
                         
                         //response success with data
                         $this->response([

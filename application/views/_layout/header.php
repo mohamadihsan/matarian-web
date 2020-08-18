@@ -21,6 +21,8 @@
     <link href="<?= base_url('assets/'); ?>css/katapanda.css" rel="stylesheet">
     <!-- style -->
     <style>
+    body { padding-right: 0 !important }
+    
     @media (max-width: 600px) {
         .katapanda-hide-element {
             display: none;

@@ -1,7 +1,8 @@
-<?php 
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class KTP extends CI_Controller {
+class KTP extends CI_Controller
+{
 
     public function __construct()
     {
@@ -11,13 +12,13 @@ class KTP extends CI_Controller {
         header('Expires: 0');
         // validate token
         $this->token = AUTHORIZATION::validateTokenOnPage();
-        
+
         // check privilege
         $url = $this->uri->segment(1);
-        $url .= $this->uri->segment(2) != '' ? '/'.$this->uri->segment(2) : '';
-        $url .= $this->uri->segment(3) != '' ? '/'.$this->uri->segment(3) : '';
+        $url .= $this->uri->segment(2) != '' ? '/' . $this->uri->segment(2) : '';
+        $url .= $this->uri->segment(3) != '' ? '/' . $this->uri->segment(3) : '';
         $id_user_group = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->id_user_group;
-        $check = $this->User_Privilege->check_privilege($id_user_group ,$url);
+        $check = $this->User_Privilege->check_privilege($id_user_group, $url);
         if (!empty($check)) {
             if ($check->read_access == true) {
                 $this->create_access = $check->create_access;
@@ -30,11 +31,11 @@ class KTP extends CI_Controller {
                 $this->export_to_excel_access = $check->export_to_excel_access;
                 $this->export_to_csv_access = $check->export_to_csv_access;
                 $this->export_to_pdf_access = $check->export_to_pdf_access;
-            } else {    
-                redirect('dashboard','refresh');
+            } else {
+                redirect('dashboard', 'refresh');
             }
         } else {
-            redirect('dashboard','refresh');
+            redirect('dashboard', 'refresh');
         }
     }
 
@@ -52,6 +53,9 @@ class KTP extends CI_Controller {
         $data['action_export_to_csv'] = $this->export_to_csv_access;
         $data['action_export_to_pdf'] = $this->export_to_pdf_access;
 
+        print_r($data);
+        die();
+
 
         $this->load->view('_layout/header', $data);
         $this->load->view('_layout/sidebar', $data);
@@ -59,7 +63,6 @@ class KTP extends CI_Controller {
         $this->load->view('pages/ktp', $data);
         $this->load->view('_layout/footer');
     }
-
 }
 
 /* End of file KTP.php */

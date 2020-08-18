@@ -17,6 +17,9 @@ class User_Api extends REST_Controller {
         require APPPATH.'libraries/phpmailer/src/PHPMailer.php';
         require APPPATH.'libraries/phpmailer/src/SMTP.php';
         
+        $this->load->helper('form');
+        $this->load->helper('url');
+        
         // validate token
         $this->token = AUTHORIZATION::validateToken();
         // load model
@@ -26,6 +29,25 @@ class User_Api extends REST_Controller {
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         $this->user_id = $this->token->data->user_id;
         $this->sales_ar = $this->token->data->sales_ar;
+        $this->path = 'assets/upload/picture';
+        
+        // $this->email_host = 'cahayamatahari.com';
+        // $this->email_username = 'matarian@cahayamatahari.com';
+        // $this->email_password = 'Cahaya01';
+        // $this->email_smtpsecure = 'ssl';
+        // $this->email_port = 465;
+
+        // $this->email_host = 'matarian.com';
+        // $this->email_username = 'apps@matarian.com';
+        // $this->email_password = 'IamMatarian2020';
+        // $this->email_smtpsecure = 'ssl';
+        // $this->email_port = 465;
+
+        $this->email_host = 'smtp.gmail.com';
+        $this->email_username = 'apps.matarian@gmail.com';
+        $this->email_password = 'CahayaMatahari01';
+        $this->email_smtpsecure = 'tls';
+        $this->email_port = 587;
     }
 
     // show
@@ -339,15 +361,15 @@ class User_Api extends REST_Controller {
             
                     // SMTP configuration
                     $mail->isSMTP();
-                    $mail->Host     = 'mail.katapanda.com'; //sesuaikan sesuai nama domain hosting/server yang digunakan
+                    $mail->Host     = $this->email_host; //sesuaikan sesuai nama domain hosting/server yang digunakan
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'matarian@katapanda.com'; // user email
-                    $mail->Password = 'matarian2020'; // password email
-                    $mail->SMTPSecure = 'ssl';
-                    $mail->Port     = 465;
+                    $mail->Username = $this->email_username; // user email
+                    $mail->Password = $this->email_password; // password email
+                    $mail->SMTPSecure = $this->email_smtpsecure;
+                    $mail->Port     = $this->email_port;
             
-                    $mail->setFrom('matarian@katapanda.com', 'Registration - Success Verified'); // user email
-                    $mail->addReplyTo('matarian@katapanda.com', 'Matarian Reply'); //user email
+                    $mail->setFrom($this->email_username, 'Registration - Success Verified'); // user email
+                    $mail->addReplyTo($this->email_username, 'Matarian Reply'); //user email
             
                     // Add a recipient
                     $mail->addAddress($check[0]->email); //email tujuan pengiriman email
@@ -368,7 +390,7 @@ class User_Api extends REST_Controller {
                     // Send email
                     if(!$mail->send()){
                         $this->response([
-                            'status' => false,
+                            'status' => true,
                             'message' => 'Data berhasil diaktivasi. Failed send to email. Error: ' .$this->email->print_debugger(),
                             'data' => []
                         ], REST_Controller::HTTP_PARTIAL_CONTENT);
@@ -433,15 +455,15 @@ class User_Api extends REST_Controller {
             
                     // SMTP configuration
                     $mail->isSMTP();
-                    $mail->Host     = 'mail.katapanda.com'; //sesuaikan sesuai nama domain hosting/server yang digunakan
+                    $mail->Host     = $this->email_host; //sesuaikan sesuai nama domain hosting/server yang digunakan
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'matarian@katapanda.com'; // user email
-                    $mail->Password = 'matarian2020'; // password email
-                    $mail->SMTPSecure = 'ssl';
-                    $mail->Port     = 465;
+                    $mail->Username = $this->email_username; // user email
+                    $mail->Password = $this->email_password; // password email
+                    $mail->SMTPSecure = $this->email_smtpsecure;
+                    $mail->Port     = $this->email_port;
             
-                    $mail->setFrom('matarian@katapanda.com', 'Registration - Rejected'); // user email
-                    $mail->addReplyTo('matarian@katapanda.com', 'Matarian Reply'); //user email
+                    $mail->setFrom($this->email_username, 'Registration - Rejected'); // user email
+                    $mail->addReplyTo($this->email_username, 'Matarian Reply'); //user email
             
                     // Add a recipient
                     $mail->addAddress($check[0]->email); //email tujuan pengiriman email
@@ -460,7 +482,7 @@ class User_Api extends REST_Controller {
                     // Send email
                     if(!$mail->send()){
                         $this->response([
-                            'status' => false,
+                            'status' => true,
                             'message' => 'Data berhasil direject. Failed send to email. Error: ' .$this->email->print_debugger(),
                             'data' => []
                         ], REST_Controller::HTTP_PARTIAL_CONTENT);
@@ -568,14 +590,21 @@ class User_Api extends REST_Controller {
             $fullname = $this->input->post('fullname');
             $nomor_telepon = $this->input->post('nomor_telepon');
             $email = $this->input->post('email');
+            $profile_picture = $this->input->post('profile_picture');
             $updated_at =  $this->time_server;
             $updated_by = $this->token->data->username;
 
             $post['fullname'] = $fullname;
             $post['nomor_telepon'] = $nomor_telepon;
             $post['email'] = $email;
+            if($profile_picture != '') {
+                $file_ext = explode(".", $profile_picture);
+                $ext = end($file_ext);
+                $post['profile_picture'] = $this->path.'/'.$this->user_id.'.'.$ext;
+            }
             $post['updated_at'] = $updated_at;
             $post['updated_by'] = $updated_by;  
+            print_r($username);die();
 
             $check = $this->User_Model->check_username($username)->result();
             if ($check) {
@@ -584,6 +613,10 @@ class User_Api extends REST_Controller {
 
                     $update = $this->User_Model->update($post, $check[0]->id);
                     if($update){
+                        // upload profile picture
+                        if($profile_picture != '') {
+                            $this->_uploadImage();
+                        }
                         //response success with data
                         $this->response([
                             'status' => true,
@@ -622,6 +655,25 @@ class User_Api extends REST_Controller {
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
+    }
+
+    private function _uploadImage()
+    {
+        $config['upload_path']          = $this->path;
+        $config['allowed_types']        = 'gif|jpg|png';
+        $config['file_name']            = $this->user_id;
+        $config['overwrite']			= true;
+        $config['max_size']             = 5024; // 1MB
+        // $config['max_width']            = 1024;
+        // $config['max_height']           = 768;
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('profile_picture')) {
+            return $this->upload->data();
+        }
+        
+        return "default.jpg";
     }
 
     public function profile_change_password_put()

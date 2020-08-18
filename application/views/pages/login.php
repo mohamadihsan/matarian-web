@@ -21,15 +21,15 @@
                                 </div>
                                 <form class="loginForm" id="loginForm">
                                     <div class="form-group">
-                                        <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Username *">
+                                        <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Username *" value="<?= $cookie_username ?>">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="password" class="form-control" id="password" placeholder="Password *">
+                                        <input type="password" name="password" class="form-control" id="password" placeholder="Password *" value="<?= $cookie_password ?>">
                                     </div>
                                     <div class="form-group">
-                                        <div class="custom-control custom-checkbox small" style="line-height: 1.5rem;">
-                                            <input type="checkbox" name="rememberMe" class="custom-control-input" id="rememberMe">
-                                            <label class="custom-control-label" for="customCheck">Remember Me</label>
+                                        <div class="custom-control custom-checkbox small" style="line-height: 1rem; margin-left: -20px">
+                                            <input type="checkbox" name="rememberMe" class="control-input" id="rememberMe" <?php if($cookie_username != '') { ?> checked="checked" <?php } ?>>
+                                            <label class="control-label" for="customCheck">Remember Me</label>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -46,7 +46,8 @@
                                     </div>
                                 </div>    
                                 <div class="d-flex justify-content-center">
-                                    <span class="text-xs text-gray-600" id="version-katapanda"></span>
+                                    <span class="text-xs text-gray-600"><?= VERSION_APP ?></span>
+                                    <!-- <span class="text-xs text-gray-600" id="version-katapanda"></span> -->
                                 </div>
                             </div>
                         </div>

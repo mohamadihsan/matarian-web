@@ -42,6 +42,8 @@ class Wilayah_Model extends CI_Model {
     public function kabupaten($param, $selected)
     {
         $this->db->select('id, kabupaten_kota, ibukota, k_bsni');
+        $this->db->group_by('id, kabupaten_kota, ibukota, k_bsni');
+        
         $this->db->where('provinsi_id', $param);
         if ($selected != null) {
             $this->db->where('id', $selected);

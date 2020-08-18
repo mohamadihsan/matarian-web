@@ -92,7 +92,7 @@
 <!-- Form Update Profile -->
 <div class="modal fade" id="formKatapanda" tabindex="-1" role="dialog" aria-labelledby="formKatapandaTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form">
+        <form id="form" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header bg-custom">
                     <h6 class="modal-title" id="formTitle"></h6>
@@ -101,7 +101,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
+
                     <div class="form-group">
                         <label class="label-katapanda-sm" for="fullname">Fullname <i class="text-danger">*</i></label>
                         <input type="text" name="fullname" class="form-control form-control-sm" id="fullname" placeholder="">
@@ -115,6 +115,13 @@
                         <label class="label-katapanda-sm" for="email">Email <i class="text-danger">*</i></label>
                         <input type="email" name="email" class="form-control form-control-sm" id="email" placeholder="">
                     </div> 
+                    
+                    <div class="file-input">
+                        <input class="choose" type="file" name="profilePicture" id="profilePicture" accept="image/*">
+                        <span class="button">Choose Profile Picture</span>
+                        <span class="label">No profile picture selected</span>
+                    </div>
+                    <img id="preview" src="">
                         
                 </div>
                 <div class="modal-footer">
@@ -247,13 +254,16 @@ $(document).ready( function () {
                 method: `PUT`,
                 url: '<?= site_url() ?>api/web/v1/profile/update',
                 headers: {
-                    Authorization: 'Bearer <?= $token ?>' 
+                    Authorization: 'Bearer <?= $token ?>',
+                    contentType: false,
+                    // 'Content-Type': 'multipart/form-data' 
                 },
                 data: {
                     username: "<?= $username ?>",
                     fullname: $('#fullname').val(),
                     nomor_telepon: $('#nomorTelepon').val(),
-                    email: $('#email').val()
+                    email: $('#email').val(),
+                    profile_picture: $('#profilePicture').val()
                 }
             }) 
             .then(function (response) {
@@ -296,6 +306,7 @@ $(document).ready( function () {
     $('#updateProfile').click(function() {
         // reset Form
         resetFormInput();
+        $('#preview').attr('src', '')
 
         // show modal
         $('#formTitle').html('<i class="fas fa-edit"></i> Update Profile');
@@ -365,4 +376,27 @@ function getProfile() {
     })
 }
 
+</script>
+
+<script>
+const readURL = (input) => {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      $('#preview').attr('src', e.target.result)
+    }
+    reader.readAsDataURL(input.files[0])
+  }
+}
+$('.choose').on('change', function() {
+	readURL(this)
+  let i
+  if ($(this).val().lastIndexOf('\\')) {
+    i = $(this).val().lastIndexOf('\\') + 1
+  } else {
+    i = $(this).val().lastIndexOf('/') + 1
+  }
+  const fileName = $(this).val().slice(i)
+  $('.label').text(fileName)
+})
 </script>

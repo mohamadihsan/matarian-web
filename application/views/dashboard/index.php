@@ -137,7 +137,7 @@
                     </div>
                 </div>
 
-                <?php if(isset($_SESSION['auth']['group'])) { if($_SESSION['auth']['group'] == 1) { ?>
+                <?php if(isset($_SESSION['auth']['group'])) { if($_SESSION['auth']['group'] == 1 || $_SESSION['auth']['group'] == 4) { ?>
 
                 <div class="col-xl-12 col-lg-12">
                     <div class="card mb-6">

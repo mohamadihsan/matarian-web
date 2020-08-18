@@ -6,6 +6,8 @@ class Login extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('cookie');
+        $this->load->library('encrypt');
         // validate token
         $this->token = AUTHORIZATION::validateTokenOnPage();
     }
@@ -13,6 +15,15 @@ class Login extends CI_Controller {
     public function index()
     {
         $data['title'] = 'Login';
+
+        if(isset($_COOKIE['loginId'])) {
+            $key = $this->config->item('encryption_key');
+            $data['cookie_username'] = get_cookie('loginId');
+            $data['cookie_password'] = $this->encrypt->decode(get_cookie('loginPass'));
+        } else {
+            $data['cookie_username'] = '';
+            $data['cookie_password'] = '';
+        }
 
 
         $this->load->view('_layout/auth-header', $data);

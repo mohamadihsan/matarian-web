@@ -77,11 +77,13 @@ class Dashboard_Model extends CI_Model {
             $this->db->where('dat.sales_ar', $sales_ar);
         }
 
-        $this->db->select('ta.kode_langganan, lgn.nama_toko, COUNT(ta.kode_langganan) as total_transaction, SUM(prf_barang) as total_purchase');
+        $this->db->where('dat.sales_ar IS NOT NULL');
+        $this->db->select('ta.kode_langganan, lgn.nama_toko, COUNT(ta.kode_langganan) as total_transaction, CONVERT(SUM(ta.banyak_barang*ta.harga_barang), SIGNED) as total_purchase');
         $this->db->join('tbl_accdlgn lgn', 'lgn.kode_langganan = ta.kode_langganan', 'left');
+        $this->db->join('tbl_accdbrg brg', 'brg.kode_barang = ta.kode_barang', 'left');
         $this->db->join('tbl_accardat dat', 'dat.nomor_nota = ta.nomor_bon', 'left');
         $this->db->group_by('ta.kode_langganan');
-        $this->db->having('SUM(prf_barang) >',  0);
+        // $this->db->having('total_purchase >',  0);
         $this->db->order_by('total_purchase', 'desc');
         if ($limit > 0) {
             $this->db->limit($limit);
@@ -106,11 +108,11 @@ class Dashboard_Model extends CI_Model {
             $this->db->where('dat.sales_ar', $sales_ar);
         }
 
-        $this->db->select('ta.kode_barang, br.nama_barang, COUNT(ta.kode_barang) as quantity, SUM(ta.prf_barang) as total_purchase');
+        $this->db->select('ta.kode_barang, br.nama_barang, SUM(ta.banyak_barang) as quantity, SUM(ta.prf_barang) as total_purchase');
         $this->db->join('tbl_accdbrg br', 'br.kode_barang = ta.kode_barang', 'left');
         $this->db->join('tbl_accardat dat', 'dat.nomor_nota = ta.nomor_bon', 'left');
         $this->db->group_by('ta.kode_barang');
-        $this->db->having('SUM(ta.prf_barang) >',  0);
+        // $this->db->having('SUM(ta.prf_barang) >',  0);
         $this->db->order_by('quantity', 'desc');
         if ($limit > 0) {
             $this->db->limit($limit);

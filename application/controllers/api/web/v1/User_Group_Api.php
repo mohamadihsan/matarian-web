@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class User_Group_Api extends REST_Controller {
+class User_Group_Api extends REST_Controller
+{
 
     public function __construct()
     {
@@ -14,9 +15,9 @@ class User_Group_Api extends REST_Controller {
         // load model
         $this->load->model('Global_Model');
         $this->load->model('User_Group_Model');
-        
+        $this->load->model('User_Privilege_Model');
+
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
-        
     }
 
     // provinsi
@@ -24,14 +25,14 @@ class User_Group_Api extends REST_Controller {
     {
         $response = $this->User_Group_Model->get()->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -47,14 +48,14 @@ class User_Group_Api extends REST_Controller {
         $response['total_rows'] = $this->User_Group_Model->count();
         $response['last_update'] = $this->User_Group_Model->last_update()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -66,13 +67,12 @@ class User_Group_Api extends REST_Controller {
 
     public function show_by_id_get()
     {
-        
     }
-    
+
     public function create_post()
-    {   
+    {
         try {
-            
+
             $_POST = json_decode($this->input->raw_input_stream, true);
 
             $user_group_name = $this->input->post('user_group_name');
@@ -83,17 +83,20 @@ class User_Group_Api extends REST_Controller {
                 'user_group_name' => $user_group_name,
                 'user_group_desc' => $user_group_desc,
                 'created_by' => $created_by
-            ); 
+            );
 
             $save = $this->User_Group_Model->insert($post);
-            if($save){
+            if ($save) {
+                // add role / privilege
+                $this->User_Privilege_Model->generateRole($this->db->insert_id());
+
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil ditambahkan',
                     'data' => $save
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -101,7 +104,6 @@ class User_Group_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([
@@ -110,13 +112,12 @@ class User_Group_Api extends REST_Controller {
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
-        
     }
 
     public function update_put($id)
-    {   
+    {
         try {
-            
+
             $_POST = json_decode($this->input->raw_input_stream, true);
 
             $user_group_name = $this->input->post('user_group_name');
@@ -132,14 +133,14 @@ class User_Group_Api extends REST_Controller {
             );
 
             $update = $this->User_Group_Model->update($post, $id);
-            if($update){
+            if ($update) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil diperbaharui',
                     'data' => $update
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -147,7 +148,6 @@ class User_Group_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([
@@ -161,24 +161,24 @@ class User_Group_Api extends REST_Controller {
     public function destroy_delete($id)
     {
         try {
-            
+
             $deleted_at =  $this->time_server;
             $deleted_by = $this->token->data->username;
 
             $post = array(
                 'deleted_at' => $deleted_at,
                 'deleted_by' => $deleted_by
-            ); 
+            );
 
             $delete = $this->User_Group_Model->delete($id);
-            if($delete){
+            if ($delete) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil dihapus',
                     'data' => $delete
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -186,7 +186,6 @@ class User_Group_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([
