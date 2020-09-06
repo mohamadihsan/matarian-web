@@ -36,7 +36,7 @@ class Register_Api extends REST_Controller
 
         $this->email_host = 'smtp.gmail.com';
         $this->email_username = 'apps.matarian@gmail.com';
-        $this->email_password = 'CahayaMatahari01';
+        $this->email_password = 'Cahaya01';
         $this->email_smtpsecure = 'tls';
         $this->email_port = 587;
     }

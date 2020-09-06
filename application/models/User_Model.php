@@ -1,74 +1,101 @@
-<?php 
+<?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class User_Model extends CI_Model {
+class User_Model extends CI_Model
+{
 
     // get
     public function get($param = null)
     {
-        
+
         $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user_group.user_group_name, tbl_user.sales_ar');
         $this->db->join('tbl_user_group', 'tbl_user_group.id = tbl_user.id_user_group', 'left');
         $this->db->where('tbl_user.deleted_at', null);
-        $this->db->order_by('tbl_user.username', 'asc');
+        $this->db->order_by('tbl_user.fullname', 'asc');
         if ($param != null) {
             $this->db->where('tbl_user.id', $param);
         }
-        
+
         return $this->db->get('tbl_user');
     }
 
     // get sales
-    public function get_user_sales($sales_ar)
+    public function get_user_sales($sales_ar, $user_id = null)
     {
-        if ($sales_ar != null) {
-            $this->db->where('tbl_user.sales_ar', $sales_ar);
+        if ($sales_ar == null) {
+            $this->db->select('tbl_user.id, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.sales_ar');
+            $this->db->where('tbl_user.deleted_at', null);
+            $this->db->where('tbl_user.id_user_group', 2);
+            $this->db->where('tbl_user.activation_status', true);
+            $this->db->order_by('tbl_user.fullname', 'asc');
+
+            return $this->db->get('tbl_user')->result();
+        } else {
+            $query = $this->db->query("SELECT
+                tbl_user.id,
+                tbl_user.fullname,
+                tbl_user.sales_ar
+            FROM
+                tbl_user
+            WHERE
+                tbl_user.sales_ar = '$sales_ar'
+            UNION
+            SELECT
+                tbl_user.id,
+                tbl_user.fullname,
+                tbl_user.sales_ar
+            FROM
+                tbl_user_access_to
+            LEFT JOIN tbl_user ON
+                tbl_user.id = tbl_user_access_to.access_to
+            WHERE
+                tbl_user_access_to.user_id = $user_id
+            ORDER BY
+                fullname ASC");
+
+            return $query->result();
         }
-        $this->db->select('tbl_user.id, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.sales_ar');
-        $this->db->where('tbl_user.deleted_at', null);
-        $this->db->where('tbl_user.id_user_group', 2);
-        $this->db->where('tbl_user.activation_status', true);
-        $this->db->order_by('tbl_user.fullname', 'asc');
-        
-        return $this->db->get('tbl_user');
+        // if ($sales_ar != null) {
+        //     $this->db->where('tbl_user.sales_ar', $sales_ar);
+        // }
     }
 
     // num row
     public function count($param = null)
     {
-        
+
         $this->db->where('deleted_at', null);
         if ($param != null) {
             $this->db->where('id', $param);
         }
-        
+
         return $this->db->get('tbl_user')->num_rows();
     }
 
     // num row
     public function count_reject($param = null)
     {
-        
+
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', false);
         if ($param != null) {
             $this->db->where('id', $param);
         }
-        
+
         return $this->db->get('tbl_user')->num_rows();
     }
 
     // num row
     public function count_verify($param = null)
     {
-        
+
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', true);
         if ($param != null) {
             $this->db->where('id', $param);
         }
-        
+
         return $this->db->get('tbl_user')->num_rows();
     }
 
@@ -83,20 +110,20 @@ class User_Model extends CI_Model {
         if ($param != null) {
             $this->db->where('tbl_user.id', $param);
         }
-        
+
         return $this->db->get('tbl_user');
     }
 
     // count pending activation
     public function count_pending_activation($param = null)
     {
-        
+
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', null);
         if ($param != null) {
             $this->db->where('id', $param);
         }
-        
+
         return $this->db->get('tbl_user')->num_rows();
     }
 
@@ -119,7 +146,7 @@ class User_Model extends CI_Model {
         if ($page > 0 && $per_page > 0) {
             $this->db->limit($per_page, ($page * $per_page - $per_page));
         }
-        
+
         return $this->db->get('tbl_user');
     }
 
@@ -135,7 +162,7 @@ class User_Model extends CI_Model {
     {
         $this->db->where('id', $id);
         $this->db->update('tbl_user', $data);
-        return ($this->db->affected_rows() > 0) ? TRUE : FALSE; 
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
     }
 
     // delete
@@ -143,7 +170,7 @@ class User_Model extends CI_Model {
     {
         $this->db->where('id', $id);
         $this->db->delete('tbl_user');
-        return ($this->db->affected_rows() > 0) ? TRUE : FALSE; 
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
     }
 
     // check username
@@ -152,9 +179,8 @@ class User_Model extends CI_Model {
         $this->db->where('username', $username);
         $this->db->where('deleted_at', NULL);
         $this->db->select('id, username, password, fullname, nomor_telepon, email, id_user_group, sales_ar, activation_status');
-        
+
         return $this->db->get('tbl_user');
-        
     }
 
     // check by email
@@ -163,9 +189,8 @@ class User_Model extends CI_Model {
         $this->db->where('email', $email);
         $this->db->where('deleted_at', NULL);
         $this->db->select('id, username, fullname, nomor_telepon, email');
-        
+
         return $this->db->get('tbl_user');
-        
     }
 
     // check by id
@@ -174,9 +199,8 @@ class User_Model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->where('deleted_at', NULL);
         $this->db->select('id, username, fullname, nomor_telepon, email');
-        
+
         return $this->db->get('tbl_user');
-        
     }
 
     // profile
@@ -203,9 +227,55 @@ class User_Model extends CI_Model {
         tbl_user.deleted_at, 
         tbl_user.deleted_by");
         $this->db->join('tbl_user_group', 'tbl_user_group.id = tbl_user.id_user_group', 'left');
-        
+
         return $this->db->get('tbl_user');
-        
+    }
+
+    // get 
+    public function getAccessData($id_user_group = null, $user_id = null)
+    {
+        // set static
+        $id_user_group = 2;
+        $where = '';
+        if ($id_user_group != null) {
+            $where = " AND tbl_user.id_user_group = $id_user_group ";
+        }
+
+        $query = "SELECT * FROM 
+        (SELECT tbl_user.id, tbl_user.fullname, tbl_user.sales_ar, tbl_user.profile_picture, tbl_user_group.user_group_name FROM tbl_user LEFT JOIN tbl_user_group ON tbl_user_group.id = tbl_user.id_user_group  WHERE tbl_user.deleted_at IS NULL AND tbl_user.id != $user_id $where ORDER BY tbl_user.fullname ASC) a LEFT JOIN 
+        (SELECT tbl_user_access_to.user_id, tbl_user_access_to.access_to FROM tbl_user_access_to WHERE tbl_user_access_to.user_id = $user_id) b ON a.id = b.access_to";
+
+        return $this->db->query($query)->result();
+    }
+
+    public function setPermission($data, $id)
+    {
+        // reset   
+        $this->db->where('user_id', $id);
+        $this->db->delete('tbl_user_access_to');
+
+        $access_data = $data['access_data'];
+        $created_at = $data['created_at'];
+        $created_by = $data['created_by'];
+        if (count($access_data) > 0) {
+            for ($i = 0; $i < count($access_data); $i++) {
+                $obj = array(
+                    'user_id' => $id,
+                    'access_to' => $access_data[$i],
+                    'created_at' => $created_at,
+                    'created_by' => $created_by,
+                );
+                $this->db->insert('tbl_user_access_to', $obj);
+            }
+        }
+
+        return true;
+    }
+
+    public function getPermission($user_id = null)
+    {
+        $this->db->where('user_id', $user_id);
+        return $this->db->get('tbl_user_access_to');
     }
 }
 

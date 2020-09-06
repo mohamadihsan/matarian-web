@@ -6,44 +6,62 @@
         <!-- DataTable with Hover -->
         <div class="col-lg-12">
             <div class="card mb-4">
+
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-dark"><?= $title ?></h6>
                     <div class="flex-row-reverse">
                         <!-- <button class="btn btn-sm btn-outline-info" data-toggle="tooltip" data-placement="top" title="Enable Fixed Header" id="enable" style="display: none"><i class="fas fa-bars"></i></button>
                         <button class="btn btn-sm btn-outline-danger" data-toggle="tooltip" data-placement="top" title="Disable Fixed Header"  id="disable"><i class="fas fa-ban"></i></button> -->
-                        <div id="actionCreate"></div>
-                    </div>
-                </div>
-                <div class="table-responsive p-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label class="label-katapanda-sm" for="userGroup">Filter :</label>
-                            <select name="userGroup" id="userGroup" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose User Group"></select>
+                        <!-- <div id="actionCreate"></div> -->
+                        <div class="btn-group">
+                            <button class="btn btn-outline-light collapsed" type="button" data-toggle="collapse" data-target="#accessData" aria-expanded="false" aria-controls="accessData"><i class="fas fa-network-wired"></i> Access Data</button>
+                            <button class="btn btn-outline-light collapsed" type="button" data-toggle="collapse" data-target="#other" aria-expanded="false" aria-controls="other"><i class="fas fa-globe"></i> Other</button>
                         </div>
                     </div>
-                    <table class="table table-striped table-bordered nowrap table-md text-katapanda-sm" id="katapandaTable" width="100%">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Menu</th>
-                                <th>Create</th>
-                                <th>Read/View</th>
-                                <th>Update</th>
-                                <th>Delete</th>
-                                <th>Approve</th>
-                                <th>Reject</th>
-                                <th>Print</th>
-                                <th>Export Excel</th>
-                                <th>Export CSV</th>
-                                <th>Export PDF</th>
-                            </tr>
-                        </thead>
-                        <tfoot class="">
-                            <tr>
-                                <th colspan="11"><span id="btnSubmit"></span></th>
-                            </tr>
-                        </tfoot>
-                    </table>
                 </div>
+
+                <div id="accordion">
+                    <div class="row p-3">
+                        <div class="col-md-12">
+                            <div class="collapse show" id="accessData" data-parent="#accordion">
+                                <div class="table-responsive">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label class="label-katapanda-sm" for="user">Give permission for user :</label>
+                                            <select name="user" id="user" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose User"></select>
+                                        </div>
+                                        <div class="form-group col-md-8"><br />
+                                            <label class="label-katapanda-sm pt-3" for="user"> to access data :</label>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped table-bordered nowrap table-md text-katapanda-sm" id="katapandaTable" width="100%">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Fullname</th>
+                                                <th>Group</th>
+                                                <th>Sales AR</th>
+                                                <th>Mark</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot class="">
+                                            <tr>
+                                                <th colspan="4"><span id="btnSubmit"></span></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="collapse" id="other" data-parent="#accordion">
+                                <div class="card card-body">
+                                    No Content!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -71,7 +89,7 @@
         let buttonAction = ['copyHtml5']; // add button to copy data
 
         // store to select
-        getUserGroup();
+        getUser();
 
         // button action by user role 
         actionCreate ? $('#actionCreate').html('') : '';
@@ -160,7 +178,7 @@
             .on('error.dt', function(e) {})
             .DataTable({
                 ajax: { // array
-                    url: `<?= site_url() ?>api/web/v1/user-privilege/show`,
+                    url: `<?= site_url() ?>api/web/v1/user-access-data`,
                     headers: {
                         Authorization: 'Bearer <?= $token ?>'
                     },
@@ -168,13 +186,13 @@
                     type: "POST",
                     data: function() {
                         return JSON.stringify({
-                            id_user_group: $('#userGroup').val()
+                            id_user: $('#user').val()
                         });
                     },
                     complete: function(res) {
                         // console.log(res);
                         if (res.status == 200) {
-                            let btn = `<button class="btn bg-custom btn-sm btn-block">SAVE PRIVILEGE</button>`;
+                            let btn = `<button class="btn bg-custom btn-sm btn-block">SAVE PERMISSION</button>`;
                             $('#btnSubmit').html(btn);
                         } else {
                             $('#btnSubmit').html('');
@@ -182,123 +200,36 @@
                     }
                 },
                 columns: [{
-                        data: "menu_name",
+                        data: "fullname",
                         className: "align-middle",
-                        responsivePriority: 1
+                        width: "60%",
+                        responsivePriority: 1,
+                        render: function(data, type, row, meta) {
+                            check = `${data.toUpperCase()}`;
+                            return check;
+                        }
                     },
                     {
-                        data: "create_access",
-                        className: "align-middle text-center",
+                        data: "user_group_name",
+                        className: "align-middle",
+                        responsivePriority: 2,
+                        width: "20%",
                         render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "13") {
-                                // check = `<input type="checkbox" name="create_access[${row.id}]" ${data === "1" ? 'checked' : ''}>`;
-                                check = `<input type="checkbox" name="create_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
+                            check = `${data.toUpperCase()}`;
                             return check;
                         }
-                    }, {
-                        data: "read_access",
+                    },
+                    {
+                        data: "sales_ar",
                         className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "6" || row.id == "7" || row.id == "8" || row.id == "9" || row.id == "10" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20" || row.id == "21") {
-                                check = `<input type="checkbox" name="read_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else if (row.id == "1" || row.id == "2" || row.id == "3" || row.id == "4" || row.id == "5") {
-                                check = '<i class="fa fa-check text-primary"></i>';
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "update_access",
+                        width: "10%",
+                    },
+                    {
+                        data: "access_to",
                         className: "align-middle text-center",
+                        width: "10%",
                         render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12") {
-                                check = `<input type="checkbox" name="update_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else if (row.id == "21") {
-                                check = '<i class="fa fa-check text-primary"></i>';
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "delete_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12") {
-                                check = `<input type="checkbox" name="delete_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "approve_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "9") {
-                                check = `<input type="checkbox" name="approve_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "reject_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "9") {
-                                check = `<input type="checkbox" name="reject_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "print_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20") {
-                                check = `<input type="checkbox" name="print_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "export_to_excel_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20") {
-                                check = `<input type="checkbox" name="export_to_excel_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "export_to_csv_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20") {
-                                check = `<input type="checkbox" name="export_to_csv_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
-                            return check;
-                        }
-                    }, {
-                        data: "export_to_pdf_access",
-                        className: "align-middle text-center",
-                        render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20") {
-                                check = `<input type="checkbox" name="export_to_pdf_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
-                            } else {
-                                check = '';
-                            }
+                            check = `<input type="checkbox" name="access_data" value="${row.id}" ${data != null ? 'checked' : ''}>`;
                             return check;
                         }
                     },
@@ -353,58 +284,13 @@
 
         // submit  
         $('#btnSubmit').click(function() {
-            let create_access = [];
-            $("input:checkbox[name=create_access]:checked").each(function() {
-                create_access.push($(this).val());
+            let access_data = [];
+            $("input:checkbox[name=access_data]:checked").each(function() {
+                access_data.push($(this).val());
             });
-            let read_access = [];
-            $("input:checkbox[name=read_access]:checked").each(function() {
-                read_access.push($(this).val());
-            });
-            let update_access = [];
-            $("input:checkbox[name=update_access]:checked").each(function() {
-                update_access.push($(this).val());
-            });
-            let delete_access = [];
-            $("input:checkbox[name=delete_access]:checked").each(function() {
-                delete_access.push($(this).val());
-            });
-            let approve_access = [];
-            $("input:checkbox[name=approve_access]:checked").each(function() {
-                approve_access.push($(this).val());
-            });
-            let reject_access = [];
-            $("input:checkbox[name=reject_access]:checked").each(function() {
-                reject_access.push($(this).val());
-            });
-            let print_access = [];
-            $("input:checkbox[name=print_access]:checked").each(function() {
-                print_access.push($(this).val());
-            });
-            let export_to_excel_access = [];
-            $("input:checkbox[name=export_to_excel_access]:checked").each(function() {
-                export_to_excel_access.push($(this).val());
-            });
-            let export_to_csv_access = [];
-            $("input:checkbox[name=export_to_csv_access]:checked").each(function() {
-                export_to_csv_access.push($(this).val());
-            });
-            let export_to_pdf_access = [];
-            $("input:checkbox[name=export_to_pdf_access]:checked").each(function() {
-                export_to_pdf_access.push($(this).val());
-            });
-            let userGroup = $('#userGroup').val();
+            let user = $('#user').val();
             let post = {
-                'create_access': create_access,
-                'read_access': read_access,
-                'update_access': update_access,
-                'delete_access': delete_access,
-                'approve_access': approve_access,
-                'reject_access': reject_access,
-                'print_access': print_access,
-                'export_to_excel_access': export_to_excel_access,
-                'export_to_csv_access': export_to_csv_access,
-                'export_to_pdf_access': export_to_pdf_access
+                'access_data': access_data,
             }
 
             // console.log(post);
@@ -414,7 +300,7 @@
             // send request 
             axios({
                     method: `PUT`,
-                    url: `<?= site_url() ?>api/web/v1/user-privilege/${userGroup}`,
+                    url: `<?= site_url() ?>api/web/v1/user-access-data/${user}`,
                     headers: {
                         Authorization: 'Bearer <?= $token ?>'
                     },
@@ -494,7 +380,6 @@
                             notification(action, 'success', message);
                             $('#formKatapanda').modal('hide');
                             $('#katapandaTable').DataTable().ajax.reload();
-                            sumUserGroup();
                         } else {
                             // show message
                             notification(action, 'error', message);
@@ -520,7 +405,7 @@
             }
         })
 
-        $('#userGroup').change(function() {
+        $('#user').change(function() {
             table.clear().draw();
             table.ajax.reload();
         })
@@ -544,21 +429,36 @@
         $('#form').trigger("reset");
     }
 
-    function getUserGroup() {
+    function getUser() {
         axios({
                 method: `GET`,
-                url: `<?= site_url() ?>api/web/v1/user-group`,
+                url: `<?= site_url() ?>api/web/v1/user`,
                 headers: {
                     Authorization: 'Bearer <?= $token ?>'
                 }
             })
             .then(function(response) {
+                $('#user').empty();
+                let selected = '';
                 response.data.data.forEach(element => {
-                    // add option
-                    $('#userGroup').append('<option value="' + element.id + '">' + element.user_group_name + '</option>')
+                    if (<?= $id_user_group ?> == 1) {
+                        // add option
+                        $('#user').append('<option value="' + element.id + '">' + element.fullname.toUpperCase() + '</option><option data-divider="true"></option>')
+                        if (<?= $user_id ?> == element.id) {
+                            selected = element.id;
+                        }
+                    } else {
+                        if (<?= $user_id ?> == element.id) {
+                            // add option
+                            $('#user').append('<option value="' + element.id + '">' + element.fullname.toUpperCase() + '</option><option data-divider="true"></option>')
+                            selected = element.id;
+                        }
+                    }
+
                 });
                 // refresh selectpicker
                 $('.selectpicker').selectpicker('refresh');
+                $('#user').val(selected).trigger('change');
 
             })
             .catch(function(error) {

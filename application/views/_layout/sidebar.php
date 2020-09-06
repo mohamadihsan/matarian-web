@@ -7,16 +7,67 @@
         <div class="sidebar-brand-text mx-3"><?= SITE_NAME ?></div>
     </a>
     <hr class="sidebar-divider my-0">
-    <li class="nav-item active">
+
+    <?php
+    $listMenu = isset($_SESSION['sidebarMenu']) ? $_SESSION['sidebarMenu'] : '';
+    $menu = '';
+    if ($listMenu != '') {
+        foreach ($listMenu as $key => $value) {
+            if ($value->parent_name == null || $value->parent_name == 0) {
+
+                if ($value->id == 6) {
+                    $menu .= '<hr class="sidebar-divider">
+                            <div class="sidebar-heading">
+                                Management
+                            </div>';
+                } else if ($value->id == 14) {
+                    $menu .= '<hr class="sidebar-divider">
+                            <div class="sidebar-heading">
+                                Report
+                            </div>';
+                } else if ($value->id == 21) {
+                    $menu .= '<hr class="sidebar-divider">';
+                }
+
+                if ($value->site_url == '#') {
+                    $menu .= '<li class="nav-item">
+                                <a class="nav-link collapsed" href="' . base_url($value->site_url) . '" data-toggle="collapse" data-target="#drop' . $value->id . '" aria-expanded="true" aria-controls="drop' . $value->id . '">
+                                    <i class="' . $value->icon_code . '"></i>
+                                    <span>' . $value->menu_name . '</span>
+                                </a>
+                                <div id="drop' . $value->id . '" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner rounded">';
+
+                    $v = $value->id;
+                    $child = array_filter($listMenu, function ($e) use ($v) {
+                        return $e->parent_name == $v;
+                    });
+
+                    foreach ($child as $keyChild => $valueChild) {
+                        $menu .= '<a class="collapse-item" href="' . base_url($valueChild->site_url) . '"><i class="' . $valueChild->icon_code . '"></i> ' . $valueChild->menu_name . '</a>';
+                    }
+
+                    $menu .= '</div></div></li>';
+                } else {
+                    $menu .= '<li class="nav-item">
+                                    <a class="nav-link" href="' . base_url($value->site_url) . '">
+                                        <i class="' . $value->icon_code . '"></i>
+                                        <span>' . $value->menu_name . '</span></a>
+                                </li>';
+                }
+            }
+        }
+    }
+
+    echo $menu;
+    ?>
+
+    <!-- <li class="nav-item active">
         <a class="nav-link" href="<?= base_url('dashboard'); ?>">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
-    <hr class="sidebar-divider">
 
-    <div class="sidebar-heading">
-        Management
-    </div>
 
     <?php if (isset($_SESSION['auth']['group'])) {
         if ($_SESSION['auth']['group'] == 1) { ?>
@@ -80,7 +131,7 @@
             <i class="fas fa-fw fa-book"></i>
             <span>Report</span>
         </a>
-    </li>
+    </li> -->
     <hr class="sidebar-divider">
     <div class="version"><?= VERSION_APP ?></div>
     <!-- <div class="version" id="version-katapanda"></div> -->

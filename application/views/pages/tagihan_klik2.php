@@ -35,7 +35,7 @@
                             <div class="form-group col-md-3">
                                 <label class="label-katapanda-sm" for="salesAR">By Sales</label>
                                 <select name="salesAR" id="salesAR" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose">
-                                    <option value="" selected>All Sales</option>
+                                    <option value="" selected id="sansHidden">All Sales</option>
                                     <option data-divider="true"></option>
                                 </select>
                             </div>
@@ -212,7 +212,6 @@
                     });
                 },
                 complete: function(res) {
-                    console.log(res.statusCode);
                     if (res.statusCode != false) {
                         let number = res.responseJSON.total !== null ? formatNumber(res.responseJSON.total) : "";
                         $('#totalFaktur').text(number);
@@ -323,12 +322,24 @@
                 }
             })
             .then(function(response) {
+                let selected = '';
                 response.data.data.forEach(element => {
                     // add option
                     $('#salesAR').append('<option value="' + element.sales_ar + '">' + element.sales_ar + ' - ' + element.fullname + '</option>')
+                    if (element.sales_ar == '<?= $sales_ar ?>') {
+                        selected = element.sales_ar;
+                        $('#sansHidden').css('display', 'none');
+                    }
+
                 });
                 // refresh selectpicker
                 $('.selectpicker').selectpicker('refresh');
+                if (selected != '') {
+                    $('#salesAR').val(selected).trigger('change');
+                }
+                if ('<?= $sales_ar ?>' == '' || '<?= $sales_ar ?>' == NULL) {
+                    $('#sansHidden').css('display', '');
+                }
             })
             .catch(function(error) {
                 // console.log(error);

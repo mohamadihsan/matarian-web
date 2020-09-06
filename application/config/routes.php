@@ -176,6 +176,8 @@ $route['api/web/v1/user/(:num)']['PUT']             = 'api/web/v1/User_Api/updat
 $route['api/web/v1/user/(:num)']['DELETE']          = 'api/web/v1/User_Api/destroy/$1';
 $route['api/web/v1/user/(:num)/approve']['PUT']     = 'api/web/v1/User_Api/approve/$1';
 $route['api/web/v1/user/(:num)/reject']['PUT']      = 'api/web/v1/User_Api/reject/$1';
+$route['api/web/v1/user-access-data']['POST']       = 'api/web/v1/User_Api/user_access_data';
+$route['api/web/v1/user-access-data/(:num)']['PUT'] = 'api/web/v1/User_Api/set_permission/$1';
 
 
 // ACCARDAT

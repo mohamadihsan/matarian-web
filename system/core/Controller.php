@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -35,7 +36,7 @@
  * @since	Version 1.0.0
  * @filesource
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Application Controller Class
@@ -49,7 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/user_guide/general/controllers.html
  */
-class CI_Controller {
+class CI_Controller
+{
 
 	/**
 	 * Reference to the CI singleton
@@ -72,19 +74,25 @@ class CI_Controller {
 	 */
 	public function __construct()
 	{
-		self::$instance =& $this;
+		self::$instance = &$this;
 
 		// Assign all the class objects that were instantiated by the
 		// bootstrap file (CodeIgniter.php) to local class variables
 		// so that CI can run as one big super object.
-		foreach (is_loaded() as $var => $class)
-		{
-			$this->$var =& load_class($class);
+		foreach (is_loaded() as $var => $class) {
+			$this->$var = &load_class($class);
 		}
 
-		$this->load =& load_class('Loader', 'core');
+		$this->load = &load_class('Loader', 'core');
 		$this->load->initialize();
 		log_message('info', 'Controller Class Initialized');
+
+		if (!isset($_SESSION['sidebarMenu'])) {
+			$sidebarMenu = $this->sidebarMenu(isset($_SESSION['auth']['group']) ? $_SESSION['auth']['group'] : null);
+			if ($sidebarMenu != null) {
+				$_SESSION['sidebarMenu'] = $sidebarMenu->result();
+			}
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -100,4 +108,28 @@ class CI_Controller {
 		return self::$instance;
 	}
 
+	public function sidebarMenu($user_group_id = null)
+	{
+		$this->instance = &get_instance();
+		$this->instance->load->database();
+		$query = "SELECT
+			tm.id,
+			tm.menu_name,
+			tm.site_url,
+			tm.icon_code,
+			tm.parent_name,
+			tm.`order` 
+		FROM
+			tbl_user_privilege tup
+		LEFT JOIN tbl_menu tm ON tm.id = tup.id_menu 
+		WHERE
+			tm.show_in = 'sidebar'
+			and tm.parent_name is not null
+			and tup.read_access = 1
+			and tup.id_user_group = $user_group_id
+		order by
+			tm.`order`, tm.parent_name asc";
+
+		return $this->instance->db->query($query);
+	}
 }

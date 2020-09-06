@@ -1,20 +1,22 @@
-<?php 
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class ACCARDAT extends CI_Controller {
+class ACCARDAT extends CI_Controller
+{
 
     public function __construct()
     {
         parent::__construct();
         // check token
         $this->token = AUTHORIZATION::validateTokenOnPage();
-        
+
         // check privilege
         $url = $this->uri->segment(1);
-        $url .= $this->uri->segment(2) != '' ? '/'.$this->uri->segment(2) : '';
-        $url .= $this->uri->segment(3) != '' ? '/'.$this->uri->segment(3) : '';
+        $url .= $this->uri->segment(2) != '' ? '/' . $this->uri->segment(2) : '';
+        $url .= $this->uri->segment(3) != '' ? '/' . $this->uri->segment(3) : '';
         $id_user_group = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->id_user_group;
-        $check = $this->User_Privilege->check_privilege($id_user_group ,$url);
+        $this->sales_ar = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->sales_ar;
+        $check = $this->User_Privilege->check_privilege($id_user_group, $url);
         if (!empty($check)) {
             if ($check->read_access == true) {
                 $this->create_access = $check->create_access;
@@ -27,11 +29,11 @@ class ACCARDAT extends CI_Controller {
                 $this->export_to_excel_access = $check->export_to_excel_access;
                 $this->export_to_csv_access = $check->export_to_csv_access;
                 $this->export_to_pdf_access = $check->export_to_pdf_access;
-            } else {    
-                redirect('dashboard','refresh');
+            } else {
+                redirect('dashboard', 'refresh');
             }
         } else {
-            redirect('dashboard','refresh');
+            redirect('dashboard', 'refresh');
         }
     }
 
@@ -39,6 +41,7 @@ class ACCARDAT extends CI_Controller {
     {
         $data['title'] = 'Tagihan';
         $data['token'] = $this->token;
+        $data['sales_ar'] = $this->sales_ar;
 
         // role
         $data['action_create'] = $this->create_access;
@@ -105,7 +108,6 @@ class ACCARDAT extends CI_Controller {
         $this->load->view('pages/tagihan_klik4', $data);
         $this->load->view('_layout/footer');
     }
-
 }
 
 /* End of file ACCARDAT.php */
