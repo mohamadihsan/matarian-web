@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class NPWP_Api extends REST_Controller {
+class NPWP_Api extends REST_Controller
+{
 
     public function __construct()
     {
@@ -14,9 +15,8 @@ class NPWP_Api extends REST_Controller {
         // load model
         $this->load->model('NPWP_Model');
         $this->load->model('Global_Model');
-        
+
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
-        
     }
 
     // provinsi
@@ -24,14 +24,14 @@ class NPWP_Api extends REST_Controller {
     {
         $response = $this->NPWP_Model->get()->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -47,14 +47,14 @@ class NPWP_Api extends REST_Controller {
         $response['total_rows'] = $this->NPWP_Model->count();
         $response['last_update'] = $this->NPWP_Model->last_update()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -66,16 +66,16 @@ class NPWP_Api extends REST_Controller {
 
     public function show_by_id_get()
     {
-        
     }
-    
+
     public function create_post()
-    {   
+    {
         try {
-            
+
             $_POST = json_decode($this->input->raw_input_stream, true);
 
             $npwp = $this->input->post('npwp');
+            $new_npwp = $this->input->post('new_npwp');
             $nama = $this->input->post('nama');
             $nik = $this->input->post('nik');
             $provinsi = $this->input->post('provinsi');
@@ -92,6 +92,7 @@ class NPWP_Api extends REST_Controller {
 
             $post = array(
                 'npwp' => $npwp,
+                'new_npwp' => $new_npwp,
                 'nama' => $nama,
                 'nik' => $nik,
                 'provinsi' => $provinsi,
@@ -104,18 +105,19 @@ class NPWP_Api extends REST_Controller {
                 'nomor' => $nomor,
                 'rt' => $rt,
                 'rw' => $rw,
-                'created_by' => $created_by
-            ); 
+                'created_by' => $created_by,
+                'created_by_user' => 'unit'
+            );
 
             $save = $this->NPWP_Model->insert($post);
-            if($save){
+            if ($save) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil ditambahkan',
                     'data' => $save
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -123,7 +125,6 @@ class NPWP_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([
@@ -135,12 +136,13 @@ class NPWP_Api extends REST_Controller {
     }
 
     public function update_put($id)
-    {   
+    {
         try {
-            
+
             $_POST = json_decode($this->input->raw_input_stream, true);
 
             $npwp = $this->input->post('npwp');
+            $new_npwp = $this->input->post('new_npwp');
             $nama = $this->input->post('nama');
             $nik = $this->input->post('nik');
             $provinsi = $this->input->post('provinsi');
@@ -158,6 +160,7 @@ class NPWP_Api extends REST_Controller {
 
             $post = array(
                 'npwp' => $npwp,
+                'new_npwp' => $new_npwp,
                 'nama' => $nama,
                 'nik' => $nik,
                 'provinsi' => $provinsi,
@@ -171,18 +174,19 @@ class NPWP_Api extends REST_Controller {
                 'rt' => $rt,
                 'rw' => $rw,
                 'updated_at' => $updated_at,
-                'updated_by' => $updated_by
-            ); 
+                'updated_by' => $updated_by,
+                'updated_by_user' => 'unit'
+            );
 
             $update = $this->NPWP_Model->update($post, $id);
-            if($update){
+            if ($update) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil diperbaharui',
                     'data' => $update
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -190,7 +194,6 @@ class NPWP_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([
@@ -204,24 +207,24 @@ class NPWP_Api extends REST_Controller {
     public function destroy_delete($id)
     {
         try {
-            
+
             $deleted_at =  $this->time_server;
             $deleted_by = $this->token->data->username;
 
             $post = array(
                 'deleted_at' => $deleted_at,
                 'deleted_by' => $deleted_by
-            ); 
+            );
 
             $delete = $this->NPWP_Model->delete($id);
-            if($delete){
+            if ($delete) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil dihapus',
                     'data' => $delete
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response failed
                 $this->response([
                     'status' => false,
@@ -229,7 +232,6 @@ class NPWP_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-            
         } catch (\Throwable $th) {
             // response failed
             $this->response([

@@ -63,6 +63,7 @@ class Register_Api extends REST_Controller
                 'password' => password_hash($password, PASSWORD_BCRYPT),
                 'email' => $email,
                 'id_user_group' => 0,
+                'web_group' => 'unit',
                 'created_by' => $created_by
             );
 

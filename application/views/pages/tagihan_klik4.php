@@ -39,7 +39,7 @@
                                 <th class="text-right" id="dpp" style="border-bottom: 0; border-top: 0">></th>
                             </tr>
                             <tr>
-                                <th colspan="5" class="text-right" style="border-bottom: 0; border-top: 0">PPn (10%)</th>
+                                <th colspan="5" class="text-right" style="border-bottom: 0; border-top: 0"><span id="labelPPN"></span></th>
                                 <th class="text-right" id="ppn" style="border-bottom: 0; border-top: 0">></th>
                             </tr>
                             <tr>
@@ -95,8 +95,8 @@
         actionExportToPdf ? buttonAction.push({ // button export to pdf
             text: 'PDF',
             extend: 'pdfHtml5',
-            orientation: 'portrait', //landscape
-            pageSize: 'A4', //A3 , A5 , A6 , legal , letter
+            orientation: 'landscape', //landscape
+            pageSize: 'A5', //A3 , A5 , A6 , legal , letter
             exportOptions: {
                 columns: ':visible',
                 search: 'applied',
@@ -116,6 +116,7 @@
                 doc.content[1].table.widths = ['5%', '15%', '35%', '10%', '15%', '20%'];
                 var rowCount = doc.content[1].table.body.length;
                 for (i = 1; i < rowCount; i++) {
+                    doc.content[1].table.body[i][0]["text"] = i;
                     doc.content[1].table.body[i][0].alignment = 'center';
                     doc.content[1].table.body[i][1].alignment = 'left';
                     doc.content[1].table.body[i][2].alignment = 'left';
@@ -312,6 +313,12 @@
                         $('#dataNota').html(`<p class="font-weight-bolder text-dark text-left mb-0"><span class="font-weight-lighter text-muted">No. Nota</span> : ${row.nomor_nota}</p>
                 <p class="font-weight-bolder text-dark text-left mb-3"><span class="font-weight-lighter text-muted">Tgl. Nota</span> : ${moment(row.tanggal_nota, 'YYYY-MM-DD').format('DD-MM-YYYY')}</p>`)
 
+                        if (moment(row.tanggal_nota, 'YYYY-MM-DD').format('YYYY-MM-DD') < "2022-04-01") {
+                            $('#labelPPN').text("PPn (10%)")
+                        } else {
+                            $('#labelPPN').text("PPn (11%)")
+                        }
+                        
                         let number = data !== null ? formatNumber(data) : 0;
                         return number;
                     }

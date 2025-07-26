@@ -45,7 +45,7 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan($user, $id)
     {
         $this->db->where('tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         // $this->db->where('sales_ar IS NOT NULL');
         $this->db->order_by('tanggal_ar', 'asc');
 
@@ -63,12 +63,12 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan_klik2($from_date, $end_date, $sales_ar, $kode_ar)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
         }
-        if ($sales_ar != '') {
-            $this->db->where('tbl_accardat.sales_ar', $sales_ar);
+        if ($sales_ar != null) {
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
@@ -84,16 +84,52 @@ class ACCARDAT_Model extends CI_Model
         return $this->db->get('tbl_accardat');
     }
 
+    // data tagihan klik 2 for expord custom PDF
+    public function get_tagihan_klik2_custom_export($from_date, $end_date, $sales_ar, $kode_ar)
+    {
+        $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
+        if ($from_date != '' && $end_date != '') {
+            $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
+        }
+        if ($sales_ar != null) {
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
+        }
+        if ($kode_ar != '') {
+            $this->db->where('tbl_accardat.kode_ar', $kode_ar);
+        }
+        // $this->db->where('tbl_accardat.sales_ar IS NOT NULL');
+        $this->db->join('tbl_accdlgn', 'tbl_accdlgn.kode_langganan = tbl_accardat.kode_ar', 'left');
+        $this->db->select("tbl_accdlgn.kode_langganan,
+            tbl_accdlgn.nama_toko as nama_langganan,
+            tbl_accdlgn.telepon as nomor_telepon,
+            tbl_accardat.nomor_nota,
+            tbl_accardat.tanggal_ar as tanggal_nota,
+            tbl_accardat.ref_ar as jenis_nota,
+            tbl_accardat.sales_ar,
+            tbl_accardat.waktu_ar,
+            null as 'hari',
+            (COALESCE(tbl_accardat.sisa_ar, 0) * -1) as jumlah,
+            null as 'catatan'");
+
+        $this->db->order_by('tbl_accardat.kode_ar', 'asc');
+        $this->db->order_by('tbl_accardat.tanggal_ar', 'asc');
+
+        // $this->db->limit(200);
+
+        return $this->db->get('tbl_accardat');
+    }
+
     // data tagihan klik 2 pagination
     public function get_tagihan_klik2_pagination($from_date, $end_date, $sales_ar, $kode_ar, $search, $page, $per_page)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
         }
         if ($sales_ar != '') {
-            $this->db->where('tbl_accardat.sales_ar', $sales_ar);
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
@@ -123,12 +159,12 @@ class ACCARDAT_Model extends CI_Model
     public function count_get_tagihan_klik2_pagination($from_date, $end_date, $sales_ar, $kode_ar, $search)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
         }
         if ($sales_ar != '') {
-            $this->db->where('tbl_accardat.sales_ar', $sales_ar);
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
@@ -155,14 +191,39 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan_klik3($from_date, $end_date, $kode_ar, $sales_ar)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
         }
-        if ($sales_ar != 'ALL') {
+        // ini diupdate pada tanggal 26 Maret 2021
+        if ($sales_ar != 'KATAPANDA' && $sales_ar != '' && $sales_ar != 'ALL' && $sales_ar != 'custom') {
+            $this->db->where('tbl_accardat.sales_ar', $sales_ar);
+        }
+        // $this->db->where('tbl_accardat.sales_ar IS NOT NULL');
+        $this->db->join('tbl_accdlgn', 'tbl_accdlgn.kode_langganan = tbl_accardat.kode_ar', 'left');
+        $this->db->select('tbl_accdlgn.nama_toko as nama_langganan, tbl_accdlgn.kota as alamat_langganan, tbl_accardat.tanggal_ar as tanggal_nota, tbl_accardat.nomor_nota, CAST((tbl_accardat.jumlah_ar/1.1*-1) AS UNSIGNED) as dpp, CAST((tbl_accardat.jumlah_ar/1.1*-1)*0.1 AS UNSIGNED) as ppn, (jumlah_ar*-1) as nilai_nota');
+        $this->db->order_by('tbl_accardat.tanggal_ar', 'asc');
+        $this->db->order_by('SUBSTRING(tbl_accardat.nomor_nota, 3,6)', FALSE, 'asc');
+
+        return $this->db->get('tbl_accardat');
+    }
+
+    // data tagihan klik 3 for expord custom PDF
+    public function get_tagihan_klik3_custom_export($kode_ar, $sales_ar, $from_date, $end_date)
+    {
+        $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
+        if ($from_date != '' && $end_date != '') {
+            $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
+        }
+        if ($kode_ar != '') {
+            $this->db->where('tbl_accardat.kode_ar', $kode_ar);
+        }
+        // ini diupdate pada tanggal 26 Maret 2021
+        if ($sales_ar != 'KATAPANDA' && $sales_ar != '' && $sales_ar != 'ALL' && $sales_ar != 'custom') {
             $this->db->where('tbl_accardat.sales_ar', $sales_ar);
         }
         // $this->db->where('tbl_accardat.sales_ar IS NOT NULL');
@@ -175,12 +236,15 @@ class ACCARDAT_Model extends CI_Model
     }
 
     // data tagihan klik 3
-    public function get_tagihan_klik3_pagination($from_date, $end_date, $kode_ar, $search, $page, $per_page)
+    public function get_tagihan_klik3_pagination($from_date, $end_date, $sales_ar, $kode_ar, $search, $page, $per_page)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
+        }
+        if ($sales_ar != '') {
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
@@ -203,12 +267,15 @@ class ACCARDAT_Model extends CI_Model
     }
 
     // count data tagihan klik 3
-    public function count_get_tagihan_klik3_pagination($from_date, $end_date, $kode_ar, $search)
+    public function count_get_tagihan_klik3_pagination($from_date, $end_date, $sales_ar, $kode_ar, $search)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($from_date != '' && $end_date != '') {
             $this->db->where("tbl_accardat.tanggal_ar BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
+        }
+        if ($sales_ar != '') {
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
         }
         if ($kode_ar != '') {
             $this->db->where('tbl_accardat.kode_ar', $kode_ar);
@@ -231,7 +298,7 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan_klik4($nomor_nota)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($nomor_nota != '') {
             $this->db->where('tbl_accarbon.nomor_bon', $nomor_nota);
         }
@@ -249,7 +316,7 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan_klik4_pagination($nomor_nota, $search, $page, $per_page)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($nomor_nota != '') {
             $this->db->where('tbl_accarbon.nomor_bon', $nomor_nota);
         }
@@ -273,7 +340,7 @@ class ACCARDAT_Model extends CI_Model
     public function count_get_tagihan_klik4_pagination($nomor_nota, $search)
     {
         $this->db->where('tbl_accardat.tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         if ($nomor_nota != '') {
             $this->db->where('tbl_accarbon.nomor_bon', $nomor_nota);
         }
@@ -294,7 +361,7 @@ class ACCARDAT_Model extends CI_Model
     public function get_tagihan_user($sales_ar)
     {
         $this->db->where('tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         // $this->db->where('sales_ar IS NOT NULL');
         $this->db->select('id, kode_ar, sales_ar');
 
@@ -324,7 +391,7 @@ class ACCARDAT_Model extends CI_Model
     public function tagihan_pagination($page, $per_page, $sales_ar, $search)
     {
         $this->db->where('tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         $this->db->order_by('tanggal_ar', 'asc');
         if ($page > 0 && $per_page > 0) {
             $this->db->limit($per_page, ($page * $per_page - $per_page));
@@ -347,7 +414,7 @@ class ACCARDAT_Model extends CI_Model
     public function count_tagihan($user = null, $id = null)
     {
         $this->db->where('tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
 
         if ($user != null) {
             $this->db->where('sales_ar', $user);
@@ -363,7 +430,7 @@ class ACCARDAT_Model extends CI_Model
     public function total_tagihan($user = null, $id = null)
     {
         $this->db->where('tanggal_lunas', '1980/01/01');
-        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH'));
+        $this->db->where_in('tbl_accardat.ref_ar', array('JUAL', 'BAYAR', 'LEBIH', 'N/D', 'N/K'));
         $this->db->select_sum('sisa_ar');
 
         if ($user != null) {

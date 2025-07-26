@@ -132,7 +132,8 @@ class KTP_Api extends REST_Controller {
                 'agama' => strtoupper($agama),
                 'pekerjaan' => strtoupper($pekerjaan),
                 'kewarganegaraan' => strtoupper($kewarganegaraan),
-                'created_by' => $created_by
+                'created_by' => $created_by,
+                'created_by_user' => 'unit'
             ); 
 
             $save = $this->KTP_Model->insert($post);
@@ -209,7 +210,8 @@ class KTP_Api extends REST_Controller {
                 'pekerjaan' => strtoupper($pekerjaan),
                 'kewarganegaraan' => strtoupper($kewarganegaraan),
                 'updated_at' => $updated_at,
-                'updated_by' => $updated_by
+                'updated_by' => $updated_by,
+                'updated_by_user' => 'unit'
             ); 
 
             $update = $this->KTP_Model->update($post, $id);

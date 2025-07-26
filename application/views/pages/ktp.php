@@ -168,7 +168,7 @@
                             <select name="agama" id="agama" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose">
                                 <option value="islam">Islam</option>
                                 <option value="kristen">Kristen</option>
-                                <option value="protestan">Protestan</option>
+                                <option value="khatolik">Khatolik</option>
                                 <option value="budha">Budha</option>
                                 <option value="hindu">Hindu</option>
                             </select>
@@ -334,7 +334,25 @@
 
         // button action by user role 
         actionCreate ? $('#actionCreate').html('<button class="btn btn-sm btn-outline-primary" id="newData"><i class="fas fa-plus"></i> New Data</button>') : '';
-        actionExportToExcel ? buttonAction.push('excelHtml5') : ''; // button export to excel 
+        // actionExportToExcel ? buttonAction.push('excelHtml5') : ''; // button export to excel 
+        actionExportToExcel ? buttonAction.push(
+            {
+            extend: "excel",
+            excelStyles: {
+                cells: "sA",
+                style: {
+
+                    // NumFmt String
+                    numFmt: "#,##0.0000;(#,##0.0000)",
+                    alignment: {
+                        vertical: "center",
+                        horizontal: "left",
+                        wrapText: false,
+                    }
+                }
+            }
+        }
+        ) : ''; // button export to excel 
         actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
         actionExportToPdf ? buttonAction.push({ // button export to pdf
             text: 'PDF',
@@ -437,7 +455,11 @@
             columns: [{
                     data: "nik",
                     className: "align-middle",
-                    responsivePriority: 1
+                    responsivePriority: 1,
+                    render: function(data, type, row, meta) {
+                        return `'${data.toString()}`
+                        // return `${data.toString()}`
+                    }
                 },
                 {
                     data: "nama",
@@ -631,6 +653,16 @@
                     <dd class="col-sm-3 text-uppercase" style="font-size: 13px">${item.kewarganegaraan !== null ? item.kewarganegaraan : '-' }</dd>
                 
                     <dt class="col-sm-5 text-uppercase" style="font-size: 13px">Kode Pos : ${item.kodepos !== null ? item.kodepos : '-' }</dt>
+
+                    <dt class="col-sm-12" style="font-size: 13px"><hr/></dt>
+
+                    <dt class="col-sm-4" style="font-size: 13px">Created</dt>
+                    <dd class="col-sm-3" style="font-size: 13px"><strong>BY : </strong> ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user  : '-' } </dd>
+                    <dd class="col-sm-5" style="font-size: 13px"><strong>DATE : </strong> ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
+                    
+                    <dt class="col-sm-4" style="font-size: 13px">Update</dt>
+                    <dd class="col-sm-3" style="font-size: 13px"><strong>BY : </strong> ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' }</dd>
+                    <dd class="col-sm-5" style="font-size: 13px"><strong>DATE : </strong> ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
                 </dl>`;
                 $('#dataLengkap').html(template);
             });
@@ -1120,7 +1152,7 @@
 
         await axios({
                 method: `POST`,
-                url: `<?= site_url() ?>api/wilayah`,
+                url: `<?= site_url() ?>api/wilayah-v2`,
                 headers: {
                     Authorization: 'Bearer <?= $token ?>'
                 },
@@ -1132,18 +1164,55 @@
                 }
             })
             .then(function(response) {
-                if (response.data.data.length > 0) {
-                    response.data.data.forEach(element => {
-                        // console.log('prov id: '+element.id_provinsi);
-                        getProvinsi(element.id_provinsi);
-                        getKabupaten(element.id_provinsi, element.id_kabupaten);
-                        getKecamatan(element.id_kabupaten, element.id_kecamatan);
-                        getKelurahan(element.id_kecamatan, element.id_kelurahan);
-                        getKodePos(element.id_kelurahan, kodePos);
+                // console.log(response);
+                let provinsi = response.data.data.provinsi;
+                let kabupaten = response.data.data.kabupaten;
+                let kecamatan = response.data.data.kecamatan;
+                let kelurahan = response.data.data.kelurahan;
+                
+                if (provinsi.length > 0) {
 
-                    });
+                    if (provinsi.length > 0) {
+                        provinsi = provinsi[0].id
+                    } else {
+                        provinsi = null
+                    }
+                    if (kabupaten.length > 0) {
+                        kabupaten = kabupaten[0].id
+                    } else {
+                        kabupaten = null
+                    }
+                    if (kecamatan.length > 0) {
+                        kecamatan = kecamatan[0].id
+                    } else {
+                        kecamatan = null
+                    }
+                    if (kelurahan.length > 0) {
+                        kelurahan = kelurahan[0].id
+                    } else {
+                        kelurahan = null
+                    }
+
+                    // console.log('pro : '+ provinsi+ ' kab : '+kabupaten+ ' kec : '+kecamatan+ ' kelurahan : '+kelurahan);
+
+                    getProvinsi(provinsi);
+                    getKabupaten(provinsi, kabupaten);
+                    getKecamatan(kabupaten, kecamatan);
+                    getKelurahan(kecamatan, kelurahan);
+                    getKodePos(kelurahan, kodePos);
+
+                    // response.data.data.forEach(element => {
+                    //     // console.log('prov id: '+element.id_provinsi);
+                    //     getProvinsi(element.id_provinsi);
+                    //     getKabupaten(element.id_provinsi, element.id_kabupaten);
+                    //     getKecamatan(element.id_kabupaten, element.id_kecamatan);
+                    //     getKelurahan(element.id_kecamatan, element.id_kelurahan);
+                    //     getKodePos(element.id_kelurahan, kodePos);
+
+                    // });
                 } else {
                     getProvinsi();
+                    alert('2134567')
                 }
 
             })
@@ -1187,7 +1256,8 @@
     async function getKabupaten(idProvinsi, id = null) {
         await axios({
                 method: `GET`,
-                url: id == null ? `<?= site_url() ?>api/kabupaten/${idProvinsi}` : `<?= site_url() ?>api/kabupaten/${idProvinsi}/${id}`,
+                // url: id == null ? `<?= site_url() ?>api/kabupaten/${idProvinsi}` : `<?= site_url() ?>api/kabupaten/${idProvinsi}/${id}`,
+                url: id == null ? `<?= site_url() ?>api/kabupaten/${idProvinsi}` : `<?= site_url() ?>api/kabupaten/${idProvinsi}`,
                 headers: {
                     Authorization: 'Bearer <?= $token ?>'
                 }
@@ -1214,7 +1284,8 @@
     async function getKecamatan(idKabupaten, id = null) {
         await axios({
                 method: `GET`,
-                url: id == null ? `<?= site_url() ?>api/kecamatan/${idKabupaten}` : `<?= site_url() ?>api/kecamatan/${idKabupaten}/${id}`,
+                // url: id == null ? `<?= site_url() ?>api/kecamatan/${idKabupaten}` : `<?= site_url() ?>api/kecamatan/${idKabupaten}/${id}`,
+                url: id == null ? `<?= site_url() ?>api/kecamatan/${idKabupaten}` : `<?= site_url() ?>api/kecamatan/${idKabupaten}`,
                 headers: {
                     Authorization: 'Bearer <?= $token ?>'
                 }
@@ -1241,7 +1312,8 @@
     async function getKelurahan(idKecamatan, id = null) {
         await axios({
                 method: `GET`,
-                url: id == null ? `<?= site_url() ?>api/kelurahan/${idKecamatan}` : `<?= site_url() ?>api/kelurahan/${idKecamatan}/${id}`,
+                // url: id == null ? `<?= site_url() ?>api/kelurahan/${idKecamatan}` : `<?= site_url() ?>api/kelurahan/${idKecamatan}/${id}`,
+                url: id == null ? `<?= site_url() ?>api/kelurahan/${idKecamatan}` : `<?= site_url() ?>api/kelurahan/${idKecamatan}`,
                 headers: {
                     Authorization: 'Bearer <?= $token ?>'
                 }

@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class Report_Api extends REST_Controller {
+class Report_Api extends REST_Controller
+{
 
     public function __construct()
     {
@@ -15,9 +16,12 @@ class Report_Api extends REST_Controller {
         $this->load->model('Global_Model');
         $this->load->model('ACCDBRG_Model');
         $this->load->model('ACCARBON_Model');
-        
+        $this->load->model('User_Model');
+
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         $this->sales_ar = $this->token->data->sales_ar;
+        $this->user_id = $this->token->data->user_id;
+        $this->id_user_group = $this->token->data->id_user_group;
 
         ini_set("memory_limit", "-1");
         set_time_limit(0);
@@ -32,8 +36,17 @@ class Report_Api extends REST_Controller {
             $from_date = $this->input->post('from_date');
             $end_date = $this->input->post('end_date');
             $sales_ar = $this->input->post('sales_ar');
-            if ($this->sales_ar != null) {
-                $sales_ar = $this->sales_ar;
+
+            if ($sales_ar == 'custom') {
+                $get = $this->User_Model->getPermissionSalesAR($this->user_id);
+                $sales_ar = [];
+                foreach ($get as $g) {
+                    $sales_ar[] = $g->sales_ar;
+                }
+
+                if (count($sales_ar) < 1) {
+                    $sales_ar = 'KATAPANDA';
+                }
             }
 
             // die('tes - '.$kode_langganan);
@@ -45,7 +58,7 @@ class Report_Api extends REST_Controller {
                 $total += $res->nilai_faktur;
             }
 
-            if($response){
+            if ($response) {
                 //response success with data
                 $this->response([
                     'status' => true,
@@ -54,7 +67,7 @@ class Report_Api extends REST_Controller {
                     'total' => $total,
                     'data' => $response
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response success not found data
                 $this->response([
                     'status' => false,
@@ -63,7 +76,6 @@ class Report_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-
         } catch (\Throwable $th) {
             // response success not found data
             $this->response([
@@ -72,7 +84,6 @@ class Report_Api extends REST_Controller {
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
-        
     }
 
     // all sales
@@ -85,9 +96,22 @@ class Report_Api extends REST_Controller {
             $end_date = $this->input->post('end_date');
             $kode_langganan = $this->input->post('kode_langganan');
             $kode_barang = $this->input->post('kode_barang');
+            $sales_ar = $this->sales_ar;
+
+            if ($this->id_user_group != 1 && $this->id_user_group != 4) {
+                $get = $this->User_Model->getPermissionSalesAR($this->user_id);
+                $sales_ar = [];
+                foreach ($get as $g) {
+                    $sales_ar[] = $g->sales_ar;
+                }
+
+                if (count($sales_ar) < 1) {
+                    $sales_ar = 'KATAPANDA';
+                }
+            }
 
             // die('tes - '.$kode_langganan);
-            $response = $this->ACCARBON_Model->get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $this->sales_ar)->result();
+            $response = $this->ACCARBON_Model->get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $sales_ar)->result();
             $total_rows = count($response);
 
             $total = 0;
@@ -95,7 +119,7 @@ class Report_Api extends REST_Controller {
                 $total += $res->total;
             }
 
-            if($response){
+            if ($response) {
                 //response success with data
                 $this->response([
                     'status' => true,
@@ -104,7 +128,7 @@ class Report_Api extends REST_Controller {
                     'total' => $total,
                     'data' => $response
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response success not found data
                 $this->response([
                     'status' => false,
@@ -114,7 +138,6 @@ class Report_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-
         } catch (\Throwable $th) {
             // response success not found data
             $this->response([
@@ -123,9 +146,8 @@ class Report_Api extends REST_Controller {
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
-        
     }
-    
+
     // all stock
     public function stock_post()
     {
@@ -138,7 +160,7 @@ class Report_Api extends REST_Controller {
             $response = $this->ACCDBRG_Model->get_stock($kode_barang)->result();
             $total_rows = count($response);
 
-            if($response){
+            if ($response) {
                 //response success with data
                 $this->response([
                     'status' => true,
@@ -146,7 +168,7 @@ class Report_Api extends REST_Controller {
                     'total_rows' => $total_rows,
                     'data' => $response
                 ], REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // response success not found data
                 $this->response([
                     'status' => false,
@@ -155,7 +177,6 @@ class Report_Api extends REST_Controller {
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-
         } catch (\Throwable $th) {
             // response success not found data
             $this->response([
@@ -164,7 +185,6 @@ class Report_Api extends REST_Controller {
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
-        
     }
 
     // count
@@ -173,14 +193,14 @@ class Report_Api extends REST_Controller {
         $response['total_rows'] = $this->ACCARBON_Model->count();
         $response['last_update'] = $this->ACCARBON_Model->last_update()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -189,12 +209,12 @@ class Report_Api extends REST_Controller {
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
-    
+
     // tagihan with pagination
     public function tagihan_pagination_get($page, $per_page)
     {
         $response = $this->ACCARBON_Model->tagihan_pagination($page, $per_page, $this->sales_ar)->result();
-        
+
         $total_rows = $this->ACCARBON_Model->count_tagihan();
         $total_page = 1;
         $last_page = 1;
@@ -206,11 +226,11 @@ class Report_Api extends REST_Controller {
         if ($page > 0 && $per_page > 0) {
             $total_page = ceil($total_rows / $per_page);
             $last_page = $total_page;
-        }else{    
+        } else {
             $per_page = $total_rows;
         }
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
@@ -219,15 +239,15 @@ class Report_Api extends REST_Controller {
                 'per_page' => $per_page,
                 'current_page' => $page,
                 'last_page' => $last_page,
-                'first_page_url' => $path.'/1/per-page/'.$per_page,
-                'last_page_url' => $path.'/'.$last_page.'/per-page/'.$per_page,
-                'next_page_url' => $page < $last_page ? $path.'/'.($page+1).'/per-page/'.$per_page : null,
-                'prev_page_url' => $page > 1 ? $path.'/'.($page-1).'/per-page/'.$per_page : null,
+                'first_page_url' => $path . '/1/per-page/' . $per_page,
+                'last_page_url' => $path . '/' . $last_page . '/per-page/' . $per_page,
+                'next_page_url' => $page < $last_page ? $path . '/' . ($page + 1) . '/per-page/' . $per_page : null,
+                'prev_page_url' => $page > 1 ? $path . '/' . ($page - 1) . '/per-page/' . $per_page : null,
                 'from' => ($page * $per_page) + 1 - $per_page,
                 'to' => ($page * $per_page),
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -246,7 +266,6 @@ class Report_Api extends REST_Controller {
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
-    
 }
 
 /* End of file Report_Api.php */

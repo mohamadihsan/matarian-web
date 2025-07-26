@@ -29,6 +29,7 @@ class User_Api extends REST_Controller
 
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         $this->user_id = $this->token->data->user_id;
+        $this->id_user_group = $this->token->data->id_user_group;
         $this->sales_ar = $this->token->data->sales_ar;
         $this->path = 'assets/upload/picture';
 
@@ -76,7 +77,7 @@ class User_Api extends REST_Controller
     // show user sales
     public function user_sales_get()
     {
-        $response = $this->User_Model->get_user_sales($this->sales_ar, $this->user_id);
+        $response = $this->User_Model->get_user_sales($this->sales_ar, $this->user_id, $this->id_user_group);
 
         if ($response) {
             //response success with data
@@ -225,6 +226,7 @@ class User_Api extends REST_Controller
             $password = $this->input->post('password');
             $email = $this->input->post('email');
             $id_user_group = $this->input->post('id_user_group');
+            $web_group = $this->input->post('web_group');
             $sales_ar = $this->input->post('sales_ar');
             $created_by = $this->token->data->username;
 
@@ -235,6 +237,7 @@ class User_Api extends REST_Controller
                 'password' => password_hash($password, PASSWORD_BCRYPT),
                 'email' => $email,
                 'id_user_group' => $id_user_group,
+                'web_group' => $web_group,
                 'sales_ar' => $sales_ar,
                 'created_by' => $created_by
             );
@@ -277,6 +280,7 @@ class User_Api extends REST_Controller
             $password = $this->input->post('password');
             $email = $this->input->post('email');
             $id_user_group = $this->input->post('id_user_group');
+            $web_group = $this->input->post('web_group');
             $sales_ar = $this->input->post('sales_ar');
             $updated_at =  $this->time_server;
             $updated_by = $this->token->data->username;
@@ -294,6 +298,9 @@ class User_Api extends REST_Controller
             }
             if ($id_user_group != '') {
                 $post['id_user_group'] = $id_user_group;
+            }
+            if ($web_group != '') {
+                $post['web_group'] = $web_group;
             }
             if ($sales_ar != '') {
                 $post['sales_ar'] = $sales_ar;
@@ -574,22 +581,16 @@ class User_Api extends REST_Controller
         }
     }
 
-    public function profile_update_put()
+    public function profile_update_post()
     {
         try {
-
-            $_POST = json_decode($this->input->raw_input_stream, true);
-
             $username = $this->input->post('username');
             $fullname = $this->input->post('fullname');
             $nomor_telepon = $this->input->post('nomor_telepon');
             $email = $this->input->post('email');
-            $profile_picture = $this->input->post('profile_picture');
+            $profile_picture = isset($_FILES['profile_picture']['name']) ? $_FILES['profile_picture']['name'] : '';
             $updated_at =  $this->time_server;
             $updated_by = $this->token->data->username;
-
-            print_r($profile_picture);
-            die();
 
             $post['fullname'] = $fullname;
             $post['nomor_telepon'] = $nomor_telepon;
@@ -598,6 +599,8 @@ class User_Api extends REST_Controller
                 $file_ext = explode(".", $profile_picture);
                 $ext = end($file_ext);
                 $post['profile_picture'] = $this->path . '/' . $this->user_id . '.' . $ext;
+                // unlink($this->path . '/' . $this->user_id . '.*');
+                array_map('unlink', glob($this->path . '/' . $this->user_id . '.*'));
             }
             $post['updated_at'] = $updated_at;
             $post['updated_by'] = $updated_by;
@@ -613,7 +616,7 @@ class User_Api extends REST_Controller
                         if ($profile_picture != '') {
                             // $this->_uploadImage();
                             $config['upload_path']          = $this->path;
-                            $config['allowed_types']        = 'gif|jpg|png';
+                            $config['allowed_types']        = 'gif|jpg|png|jpeg';
                             $config['file_name']            = $this->user_id;
                             $config['overwrite']            = true;
                             $config['max_size']             = 5024; // 1MB
@@ -625,6 +628,7 @@ class User_Api extends REST_Controller
                             if (!$this->upload->do_upload('profile_picture')) {
                                 $error = $this->upload->display_errors();
                             } else {
+                                $_SESSION['profile_picture'] = $post['profile_picture'];
                                 $this->upload->data();
                             }
                         }
@@ -763,7 +767,7 @@ class User_Api extends REST_Controller
         $_POST = json_decode($this->input->raw_input_stream, true);
 
         $id_user = $this->input->post('id_user');
-        if ($id_user == 1) {
+        if ($this->id_user_group == 1 || $this->id_user_group == 4) {
             $id_user_group = null;
         } else {
             $get = $this->User_Model->get($id_user)->result();

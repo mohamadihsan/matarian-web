@@ -14,8 +14,10 @@ class Report extends CI_Controller
         $url = $this->uri->segment(1);
         $url .= $this->uri->segment(2) != '' ? '/' . $this->uri->segment(2) : '';
         $url .= $this->uri->segment(3) != '' ? '/' . $this->uri->segment(3) : '';
-        $id_user_group = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->id_user_group;
-        $check = $this->User_Privilege->check_privilege($id_user_group, $url);
+        $this->id_user_group = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->id_user_group;
+        $this->sales_ar = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->sales_ar;
+        $this->user_id = JWT::decode($this->token, $this->config->item('jwt_key'), array('HS256'))->data->user_id;
+        $check = $this->User_Privilege->check_privilege($this->id_user_group, $url);
         if (!empty($check)) {
             if ($check->read_access == true) {
                 $this->create_access = $check->create_access;
@@ -40,6 +42,9 @@ class Report extends CI_Controller
     {
         $data['title'] = 'Sales Report';
         $data['token'] = $this->token;
+        $data['sales_ar'] = $this->sales_ar;
+        $data['user_id'] = $this->user_id;
+        $data['id_user_group'] = $this->id_user_group;
 
         // role
         $data['action_create'] = $this->create_access;

@@ -124,6 +124,13 @@
             }
         }) : '';
 
+        actionExportToPdf ? buttonAction.push({ // button export to pdf
+            text: 'PDF Custom',
+            action: function(e, dt, node, config) {
+                window.open(`${window.location.href}/export`, '_blank');
+            }
+        }) : '';
+
         // setting dataTables
         $.extend(true, $.fn.dataTable.defaults, {
             responsive: false,

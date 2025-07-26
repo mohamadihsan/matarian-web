@@ -1,0 +1,4 @@
+[13-Sep-2020 18:16:42 America/Chicago] PHP Fatal error:  Cannot declare class PDF, because the name is already in use in /home/matarian/public_html/unit/application/views/pages/tagihan_klik2_pdf.php on line 79
+[27-Sep-2020 18:51:26 America/Chicago] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 262144 bytes) in /home/matarian/public_html/unit/application/libraries/tcpdf/tcpdf.php on line 4056
+[27-Sep-2020 18:54:31 America/Chicago] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/matarian/public_html/unit/application/libraries/tcpdf/tcpdf.php on line 20612
+[27-Sep-2020 18:56:45 America/Chicago] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home/matarian/public_html/unit/application/libraries/tcpdf/tcpdf.php on line 20612

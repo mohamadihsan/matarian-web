@@ -168,6 +168,13 @@
                         <label class="label-katapanda-sm" for="email">Email <i class="text-danger">*</i></label>
                         <input type="email" name="email" class="form-control form-control-sm" id="email" placeholder="">
                     </div>
+                    <div class="form-group">
+                        <label class="label-katapanda-sm" for="webGroup">Web Group <i class="text-danger">*</i></label>
+                        <select name="webGroup" id="webGroup" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose">
+                            <option value="unit">Unit</option>
+                            <option value="unit sparepart">Unit & Sparepart</option>
+                        </select>
+                    </div>
                     <div class="form-group admin-hide">
                         <label class="label-katapanda-sm" for="userGroup">User Group <i class="text-danger">*</i></label>
                         <select name="userGroup" id="userGroup" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
@@ -462,6 +469,7 @@
                 $('#username').val(item.username);
                 $('#email').val(item.email);
                 $('#userGroup').val(item.id_user_group).trigger('change');
+                $('#webGroup').val(item.web_group).trigger('change');
                 $('#userGroupApprove').val(item.id_user_group).trigger('change');
                 $('#salesAR').val(item.sales_ar);
 
@@ -613,6 +621,7 @@
                             nomor_telepon: $('#nomorTelepon').val(),
                             email: $('#email').val(),
                             id_user_group: $('#userGroup').val(),
+                            web_group: $('#webGroup').val(),
                             sales_ar: $('#salesAR').val()
                         }
                     })

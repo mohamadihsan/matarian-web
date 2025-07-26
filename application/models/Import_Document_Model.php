@@ -18,19 +18,21 @@ class Import_Document_Model extends CI_Model {
         } 
 
         // transaction
-        $this->db->trans_begin();
-        if ($index == "0" || $index == null) {
+        // $this->db->trans_begin();
+        if ($index == 0 || $index == "0" || $index == null) {
             $this->db->truncate($table);
         }
         
         $this->db->insert_batch($table, $data);
+        return true;
 
-        if ($this->db->trans_status() === FALSE) {
-            $this->db->trans_rollback();
-            return false;
-        } else {
-            return $this->db->trans_commit();
-        } 
+        // if ($this->db->trans_status() === FALSE) {
+        //     // $this->db->trans_rollback();
+        //     return false;
+        // } else {
+        //     // $this->db->trans_commit();
+        //     return true;
+        // } 
     }
 
 }

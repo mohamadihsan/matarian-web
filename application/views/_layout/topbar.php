@@ -23,28 +23,30 @@
                         </form>
                     </div>
                 </li> -->
-                <?php if(isset($_SESSION['auth']['group'])) { if($_SESSION['auth']['group'] == 1) { ?>
+                <?php if (isset($_SESSION['auth']['group'])) {
+                    if ($_SESSION['auth']['group'] == 1) { ?>
 
-                <li class="nav-item dropdown no-arrow mx-1">
-                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-bell fa-fw"></i>
-                        <span class="badge badge-danger badge-counter" id="countPending"></span>
-                    </a>
-                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                        <h6 class="dropdown-header">
-                            Pending activation notice
-                        </h6>
-                        <div id="userPending"></div>
-                        <a class="dropdown-item text-center small text-gray-500" href="<?= site_url('users/activation') ?>">Show All</a>
-                    </div>
-                </li>
-                
-                <?php } } ?>
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <span class="badge badge-danger badge-counter" id="countPending"></span>
+                            </a>
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Pending activation notice
+                                </h6>
+                                <div id="userPending"></div>
+                                <a class="dropdown-item text-center small text-gray-500" href="<?= site_url('users/activation') ?>">Show All</a>
+                            </div>
+                        </li>
+
+                <?php }
+                } ?>
 
                 <div class="topbar-divider d-none d-sm-block"></div>
                 <li class="nav-item dropdown no-arrow">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="img-profile rounded-circle" src="<?= base_url('assets/'); ?>img/boy.png" style="max-width: 60px">
+                        <img class="img-profile rounded-circle" src="<?= base_url(isset($_SESSION['profile_picture']) ? $_SESSION['profile_picture'] . '?' . time() : 'assets/upload/picture/boy.png'); ?>" style="max-width: 60px">
                         <span class="ml-2 d-none d-lg-inline text-white small"><?= $_SESSION['auth']['fullname'] ?></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -72,25 +74,25 @@
         <!-- Topbar -->
 
 
-        <script>        
-        $(document).ready( function () {
-                
-            $('#userPending').empty();
+        <script>
+            $(document).ready(function() {
 
-            axios({
-                method: `GET`,
-                url: `<?= site_url() ?>api/web/v1/user/activation`,
-                headers: {
-                    Authorization: 'Bearer <?= $_SESSION['auth']['token'] ?>' 
-                }
-            })
-            .then(function (response) {
+                $('#userPending').empty();
 
-                let count = response.data.data.length;
-                $('#countPending').text(count);
+                axios({
+                        method: `GET`,
+                        url: `<?= site_url() ?>api/web/v1/user/activation`,
+                        headers: {
+                            Authorization: 'Bearer <?= $_SESSION['auth']['token'] ?>'
+                        }
+                    })
+                    .then(function(response) {
 
-                response.data.data.forEach(element => {
-                    let template = `<a href="<?= site_url('users/activation') ?>" class="dropdown-item d-flex align-items-center">
+                        let count = response.data.data.length;
+                        $('#countPending').text(count);
+
+                        response.data.data.forEach(element => {
+                            let template = `<a href="<?= site_url('users/activation') ?>" class="dropdown-item d-flex align-items-center">
                         <div class="mr-3">
                             <div class="icon-circle bg-secondary">
                                 <i class="fas fa-user-lock text-white"></i>
@@ -103,32 +105,32 @@
                         </div>
                     </a>`;
 
-                    $('#userPending').append(template)
-                });
-            })
-            .catch(function (error) {
-                // console.log(error.response.status);
-                if (error.response.status == "401") {
-                    tokenExpired(`<?= site_url() ?>`, `<?= $_SESSION['auth']['token'] ?>`)
-                }
-            })
+                            $('#userPending').append(template)
+                        });
+                    })
+                    .catch(function(error) {
+                        // console.log(error.response.status);
+                        if (error.response.status == "401") {
+                            tokenExpired(`<?= site_url() ?>`, `<?= $_SESSION['auth']['token'] ?>`)
+                        }
+                    })
 
-            $('#logout').click(function() {
-                
-                axios({
-                    method: `POST`,
-                    url: `<?= site_url() ?>api/web/v1/logout`,
-                    headers: {
-                        Authorization: 'Bearer <?= $_SESSION['auth']['token'] ?>' 
-                    }
+                $('#logout').click(function() {
+
+                    axios({
+                            method: `POST`,
+                            url: `<?= site_url() ?>api/web/v1/logout`,
+                            headers: {
+                                Authorization: 'Bearer <?= $_SESSION['auth']['token'] ?>'
+                            }
+                        })
+                        .then(function(response) {
+                            window.location.replace('<?= site_url() ?>');
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })
                 })
-                .then(function (response) {
-                    window.location.replace('<?= site_url() ?>');
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
+
             })
-            
-        })
         </script>

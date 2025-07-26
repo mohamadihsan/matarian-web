@@ -7,7 +7,7 @@ class Login extends CI_Controller {
     {
         parent::__construct();
         $this->load->helper('cookie');
-        $this->load->library('encrypt');
+        $this->load->library('encryption');
         // validate token
         $this->token = AUTHORIZATION::validateTokenOnPage();
     }

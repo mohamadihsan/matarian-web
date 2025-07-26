@@ -208,6 +208,7 @@
                 contentType: "application/json",
                 type: "POST",
                 data: function() {
+                    console.log(moment($('#fromDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'));
                     return JSON.stringify({
                         from_date: moment($('#fromDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                         end_date: moment($('#endDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
@@ -216,7 +217,7 @@
                     });
                 },
                 complete: function(res) {
-                    console.log(res.statusCode);
+                    // console.log(res.statusCode);
                     if (res.statusCode != false) {
                         let number = res.responseJSON.total !== null ? formatNumber(res.responseJSON.total) : "";
                         $('#totalFaktur').text(number);

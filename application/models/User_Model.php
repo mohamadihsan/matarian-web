@@ -9,9 +9,10 @@ class User_Model extends CI_Model
     public function get($param = null)
     {
 
-        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user_group.user_group_name, tbl_user.sales_ar');
+        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user.web_group, tbl_user_group.user_group_name, tbl_user.sales_ar');
         $this->db->join('tbl_user_group', 'tbl_user_group.id = tbl_user.id_user_group', 'left');
         $this->db->where('tbl_user.deleted_at', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         $this->db->order_by('tbl_user.fullname', 'asc');
         if ($param != null) {
             $this->db->where('tbl_user.id', $param);
@@ -21,13 +22,14 @@ class User_Model extends CI_Model
     }
 
     // get sales
-    public function get_user_sales($sales_ar, $user_id = null)
+    public function get_user_sales($sales_ar, $user_id = null, $id_user_group = null)
     {
-        if ($sales_ar == null) {
+        if ($id_user_group == 1 || $id_user_group == 4) {
             $this->db->select('tbl_user.id, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.sales_ar');
             $this->db->where('tbl_user.deleted_at', null);
             $this->db->where('tbl_user.id_user_group', 2);
             $this->db->where('tbl_user.activation_status', true);
+            $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
             $this->db->order_by('tbl_user.fullname', 'asc');
 
             return $this->db->get('tbl_user')->result();
@@ -39,7 +41,7 @@ class User_Model extends CI_Model
             FROM
                 tbl_user
             WHERE
-                tbl_user.sales_ar = '$sales_ar'
+                tbl_user.id = $user_id
             UNION
             SELECT
                 tbl_user.id,
@@ -66,6 +68,7 @@ class User_Model extends CI_Model
     {
 
         $this->db->where('deleted_at', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         if ($param != null) {
             $this->db->where('id', $param);
         }
@@ -79,6 +82,7 @@ class User_Model extends CI_Model
 
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', false);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         if ($param != null) {
             $this->db->where('id', $param);
         }
@@ -92,6 +96,7 @@ class User_Model extends CI_Model
 
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', true);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         if ($param != null) {
             $this->db->where('id', $param);
         }
@@ -102,10 +107,11 @@ class User_Model extends CI_Model
     // get pending activation
     public function get_pending_activation($param = null)
     {
-        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user.created_at, tbl_user_group.user_group_name,');
+        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user.web_group, tbl_user.created_at, tbl_user_group.user_group_name,');
         $this->db->join('tbl_user_group', 'tbl_user_group.id = tbl_user.id_user_group', 'left');
         $this->db->where('tbl_user.deleted_at', null);
         $this->db->where('activation_status', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         $this->db->order_by('tbl_user.username', 'asc');
         if ($param != null) {
             $this->db->where('tbl_user.id', $param);
@@ -120,6 +126,7 @@ class User_Model extends CI_Model
 
         $this->db->where('deleted_at', null);
         $this->db->where('activation_status', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         if ($param != null) {
             $this->db->where('id', $param);
         }
@@ -132,6 +139,7 @@ class User_Model extends CI_Model
     {
         $this->db->select_max('created_at');
         $this->db->where('deleted_at', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
 
         return $this->db->get('tbl_user');
     }
@@ -139,9 +147,10 @@ class User_Model extends CI_Model
     // pagination
     public function pagination($page, $per_page)
     {
-        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user_group.user_group_name');
+        $this->db->select('tbl_user.id, tbl_user.username, tbl_user.fullname, tbl_user.nomor_telepon, tbl_user.email, tbl_user.activation_status, tbl_user.activation_at, tbl_user.id_user_group, tbl_user.web_group, tbl_user_group.user_group_name');
         $this->db->join('tbl_user_group', 'tbl_user_group.id = tbl_user.id_user_group', 'left');
         $this->db->where('tbl_user.deleted_at', null);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         $this->db->order_by('tbl_user.username', 'asc');
         if ($page > 0 && $per_page > 0) {
             $this->db->limit($per_page, ($page * $per_page - $per_page));
@@ -178,6 +187,7 @@ class User_Model extends CI_Model
     {
         $this->db->where('username', $username);
         $this->db->where('deleted_at', NULL);
+        $this->db->where_in('tbl_user.web_group', array('unit', 'unit sparepart'));
         $this->db->select('id, username, password, fullname, nomor_telepon, email, id_user_group, sales_ar, activation_status');
 
         return $this->db->get('tbl_user');
@@ -242,7 +252,7 @@ class User_Model extends CI_Model
         }
 
         $query = "SELECT * FROM 
-        (SELECT tbl_user.id, tbl_user.fullname, tbl_user.sales_ar, tbl_user.profile_picture, tbl_user_group.user_group_name FROM tbl_user LEFT JOIN tbl_user_group ON tbl_user_group.id = tbl_user.id_user_group  WHERE tbl_user.deleted_at IS NULL AND tbl_user.id != $user_id $where ORDER BY tbl_user.fullname ASC) a LEFT JOIN 
+        (SELECT tbl_user.id, tbl_user.fullname, tbl_user.sales_ar, tbl_user.profile_picture, tbl_user_group.user_group_name FROM tbl_user LEFT JOIN tbl_user_group ON tbl_user_group.id = tbl_user.id_user_group  WHERE tbl_user.deleted_at IS NULL AND tbl_user.web_group IN ('unit', 'unit sparepart') AND tbl_user.id != $user_id $where ORDER BY tbl_user.fullname ASC) a LEFT JOIN 
         (SELECT tbl_user_access_to.user_id, tbl_user_access_to.access_to FROM tbl_user_access_to WHERE tbl_user_access_to.user_id = $user_id) b ON a.id = b.access_to";
 
         return $this->db->query($query)->result();
@@ -276,6 +286,12 @@ class User_Model extends CI_Model
     {
         $this->db->where('user_id', $user_id);
         return $this->db->get('tbl_user_access_to');
+    }
+
+    public function getPermissionSalesAR($user_id = null)
+    {
+        $query = $this->db->query("SELECT tuat.access_to, tu.sales_ar FROM tbl_user_access_to tuat LEFT JOIN tbl_user tu ON tu.id = tuat.access_to WHERE tuat.user_id = $user_id");
+        return $query->result();
     }
 }
 

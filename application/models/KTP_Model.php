@@ -8,7 +8,21 @@ class KTP_Model extends CI_Model {
     public function get($param = null)
     {
         
-        $this->db->select('id, nik, nama, tempat_lahir, tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan');
+        $this->db->select("id, nik, nama, tempat_lahir, tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user");
+        $this->db->where('deleted_at', null);
+        $this->db->order_by('nama', 'asc');
+
+        if ($param != null) {
+            $this->db->where('id', $param);
+        }
+        
+        return $this->db->get('tbl_master_ktp');
+    }
+
+    public function get_mobile($param = null)
+    {
+        
+        $this->db->select("id, nik, nama, tempat_lahir, DATE_FORMAT(tgl_lahir, '%d-%m-%Y') as tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user");
         $this->db->where('deleted_at', null);
         $this->db->order_by('nama', 'asc');
 
@@ -43,7 +57,7 @@ class KTP_Model extends CI_Model {
     // pagination
     public function pagination($page, $per_page, $search = null)
     {
-        $this->db->select('id, nik, nama, tempat_lahir, tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan');
+        $this->db->select("id, nik, nama, tempat_lahir, DATE_FORMAT(tgl_lahir, '%d-%m-%Y') as tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user");
         if ($search != null) {
             $this->db->like('nik', $search);
             $this->db->or_like('nama', $search);
@@ -60,7 +74,7 @@ class KTP_Model extends CI_Model {
     // count pagination
     public function count_pagination($search = null)
     {
-        $this->db->select('id, nik, nama, tempat_lahir, tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan');
+        $this->db->select('id, nik, nama, tempat_lahir, tgl_lahir, alamat, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, jenis_kelamin, golongan_darah, status_perkawinan, agama, pekerjaan, kewarganegaraan, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
         if ($search != null) {
             $this->db->like('nik', $search);
             $this->db->or_like('nama', $search);

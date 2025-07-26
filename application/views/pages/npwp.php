@@ -65,6 +65,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th class="text-center text-nowrap">NPWP</th>
+                                <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -78,6 +79,7 @@
                         <tfoot class="">
                             <tr>
                                 <th class="text-center text-nowrap">NPWP</th>
+                                <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -112,14 +114,18 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="npwp">NPWP <i class="text-danger">*</i></label>
+                        <label class="label-katapanda-sm" for="npwp">NPWP <i class="text-danger"></i></label>
                         <input type="text" name="npwp" class="form-control form-control-sm" id="npwp" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label class="label-katapanda-sm" for="npwp">NPWP16/NITKU <i class="text-danger">*</i></label>
+                        <input type="text" name="new_npwp" class="form-control form-control-sm" id="new_npwp" placeholder="">
                     </div>
                     <div class="form-group">
                         <label class="label-katapanda-sm" for="nama">Nama <span class="text-danger">*</span></label>
                         <input type="text" name="nama" class="form-control form-control-sm" id="nama" placeholder="">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group d-none">
                         <label class="label-katapanda-sm" for="nik">NIK</label>
                         <input type="text" name="nik" class="form-control form-control-sm" id="nik" placeholder="">
                     </div>
@@ -291,7 +297,7 @@
                 doc.styles.tableFooter.fontSize = 7;
                 doc.styles.tableHeader.alignment = 'left';
                 doc.pageMargins = [20, 60, 20, 30];
-                doc.content[1].table.widths = ['10%', '20%', '20%', '13%', '10%', '10%', '12%', '5%', '0%'];
+                doc.content[1].table.widths = ['10%', '10%', '20%', '15%', '13%', '10%', '10%', '12%', '5%', '0%'];
                 var rowCount = doc.content[1].table.body.length;
                 for (i = 1; i < rowCount; i++) {
                     doc.content[1].table.body[i][0].alignment = 'left';
@@ -301,7 +307,8 @@
                     doc.content[1].table.body[i][4].alignment = 'left';
                     doc.content[1].table.body[i][5].alignment = 'left';
                     doc.content[1].table.body[i][6].alignment = 'left';
-                    doc.content[1].table.body[i][7].alignment = 'center';
+                    doc.content[1].table.body[i][7].alignment = 'left';
+                    doc.content[1].table.body[i][8].alignment = 'center';
                 }
                 doc['footer'] = (function(page, pages) {
                     return {
@@ -374,6 +381,11 @@
             },
             columns: [{
                     data: "npwp",
+                    className: "align-middle",
+                    responsivePriority: 1
+                },
+                {
+                    data: "new_npwp",
                     className: "align-middle",
                     responsivePriority: 1
                 },
@@ -476,6 +488,7 @@
 
                 // store data to input
                 $('#npwp').val(item.npwp);
+                $('#new_npwp').val(item.new_npwp);
                 $('#nik').val(item.nik);
                 $('#nama').val(item.nama);
                 $('#blok').val(item.blok);
@@ -494,24 +507,36 @@
                 $('#dataApproval').text(item.nama);
 
                 // store to detail
-                let alamat = item.alamat !== null ? item.alamat : '-';
-                let rt = item.rt !== null ? 'RT ' + item.rt : '-';
-                let rw = item.rw !== null ? 'RW ' + item.rw : '-';
-                let kelurahan = item.kelurahan !== null ? item.kelurahan : '-';
-                let kecamatan = item.kecamatan !== null ? item.kecamatan : '-';
-                let provinsi = item.provinsi !== null ? item.provinsi : '-';
-                let kabupaten = item.kabupaten !== null ? item.kabupaten : '-';
-                let kodepos = item.kodepos !== null ? item.kodepos : '-';
+                let alamat = item.alamat != null ? item.alamat : '-';
+                let rt = item.rt != null ? 'RT ' + item.rt : '-';
+                let rw = item.rw != null ? 'RW ' + item.rw : '-';
+                let blok = item.blok != null ? item.blok != '-' ? 'Blok ' + item.blok : '' : '';
+                let nomor = item.nomor != null ? item.nomor != '-' ? 'Nomor ' + item.nomor : '' : '';
+                let kelurahan = item.kelurahan != null ? item.kelurahan : '-';
+                let kecamatan = item.kecamatan != null ? item.kecamatan : '-';
+                let provinsi = item.provinsi != null ? item.provinsi : '-';
+                let kabupaten = item.kabupaten != null ? item.kabupaten : '-';
+                let kodepos = item.kodepos != null ? item.kodepos : '-';
+                let npwp = '';
+                if (item.npwp != null) {
+                    npwp = `${item.npwp.substring(0,2)}.${item.npwp.substring(2,5)}.${item.npwp.substring(5,8)}.${item.npwp.substring(8,9)}-${item.npwp.substring(9,12)}.${item.npwp.substring(12,15)}`
+                }
+                let new_npwp = item.new_npwp != null ? item.new_npwp : '-';
 
                 let template = `<div class="h6 text-center font-weight-bold mb-4">KEMENTRIAN KEUANGAN REPUBLIK INDONESIA <br/> DIREKTORAT JENDERAL PAJAK</div>
                 <dl class="row">
-                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-2">NPWP : ${item.npwp !== null ? item.npwp : '-' }</dt>
+                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-2">NPWP : ${item.npwp !== null ? npwp : '-' }</dt>
                     <dt class="col-sm-12 text-uppercase mb-2">${item.nama !== null ? item.nama : '-' }</dt>
-                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-4">NIK : ${item.nik !== null ? item.nik : '-' }</dt>
+                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-4">NPWP16/NITKU : ${item.new_npwp !== null ? item.new_npwp : '-' }</dt>
 
-                    <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px">${ alamat } ${ rt } ${ rw }</dd>
+                    <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px">${ alamat } ${ blok } ${ nomor } ${ rt } ${ rw }</dd>
                     <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kelurahan }  ${ kecamatan }</dd>
                     <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kabupaten }  ${ provinsi } ${kodepos}</dd>
+                </dl>
+                <hr/>
+                <dl class="row">
+                    <dd class="col-sm-12" style="font-size: 13px"><b>Created By / Time</b> : ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } / ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
+                    <dd class="col-sm-12" style="font-size: 13px"><b>Updated By / Time</b> : ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } / ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
                 </dl>`;
                 $('#dataLengkap').html(template);
             });
@@ -587,7 +612,7 @@
         // validate and request add new data and update existing data 
         let validator = $('#form').validate({
             rules: {
-                npwp: {
+                new_npwp: {
                     required: true,
                     minlength: 2
                 },
@@ -618,9 +643,9 @@
                 }
             },
             messages: {
-                npwp: {
-                    required: "Please enter NPWP",
-                    minlength: "Your NPWP must consist of at least 2 characters"
+                new_npwp: {
+                    required: "Please enter NPWP16",
+                    minlength: "Your NPWP16 must consist of at least 2 characters"
                 },
                 nama: {
                     required: "Please enter Nama",
@@ -649,6 +674,7 @@
                 }
             },
             submitHandler: function(form) {
+                // alert($('#npwp').val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''));
                 // start loading
                 loadingStart()
 
@@ -660,7 +686,8 @@
                             Authorization: 'Bearer <?= $token ?>'
                         },
                         data: {
-                            npwp: $('#npwp').val(),
+                            npwp: $('#npwp').val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''),
+                            new_npwp: $('#new_npwp').val(),
                             nama: $('#nama').val(),
                             nik: $('#nik').val(),
                             provinsi: $('#provinsi option:selected').text(),
@@ -865,6 +892,7 @@
         $('#tes').click(function() {
             let data = {
                 npwp: $('#npwp').val(),
+                new_npwp: $('#new_npwp').val(),
                 nama: $('#nama').val(),
                 nik: $('#nik').val(),
                 provinsi: $('#provinsi option:selected').text(),
@@ -968,6 +996,11 @@
             .then(function(response) {
                 if (response.data.data.length > 0) {
                     response.data.data.forEach(element => {
+
+                        getKabupaten(element.id_provinsi);
+                        getKecamatan(element.id_kabupaten);
+                        getKelurahan(element.id_kecamatan);
+
                         // console.log('prov id: '+element.id_provinsi);
                         getProvinsi(element.id_provinsi);
                         getKabupaten(element.id_provinsi, element.id_kabupaten);

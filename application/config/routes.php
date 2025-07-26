@@ -73,13 +73,17 @@ $route['users/rejected']            = 'User/index';
 $route['user-group']                = 'User_Group/index';
 $route['user-privilege']            = 'User_Privilege/index';
 $route['menu']                      = 'Menu/index';
-$route['langganan']                       = 'ACCDLGN/index';
-$route['accardat/tagihan/klik2']     = 'ACCARDAT/index';
-$route['accardat/tagihan/klik3/(:any)/(:any)/from/(:any)/to/(:any)']     = 'ACCARDAT/detail/$1/$2/$3/$4';
+$route['langganan']                 = 'ACCDLGN/index';
+$route['accardat/tagihan/klik2']    = 'ACCARDAT/index';
+$route['accardat/tagihan/klik3/(:any)/(:any)/from/(:any)/to/(:any)']        = 'ACCARDAT/detail/$1/$2/$3/$4';
 $route['accardat/tagihan/klik4/(:any)']     = 'ACCARDAT/nota/$1';
+$route['accardat/tagihan/klik2/(:any)/(:any)/(:any)/(:any)/export']         = 'ACCARDAT/export_pdf_klik2/$1/$2/$3/$4';
+$route['accardat/tagihan/klik3/(:any)/(:any)/from/(:any)/to/(:any)/export'] = 'ACCARDAT/export_pdf_klik3/$1/$2/$3/$4';
 $route['report/sales']              = 'Report/sales';
 $route['report/sales/barang-langganan']              = 'Report/by_barang_langganan';
 $route['report/stock']          = 'Report/stock';
+$route['news']          = 'News/index';
+$route['news/(:num)']   = 'News/detail/$1';
 
 //==================================== API ROUTES WEB =====================================
 
@@ -95,7 +99,7 @@ $route['api/web/v1/reset-password/confirm']['POST']         = 'api/web/v1/Regist
 
 // Profile
 $route['api/web/v1/profile']['GET']                         = 'api/web/v1/User_Api/profile';
-$route['api/web/v1/profile/update']['PUT']                  = 'api/web/v1/User_Api/profile_update';
+$route['api/web/v1/profile/update']['POST']                 = 'api/web/v1/User_Api/profile_update';
 $route['api/web/v1/profile/change-password']['PUT']         = 'api/web/v1/User_Api/profile_change_password';
 
 // Dashboard 
@@ -114,6 +118,7 @@ $route['api/web/v1/dashboard/best-seller/year/(:num)/month/(:num)/limit/(:num)']
 
 // Wilayah
 $route['api/wilayah']['POST']                   = 'api/Wilayah_Api/index';
+$route['api/wilayah-v2']['POST']                = 'api/Wilayah_Api/index_v2';
 $route['api/provinsi']['GET']                   = 'api/Wilayah_Api/provinsi';
 $route['api/provinsi']['POST']                  = 'api/Wilayah_Api/provinsi';
 $route['api/kabupaten/(:num)']['GET']           = 'api/Wilayah_Api/kabupaten/$1';
@@ -147,6 +152,13 @@ $route['api/web/v1/npwp/(:num)/reject']['GET']   = 'api/web/v1/NPWP_Api/reject/$
 
 // Import Document
 $route['api/web/v1/import-document']['POST']    = 'api/web/v1/Import_Document_Api/create';
+
+// News
+$route['api/web/v1/news']['GET']                = 'api/web/v1/News_Api/show';
+$route['api/web/v1/news/(:num)']['GET']         = 'api/web/v1/News_Api/show/$1';
+$route['api/web/v1/news']['POST']               = 'api/web/v1/News_Api/create';
+$route['api/web/v1/news/(:num)']['POST']        = 'api/web/v1/News_Api/update/$1';
+$route['api/web/v1/news/(:num)']['DELETE']      = 'api/web/v1/News_Api/destroy/$1';
 
 // User Group
 $route['api/web/v1/user-group']['GET']              = 'api/web/v1/User_Group_Api/show_all';
@@ -236,6 +248,10 @@ $route['api/mobile/v1/ktp/pagination/page/(:num)/per-page/(:num)']['POST']   = '
 // NPWP
 $route['api/mobile/v1/npwp/pagination/page/(:num)/per-page/(:num)']['GET']   = 'api/mobile/v1/NPWP_Api/pagination/$1/$2';
 $route['api/mobile/v1/npwp/pagination/page/(:num)/per-page/(:num)']['POST']   = 'api/mobile/v1/NPWP_Api/pagination/$1/$2';
+
+// NEWS
+$route['api/mobile/v1/news/pagination/page/(:num)/per-page/(:num)']['POST']   = 'api/mobile/v1/News_Api/pagination/$1/$2';
+
 
 // ACCDLGN
 $route['api/mobile/v1/accdlgn/pagination/page/(:num)/per-page/(:num)']['POST']          = 'api/mobile/v1/ACCDLGN_Api/show_all/$1/$2';

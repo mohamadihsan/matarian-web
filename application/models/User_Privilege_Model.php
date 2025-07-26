@@ -371,6 +371,14 @@ class User_Privilege_Model extends CI_Model
 
         return true;
     }
+
+    // delete
+    public function delete($id)
+    {
+        $this->db->where('id_user_group', $id);
+        $this->db->delete('tbl_user_privilege');
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE; 
+    }
 }
 
 /* End of file User_Privilege_Model.php */

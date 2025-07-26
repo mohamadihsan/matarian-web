@@ -56,6 +56,46 @@ class Wilayah_Api extends REST_Controller {
         
     }
 
+     // wilayah
+     public function index_v2_post()
+     {
+         try {
+             $_POST = json_decode($this->input->raw_input_stream, true);
+ 
+             $param = array(
+                 "provinsi" => $this->input->post('provinsi'),
+                 "kabupaten" => $this->input->post('kabupaten'),
+                 "kecamatan" => $this->input->post('kecamatan'),
+                 "kelurahan" => $this->input->post('kelurahan')
+             );
+             
+             $response = $this->Wilayah_Model->wilayah_v2($param);
+     
+             if($response){
+                 //response success with data
+                 $this->response([
+                     'status' => true,
+                     'message' => 'Data ditemukan',
+                     'data' => $response
+                 ], REST_Controller::HTTP_OK);
+             }else{
+                 // response success not found data
+                 $this->response([
+                     'status' => false,
+                     'message' => 'Data tidak ditemukan',
+                     'data' => []
+                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
+             }
+         } catch (\Throwable $th) {
+             $this->response([
+                 'status' => false,
+                 'message' => $th,
+                 'data' => []
+             ], REST_Controller::HTTP_PARTIAL_CONTENT);
+         }
+         
+     }
+
     // provinsi
     public function provinsi_get()
     {

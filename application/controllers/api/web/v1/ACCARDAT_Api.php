@@ -15,6 +15,7 @@ class ACCARDAT_Api extends REST_Controller
         // load model
         $this->load->model('Global_Model');
         $this->load->model('ACCARDAT_Model');
+        $this->load->model('User_Model');
 
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         $this->user = $this->token->data->user_id;
@@ -134,9 +135,19 @@ class ACCARDAT_Api extends REST_Controller
             $end_date = $this->input->post('end_date');
             $sales_ar = $this->input->post('sales_ar');
             $kode_ar = $this->input->post('kode_ar');
-            // if ($this->sales_ar != '') {
-            //     $sales_ar = $this->sales_ar;
-            // }
+
+            if ($sales_ar == 'custom') {
+                $get = $this->User_Model->getPermissionSalesAR($this->user);
+                $sales_ar = [];
+                foreach ($get as $g) {
+                    $sales_ar[] = $g->sales_ar;
+                }
+                array_push($sales_ar, $this->sales_ar);
+
+                if (count($sales_ar) < 1) {
+                    $sales_ar = 'KATAPANDA';
+                }
+            }
 
             // die($sales_ar);
             $response = $this->ACCARDAT_Model->get_tagihan_klik2($from_date, $end_date, $sales_ar, $kode_ar)->result();
@@ -421,14 +432,23 @@ class ACCARDAT_Api extends REST_Controller
             $response = $this->ACCARDAT_Model->get_tagihan_klik4($nomor_nota)->result();
             $total_rows = count($response);
 
-            $dpp = 0;
-            foreach ($response as $res) {
-                $dpp += $res->jumlah;
-            }
-            $ppn = $dpp * 0.1;
-            $total = $dpp + $ppn;
-
             if ($response) {
+                if (date("Y-m-d", strtotime($response[0]->tanggal_nota)) < date("Y-m-d", strtotime("2022-04-01"))) {
+                    $dpp = 0;
+                    foreach ($response as $res) {
+                        $dpp += $res->jumlah;
+                    }
+                    $ppn = $dpp * 0.1;
+                    $total = $dpp + $ppn;
+                } else {
+                    $total = 0;
+                    foreach ($response as $res) {
+                        $total += $res->jumlah;
+                    }
+                    $dpp = ceil($total / 1.11);
+                    $ppn = $dpp * 0.11;
+                }
+
                 //response success with data
                 $this->response([
                     'status' => true,

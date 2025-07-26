@@ -19,7 +19,7 @@
 
 <script>
     // init
-    $(function () {
+    $(function() {
         $('[data-toggle="tooltip"]').tooltip()
     })
 </script>

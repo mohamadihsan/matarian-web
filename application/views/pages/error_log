@@ -1,0 +1,40 @@
+[06-Sep-2020 05:56:47 America/Chicago] PHP Notice:  Undefined variable: title in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 9
+[06-Sep-2020 05:56:47 America/Chicago] PHP Notice:  Undefined variable: action_export_to_excel in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 76
+[06-Sep-2020 05:56:47 America/Chicago] PHP Notice:  Undefined variable: action_export_to_csv in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 77
+[06-Sep-2020 05:56:47 America/Chicago] PHP Notice:  Undefined variable: action_export_to_pdf in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 78
+[06-Sep-2020 05:56:47 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined function site_url() in /home/matarian/public_html/unit/application/views/pages/report_sales.php:192
+Stack trace:
+#0 {main}
+  thrown in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 192
+[17-Sep-2020 15:53:42 America/Chicago] PHP Notice:  Undefined variable: title in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 9
+[17-Sep-2020 15:53:42 America/Chicago] PHP Notice:  Undefined variable: action_export_to_excel in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 76
+[17-Sep-2020 15:53:42 America/Chicago] PHP Notice:  Undefined variable: action_export_to_csv in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 77
+[17-Sep-2020 15:53:42 America/Chicago] PHP Notice:  Undefined variable: action_export_to_pdf in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 78
+[17-Sep-2020 15:53:42 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined function site_url() in /home/matarian/public_html/unit/application/views/pages/report_sales.php:192
+Stack trace:
+#0 {main}
+  thrown in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 192
+[23-Sep-2020 09:45:14 America/Chicago] PHP Notice:  Undefined variable: title in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 9
+[23-Sep-2020 09:45:16 America/Chicago] PHP Notice:  Undefined variable: action_export_to_excel in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 76
+[23-Sep-2020 09:45:16 America/Chicago] PHP Notice:  Undefined variable: action_export_to_csv in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 77
+[23-Sep-2020 09:45:16 America/Chicago] PHP Notice:  Undefined variable: action_export_to_pdf in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 78
+[23-Sep-2020 09:45:16 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined function site_url() in /home/matarian/public_html/unit/application/views/pages/report_sales.php:192
+Stack trace:
+#0 {main}
+  thrown in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 192
+[28-Sep-2020 21:35:01 America/Chicago] PHP Notice:  Undefined variable: title in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 9
+[28-Sep-2020 21:35:01 America/Chicago] PHP Notice:  Undefined variable: action_export_to_excel in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 76
+[28-Sep-2020 21:35:01 America/Chicago] PHP Notice:  Undefined variable: action_export_to_csv in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 77
+[28-Sep-2020 21:35:01 America/Chicago] PHP Notice:  Undefined variable: action_export_to_pdf in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 78
+[28-Sep-2020 21:35:01 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined function site_url() in /home/matarian/public_html/unit/application/views/pages/report_sales.php:192
+Stack trace:
+#0 {main}
+  thrown in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 192
+[12-Oct-2020 07:46:53 America/Chicago] PHP Notice:  Undefined variable: title in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 9
+[12-Oct-2020 07:46:53 America/Chicago] PHP Notice:  Undefined variable: action_export_to_excel in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 76
+[12-Oct-2020 07:46:53 America/Chicago] PHP Notice:  Undefined variable: action_export_to_csv in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 77
+[12-Oct-2020 07:46:53 America/Chicago] PHP Notice:  Undefined variable: action_export_to_pdf in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 78
+[12-Oct-2020 07:46:53 America/Chicago] PHP Fatal error:  Uncaught Error: Call to undefined function site_url() in /home/matarian/public_html/unit/application/views/pages/report_sales.php:192
+Stack trace:
+#0 {main}
+  thrown in /home/matarian/public_html/unit/application/views/pages/report_sales.php on line 192

@@ -93,6 +93,13 @@ class CI_Controller
 				$_SESSION['sidebarMenu'] = $sidebarMenu->result();
 			}
 		}
+		if (!isset($_SESSION['profile_picture'])) {
+			$profile_picture = $this->profilePicture(isset($_SESSION['auth']['user_id']) ? $_SESSION['auth']['user_id'] : null);
+			if ($profile_picture != null) {
+				$data = $profile_picture->result();
+				$_SESSION['profile_picture'] = $data[0]->profile_picture;
+			}
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -127,8 +134,19 @@ class CI_Controller
 			and tm.parent_name is not null
 			and tup.read_access = 1
 			and tup.id_user_group = $user_group_id
+			and tm.id NOT IN (23,24,25,26,27)
 		order by
 			tm.`order`, tm.parent_name asc";
+
+		return $this->instance->db->query($query);
+	}
+
+
+	public function profilePicture($user_id = null)
+	{
+		$this->instance = &get_instance();
+		$this->instance->load->database();
+		$query = "SELECT tu.profile_picture FROM tbl_user tu WHERE tu.id = $user_id";
 
 		return $this->instance->db->query($query);
 	}

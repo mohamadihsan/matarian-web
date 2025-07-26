@@ -86,9 +86,10 @@ class User_Group_Api extends REST_Controller
             );
 
             $save = $this->User_Group_Model->insert($post);
+            $new_id = $save;
             if ($save) {
                 // add role / privilege
-                $this->User_Privilege_Model->generateRole($this->db->insert_id());
+                $this->User_Privilege_Model->generateRole($new_id);
 
                 //response success with data
                 $this->response([
@@ -172,6 +173,9 @@ class User_Group_Api extends REST_Controller
 
             $delete = $this->User_Group_Model->delete($id);
             if ($delete) {
+                    
+                $delete = $this->User_Privilege_Model->delete($id);
+                
                 //response success with data
                 $this->response([
                     'status' => true,

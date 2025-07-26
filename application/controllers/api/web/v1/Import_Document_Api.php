@@ -248,6 +248,10 @@ class Import_Document_Api extends REST_Controller {
                 }
                 
             } else {
+				if ($type_document == 'ACCARBON' || $type_document == 'ACCARDAT') {
+                    $this->Import_Document_Model->import($type_document, $post, $index);
+                }
+				
                 // response not found data
                 $this->response([
                     'status' => false,

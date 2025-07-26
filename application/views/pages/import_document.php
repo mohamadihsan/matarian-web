@@ -222,7 +222,7 @@
                 
                 // console.log("data mantap : "+jsonObject);
 
-                let limit = 10000;
+                let limit = 15000;
                 let looping = Math.ceil(obj.length / limit)
                 let start = 0;
                 let end = 0;

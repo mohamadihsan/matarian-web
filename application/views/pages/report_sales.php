@@ -14,22 +14,23 @@
                     </div>
                 </div>
                 <div class="table-responsive p-3">
+                    <form id="form">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label class="label-katapanda-sm" for="fromDate">From Date</label>
+                                <input type="text" name="fromDate" class="form-control form-control-sm" id="fromDate">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="label-katapanda-sm" for="endDate">To Date</label>
+                                <input type="text" name="endDate" class="form-control form-control-sm" id="endDate">
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="salesAR">By Sales</label>
+                                <select name="salesAR" id="salesAR" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+                        </div>
+                    </form>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label class="label-katapanda-sm" for="fromDate">From Date</label>
-                            <input type="text" name="fromDate" class="form-control form-control-sm" id="fromDate">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label class="label-katapanda-sm" for="endDate">To Date</label>
-                            <input type="text" name="endDate" class="form-control form-control-sm" id="endDate">
-                        </div>
-                        <div class="form-group col-lg-6 col-md-6">
-                            <label class="label-katapanda-sm" for="salesAR">By Sales</label>
-                            <select name="salesAR" id="salesAR" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose">
-                                <option value="" selected>All Sales</option>
-                                <option data-divider="true"></option>
-                            </select>
-                        </div>
                         <div class="form-group col-lg-12 col-md-12 col-sm-12 text-right">
                             <div class="button-group">
                                 <button class="btn btn-sm btn-secondary" id="reset"><i class="fas fa-sync-alt"></i> Reset</button>
@@ -37,264 +38,291 @@
                             </div>
                         </div>
                     </div>
-                    <table class="table table-striped table-bordered table-md text-katapanda-sm" id="katapandaTable" width="100%">
-                        <thead class="thead-light">
-                            <tr>
-                                <th class="text-center">Sales</th>
-                                <th class="text-right">No.Nota/Faktur</th>
-                                <th class="text-right" width="12%">Tanggal</th>
-                                <th class="text-center">Kode Langganan</th>
-                                <th class="text-center">Nama Langganan</th>
-                                <th class="text-center">Kota</th>
-                                <th class="text-right">Nilai Faktur</th>
-                            </tr>
-                        </thead>
-                        <tfoot class="">
-                            <tr>
-                                <th colspan="6" class="text-right">Total</th>
-                                <th class="text-right" id="totalFaktur"></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div id="sansHidden">
+                        <table class="table table-striped table-bordered table-md text-katapanda-sm" id="katapandaTable" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-center">Sales</th>
+                                    <th class="text-right">No.Nota/Faktur</th>
+                                    <th class="text-right" width="12%">Tanggal</th>
+                                    <th class="text-center">Kode Langganan</th>
+                                    <th class="text-center">Nama Langganan</th>
+                                    <th class="text-center">Kota</th>
+                                    <th class="text-right">Nilai Faktur</th>
+                                </tr>
+                            </thead>
+                            <tfoot class="">
+                                <tr>
+                                    <th colspan="6" class="text-right">Total</th>
+                                    <th class="text-right" id="totalFaktur"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        <!--Row-->
+
     </div>
-    <!--Row-->
+    <!---Container Fluid-->
 
-</div>
-<!---Container Fluid-->
+    <script>
+        $(document).ready(function() {
 
-<script>
-    $(document).ready(function() {
+            // init variable
+            // $('#sansHidden').css('display', 'none')
+            let id = null;
+            let actionExportToExcel = <?php echo $action_export_to_excel == 1 ? 1 : 0; ?>;
+            let actionExportToCsv = <?php echo $action_export_to_csv == 1 ? 1 : 0; ?>;
+            let actionExportToPdf = <?php echo $action_export_to_pdf == 1 ? 1 : 0; ?>;
 
-        // init variable
-        let id = null;
-        let actionExportToExcel = <?php echo $action_export_to_excel == 1 ? 1 : 0; ?>;
-        let actionExportToCsv = <?php echo $action_export_to_csv == 1 ? 1 : 0; ?>;
-        let actionExportToPdf = <?php echo $action_export_to_pdf == 1 ? 1 : 0; ?>;
+            // button default for action datatables
+            let buttonAction = ['copyHtml5']; // add button to copy data
+            $.fn.datepicker.defaults.format = "dd-mm-yyyy";
+            $('#fromDate').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker('update', moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
+            $('#endDate').datepicker({
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker('update', moment(new Date()).format('DD-MM-YYYY'));
 
-        // button default for action datatables
-        let buttonAction = ['copyHtml5']; // add button to copy data
-        $.fn.datepicker.defaults.format = "dd-mm-yyyy";
-        $('#fromDate').datepicker({
-            autoclose: true,
-            todayHighlight: true,
-            clearBtn: true
-        }).datepicker('update', moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
-        $('#endDate').datepicker({
-            autoclose: true,
-            todayHighlight: true,
-            clearBtn: true
-        }).datepicker('update', moment(new Date()).format('DD-MM-YYYY'));
+            // $('#fromDate').val(moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
+            // $('#endDate').val(moment(new Date()).format('DD-MM-YYYY'));
 
-        // $('#fromDate').val(moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
-        // $('#endDate').val(moment(new Date()).format('DD-MM-YYYY'));
+            // store to select
+            getSalesAR();
 
-        // store to select
-        getSalesAR();
-
-        // button action by user role 
-        actionExportToExcel ? buttonAction.push({
-            extend: 'excelHtml5',
-            exportOptions: {
-                format: {
-                    body: function(data, row, column, node) {
-                        if (column === 6) {
-                            data = data.split('.').join("");
+            // button action by user role 
+            actionExportToExcel ? buttonAction.push({
+                extend: 'excelHtml5',
+                exportOptions: {
+                    format: {
+                        body: function(data, row, column, node) {
+                            if (column === 6) {
+                                data = data.split('.').join("");
+                            }
+                            return data;
                         }
-                        return data;
                     }
                 }
-            }
-        }) : ''; // button export to excel
-        actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
-        actionExportToPdf ? buttonAction.push({ // button export to pdf
-            text: 'PDF',
-            extend: 'pdfHtml5',
-            orientation: 'portrait', //landscape
-            pageSize: 'A4', //A3 , A5 , A6 , legal , letter
-            exportOptions: {
-                columns: ':visible',
-                search: 'applied',
-                order: 'applied'
-            },
-            customize: function(doc) {
-                doc.defaultStyle.fontSize = 6;
-                doc.styles.tableHeader.fontSize = 7;
-                doc.styles.tableFooter.fontSize = 7;
-                doc.styles.tableHeader.alignment = 'center';
-                doc.pageMargins = [20, 60, 20, 30];
-                doc.content[1].table.widths = ['10%', '10%', '10%', '20%', '20%', '15%', '15%'];
-                var rowCount = doc.content[1].table.body.length;
-                for (i = 1; i < rowCount; i++) {
-                    doc.content[1].table.body[i][0].alignment = 'center';
-                    doc.content[1].table.body[i][1].alignment = 'center';
-                    doc.content[1].table.body[i][2].alignment = 'center';
-                    doc.content[1].table.body[i][3].alignment = 'left';
-                    doc.content[1].table.body[i][4].alignment = 'left';
-                    doc.content[1].table.body[i][5].alignment = 'left';
-                    doc.content[1].table.body[i][6].alignment = 'right';
+            }) : ''; // button export to excel
+            actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
+            actionExportToPdf ? buttonAction.push({ // button export to pdf
+                text: 'PDF',
+                extend: 'pdfHtml5',
+                orientation: 'portrait', //landscape
+                pageSize: 'A4', //A3 , A5 , A6 , legal , letter
+                exportOptions: {
+                    columns: ':visible',
+                    search: 'applied',
+                    order: 'applied'
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.fontSize = 6;
+                    doc.styles.tableHeader.fontSize = 7;
+                    doc.styles.tableFooter.fontSize = 7;
+                    doc.styles.tableHeader.alignment = 'center';
+                    doc.pageMargins = [20, 60, 20, 30];
+                    doc.content[1].table.widths = ['10%', '10%', '10%', '20%', '20%', '15%', '15%'];
+                    var rowCount = doc.content[1].table.body.length;
+                    for (i = 1; i < rowCount; i++) {
+                        doc.content[1].table.body[i][0].alignment = 'center';
+                        doc.content[1].table.body[i][1].alignment = 'center';
+                        doc.content[1].table.body[i][2].alignment = 'center';
+                        doc.content[1].table.body[i][3].alignment = 'left';
+                        doc.content[1].table.body[i][4].alignment = 'left';
+                        doc.content[1].table.body[i][5].alignment = 'left';
+                        doc.content[1].table.body[i][6].alignment = 'right';
+                    }
+                    var objLayout = {};
+                    objLayout['hLineWidth'] = function(i) {
+                        return .5;
+                    };
+                    objLayout['vLineWidth'] = function(i) {
+                        return .5;
+                    };
+                    objLayout['hLineColor'] = function(i) {
+                        return '#aaa';
+                    };
+                    objLayout['vLineColor'] = function(i) {
+                        return '#aaa';
+                    };
+                    objLayout['paddingLeft'] = function(i) {
+                        return 4;
+                    };
+                    objLayout['paddingRight'] = function(i) {
+                        return 4;
+                    };
+                    doc.content[0].layout = objLayout;
                 }
-                var objLayout = {};
-                objLayout['hLineWidth'] = function(i) {
-                    return .5;
-                };
-                objLayout['vLineWidth'] = function(i) {
-                    return .5;
-                };
-                objLayout['hLineColor'] = function(i) {
-                    return '#aaa';
-                };
-                objLayout['vLineColor'] = function(i) {
-                    return '#aaa';
-                };
-                objLayout['paddingLeft'] = function(i) {
-                    return 4;
-                };
-                objLayout['paddingRight'] = function(i) {
-                    return 4;
-                };
-                doc.content[0].layout = objLayout;
-            }
-        }) : '';
+            }) : '';
 
-        // setting dataTables
-        $.extend(true, $.fn.dataTable.defaults, {
-            responsive: false,
-            fixedHeader: {
-                header: true,
-                footer: true
-            },
-            language: {
-                lengthMenu: "Display _MENU_ records per page",
-                zeroRecords: "Nothing found - sorry",
-                info: "Showing page _PAGE_ of _PAGES_",
-                infoEmpty: "No records available",
-                infoFiltered: "(filtered from _MAX_ total records)"
-            },
-            lengthMenu: [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            dom: 'lBfrtip',
-            buttons: buttonAction
-        });
+            // setting dataTables
+            $.extend(true, $.fn.dataTable.defaults, {
+                responsive: false,
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                language: {
+                    lengthMenu: "Display _MENU_ records per page",
+                    zeroRecords: "Nothing found - sorry",
+                    info: "Showing page _PAGE_ of _PAGES_",
+                    infoEmpty: "No records available",
+                    infoFiltered: "(filtered from _MAX_ total records)"
+                },
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                dom: 'lBfrtip',
+                buttons: buttonAction
+            });
 
-        // store data to dataTables 
-        $.fn.dataTable.ext.errMode = 'none';
-        var table = $('#katapandaTable').DataTable({
-            processing: true,
-            ajax: { // array
-                url: '<?= site_url() ?>api/web/v1/report/sales',
-                contentType: "application/json",
-                type: "POST",
-                data: function() {
-                    return JSON.stringify({
-                        from_date: moment($('#fromDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                        end_date: moment($('#endDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                        sales_ar: $('#salesAR').val()
-                    });
-                },
-                complete: function(res) {
-                    console.log(res.statusCode);
-                    if (res.statusCode != false) {
-                        let number = res.responseJSON.total !== null ? formatNumber(res.responseJSON.total) : "";
-                        $('#totalFaktur').text(number);
+            // store data to dataTables 
+            $.fn.dataTable.ext.errMode = 'none';
+            var table = $('#katapandaTable').DataTable({
+                processing: true,
+                ajax: { // array
+                    url: '<?= site_url() ?>api/web/v1/report/sales',
+                    contentType: "application/json",
+                    type: "POST",
+                    data: function() {
+                        return JSON.stringify({
+                            from_date: moment($('#fromDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                            end_date: moment($('#endDate').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                            sales_ar: $('#salesAR').val()
+                        });
+                    },
+                    complete: function(res) {
+                        // console.log(res.statusCode);
+                        if (res.statusCode != false) {
+                            let number = res.responseJSON.total !== null ? formatNumber(res.responseJSON.total) : "";
+                            $('#totalFaktur').text(number);
+                        }
+                    },
+                    headers: {
+                        Authorization: 'Bearer <?= $token ?>'
                     }
                 },
-                headers: {
-                    Authorization: 'Bearer <?= $token ?>'
-                }
-            },
-            order: [],
-            columns: [{
-                    data: "sales_ar",
-                    className: "align-middle",
-                    responsivePriority: 1
-                },
-                {
-                    data: "nomor_nota",
-                    className: "align-middle"
-                },
-                {
-                    data: "tanggal",
-                    className: "align-middle",
-                    render: function(data, type, row, meta) {
-                        let date = data !== null ? moment(data, 'YYYY-MM-DD').format('DD-MM-YYYY') : 0;
-                        return date;
+                order: [],
+                columns: [{
+                        data: "sales_ar",
+                        className: "align-middle",
+                        responsivePriority: 1
+                    },
+                    {
+                        data: "nomor_nota",
+                        className: "align-middle"
+                    },
+                    {
+                        data: "tanggal",
+                        className: "align-middle",
+                        render: function(data, type, row, meta) {
+                            let date = data !== null ? moment(data, 'YYYY-MM-DD').format('DD-MM-YYYY') : 0;
+                            return date;
+                        }
+                    },
+                    {
+                        data: "kode_langganan",
+                        className: "align-middle"
+                    },
+                    {
+                        data: "nama_langganan",
+                        className: "align-middle",
+                        responsivePriority: 2
+                    },
+                    {
+                        data: "kota",
+                        className: "align-middle"
+                    },
+                    {
+                        data: "nilai_faktur",
+                        className: "align-middle text-right",
+                        responsivePriority: 3,
+                        render: function(data, type, row, meta) {
+                            return data ? formatNumber(data) : data;
+                        }
                     }
-                },
-                {
-                    data: "kode_langganan",
-                    className: "align-middle"
-                },
-                {
-                    data: "nama_langganan",
-                    className: "align-middle",
-                    responsivePriority: 2
-                },
-                {
-                    data: "kota",
-                    className: "align-middle"
-                },
-                {
-                    data: "nilai_faktur",
-                    className: "align-middle text-right",
-                    responsivePriority: 3,
-                    render: function(data, type, row, meta) {
-                        return data ? formatNumber(data) : data;
-                    }
-                }
-            ],
-            language: {
-                loadingRecords: `<div class="spinner-border text-primary" role="status">
+                ],
+                language: {
+                    loadingRecords: `<div class="spinner-border text-primary" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>`,
-                processing: `<p class="font-weight-bold text-primary">Generating Report...</p>`
-            }
-        }).columns.adjust();
-        table.fixedHeader.adjust();
-
-        $('#filter').click(function() {
-            table.clear().draw();
-            table.ajax.reload();
-        })
-
-        $('#reset').click(function() {
-
-            $('#fromDate').val(moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
-            $('#endDate').val(moment(new Date()).format('DD-MM-YYYY'));
-            $('#salesAR').val('').change();
-            $('.selectpicker').selectpicker('refresh');
-        })
-
-    });
-
-    // get SalesAR
-    function getSalesAR() {
-        axios({
-                method: `GET`,
-                url: `<?= site_url() ?>api/web/v1/user/sales`,
-                headers: {
-                    Authorization: 'Bearer <?= $token ?>'
+                    processing: `<p class="font-weight-bold text-primary">Generating Report...</p>`
                 }
+            }).columns.adjust();
+            table.fixedHeader.adjust();
+
+            $('#filter').click(function() {
+                // $('#sansHidden').css('display', '')
+                table.clear().draw();
+                table.ajax.reload();
             })
-            .then(function(response) {
-                response.data.data.forEach(element => {
-                    // add option
-                    $('#salesAR').append('<option value="' + element.sales_ar + '">' + element.sales_ar + ' - ' + element.fullname + '</option>')
-                });
-                // refresh selectpicker
+
+            $('#reset').click(function() {
+                $('#form').trigger("reset");
+
+                $('#fromDate').val(moment().subtract(0, 'years').startOf('year').format('DD-MM-YYYY'));
+                $('#endDate').val(moment(new Date()).format('DD-MM-YYYY'));
                 $('.selectpicker').selectpicker('refresh');
+                $('#salesAR').val('<?= $sales_ar ?>').change();
             })
-            .catch(function(error) {
-                // console.log(error);
-            })
-    }
+
+        });
+
+        // get SalesAR
+        function getSalesAR() {
+            axios({
+                    method: `GET`,
+                    url: `<?= site_url() ?>api/web/v1/user/sales`,
+                    headers: {
+                        Authorization: 'Bearer <?= $token ?>'
+                    }
+                })
+                .then(function(response) {
+                    let selected = '';
+                    if (<?= $id_user_group ?> == 1 || <?= $id_user_group ?> == 4) {
+                        $('#salesAR').append('<option value="" selected>All Sales</option><option data-divider="true"></option>');
+                    } else {
+                        $('#salesAR').append('<option value="custom" selected>All Selected Sales</option><option data-divider="true"></option>');
+                    }
+                    response.data.data.forEach(element => {
+                        // add option
+                        $('#salesAR').append('<option value="' + element.sales_ar + '">' + element.sales_ar + ' - ' + element.fullname.toUpperCase() + '</option><option data-divider="true"></option>')
+                        if (element.sales_ar == '<?= $sales_ar ?>') {
+                            selected = element.sales_ar;
+                        }
+
+                    });
+                    // refresh selectpicker
+                    $('.selectpicker').selectpicker('refresh');
+                    if (selected != '') {
+                        $('#salesAR').val(selected).trigger('change');
+                        setTimeout(
+                            function() {
+                                $('#filter').trigger('click');
+                            }, 1000);
+                    } else if (<?= $id_user_group ?> != 1 && <?= $id_user_group ?> != 4) {
+                        $('#salesAR').val('custom').trigger('change');
+                        setTimeout(
+                            function() {
+                                $('#filter').trigger('click');
+                            }, 1000);
+                    }
+                })
+                .catch(function(error) {
+                    // console.log(error);
+                })
+        }
 
 
-    function formatNumber(number) {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-    }
-</script>
+        function formatNumber(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
+    </script>

@@ -190,7 +190,7 @@
                         data: "create_access",
                         className: "align-middle text-center",
                         render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "13") {
+                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "22") {
                                 // check = `<input type="checkbox" name="create_access[${row.id}]" ${data === "1" ? 'checked' : ''}>`;
                                 check = `<input type="checkbox" name="create_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
                             } else {
@@ -202,7 +202,7 @@
                         data: "read_access",
                         className: "align-middle text-center",
                         render: function(data, type, row, meta) {
-                            if (row.id == "6" || row.id == "7" || row.id == "8" || row.id == "9" || row.id == "10" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20" || row.id == "21") {
+                            if (row.id == "4" || row.id == "6" || row.id == "7" || row.id == "8" || row.id == "9" || row.id == "10" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20" || row.id == "21" || row.id == "22") {
                                 check = `<input type="checkbox" name="read_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
                             } else if (row.id == "1" || row.id == "2" || row.id == "3" || row.id == "4" || row.id == "5") {
                                 check = '<i class="fa fa-check text-primary"></i>';
@@ -215,7 +215,7 @@
                         data: "update_access",
                         className: "align-middle text-center",
                         render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12") {
+                            if (row.id == "7" || row.id == "8" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "22") {
                                 check = `<input type="checkbox" name="update_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
                             } else if (row.id == "21") {
                                 check = '<i class="fa fa-check text-primary"></i>';
@@ -228,7 +228,7 @@
                         data: "delete_access",
                         className: "align-middle text-center",
                         render: function(data, type, row, meta) {
-                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12") {
+                            if (row.id == "7" || row.id == "9" || row.id == "11" || row.id == "12" || row.id == "22") {
                                 check = `<input type="checkbox" name="delete_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
                             } else {
                                 check = '';

@@ -3,7 +3,8 @@
 <div class="content">
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 col-lg-8">
+            <div class="col-sm-12 col-md-12 col-lg-1"></div>
+            <div class="col-sm-12 col-md-12 col-lg-9">
                 <div class="profile-user-box card-box bg-custom">
                     <div class="row">
                         <div class="col-sm-12">
@@ -19,7 +20,7 @@
                                 <p class="text-light mb-0"><span class="userGroupName"></span></p> -->
                                 <h4 class="mt-1 mb-4 ml-2 font-18">User Profile</h4>
                                 <!-- <span class="float-right ml-3"><img src="<?= base_url('assets/img/boy.png') ?>" alt="" class="thumb-lg rounded-circle"></span> -->
-                                <img src="<?= base_url('assets/img/boy.png') ?>" alt="" class="d-none d-sm-block" style="float: right; width: 150px; padding-right: 1%">
+                                <img src="<?= base_url(isset($_SESSION['profile_picture']) ? $_SESSION['profile_picture'] . '?' . time() : 'assets/upload/picture/boy.png') ?>" alt="" class="d-none d-sm-block" style="float: right; width: 300px; padding-right: 1%; border-radius: 20px;">
                                 <dl class="row">
                                     <dt class="col-sm-4 font-weight-bold mb-2 ">Fullname</dt>
                                     <dd class="col-sm-8 font-weight-light"><span class="fullname"></span></dd>
@@ -247,24 +248,23 @@
             submitHandler: function(form) {
                 // start loading
                 loadingStart()
-                let picture = new FormData();
-                picture.append('profile_picture', $('#profilePicture')[0].files[0]);
+                let formData = new FormData();
+                let imagefile = document.querySelector('#profilePicture');
+                formData.append("profile_picture", imagefile.files[0]);
+                formData.append("username", "<?= $username ?>");
+                formData.append("fullname", $('#fullname').val());
+                formData.append("nomor_telepon", $('#nomorTelepon').val());
+                formData.append("email", $('#email').val());
                 // send request
                 axios({
-                        method: `PUT`,
+                        method: `POST`,
                         url: '<?= site_url() ?>api/web/v1/profile/update',
                         headers: {
                             Authorization: 'Bearer <?= $token ?>',
                             // contentType: false,
                             'Content-Type': 'multipart/form-data'
                         },
-                        data: {
-                            username: "<?= $username ?>",
-                            fullname: $('#fullname').val(),
-                            nomor_telepon: $('#nomorTelepon').val(),
-                            email: $('#email').val(),
-                            profile_picture: picture
-                        }
+                        data: formData
                     })
                     .then(function(response) {
                         // console.log(response);
@@ -277,9 +277,10 @@
                             getProfile();
                             $('#formKatapanda').modal('hide');
                             $('#formKatapanda').trigger("reset");
+                            location.reload();
                         } else {
                             // show message
-                            notification(action, 'error', 'Username or Email already exists');
+                            notification(action, 'error', 'Update profile failed');
                         }
                     })
                     .catch(function(error) {

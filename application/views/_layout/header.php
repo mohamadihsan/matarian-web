@@ -21,53 +21,56 @@
     <link href="<?= base_url('assets/'); ?>css/katapanda.css" rel="stylesheet">
     <!-- style -->
     <style>
-    body { padding-right: 0 !important }
-    
-    @media (max-width: 600px) {
-        .katapanda-hide-element {
-            display: none;
+        body {
+            padding-right: 0 !important
         }
-    }
 
-    @media (min-width: 1200px) {
-        .katapanda-desktop-hide-element {
-            display: none;
+        @media (max-width: 600px) {
+            .katapanda-hide-element {
+                display: none;
+            }
         }
-    }
 
-    #events {
-        margin-bottom: 1em;
-        padding: 1em;
-        background-color: #f6f6f6;
-        border: 1px solid #999;
-        border-radius: 3px;
-        height: 100px;
-        overflow: auto;
-    }
+        @media (min-width: 1200px) {
+            .katapanda-desktop-hide-element {
+                display: none;
+            }
+        }
 
-    /* Just add this CSS to your project */
+        #events {
+            margin-bottom: 1em;
+            padding: 1em;
+            background-color: #f6f6f6;
+            border: 1px solid #999;
+            border-radius: 3px;
+            height: 100px;
+            overflow: auto;
+        }
 
-    .dropzone {
-        border: 2px dashed #dedede;
-        border-radius: 5px;
-        background: #f5f5f5;
-    }
+        /* Just add this CSS to your project */
 
-    .dropzone i{
-    font-size: 5rem;
-    }
+        .dropzone {
+            border: 2px dashed #dedede;
+            border-radius: 5px;
+            background: #f5f5f5;
+        }
 
-    .dropzone .dz-message {
-        color: rgba(0,0,0,.54);
-        font-weight: 500;
-        font-size: initial;
-        text-transform: uppercase;
-    }
+        .dropzone i {
+            font-size: 5rem;
+        }
 
+        .dropzone .dz-message {
+            color: rgba(0, 0, 0, .54);
+            font-weight: 500;
+            font-size: initial;
+            text-transform: uppercase;
+        }
     </style>
 
     <!-- script -->
     <script src="<?= base_url('assets/'); ?>vendor/jquery/dist/jquery.min.js"></script>
+    <!-- <script src="<?= base_url('assets/'); ?>vendor/ckeditor5-build-classic/ckeditor.js"></script> -->
+    <!-- <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script> -->
 </head>
 
 <body id="page-top">

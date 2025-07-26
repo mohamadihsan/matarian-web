@@ -9,22 +9,30 @@
     <hr class="sidebar-divider my-0">
 
     <?php
+    // load from System/Core/Controller.php
     $listMenu = isset($_SESSION['sidebarMenu']) ? $_SESSION['sidebarMenu'] : '';
     $menu = '';
     if ($listMenu != '') {
+        $bag1 = false;
+        $bag2 = false;
         foreach ($listMenu as $key => $value) {
             if ($value->parent_name == null || $value->parent_name == 0) {
-
-                if ($value->id == 6) {
-                    $menu .= '<hr class="sidebar-divider">
+                if ($value->id == 6 || $value->id == 10 || $value->id == 13) {
+                    if ($bag1 == false) {
+                        $menu .= '<hr class="sidebar-divider">
                             <div class="sidebar-heading">
                                 Management
                             </div>';
-                } else if ($value->id == 14) {
-                    $menu .= '<hr class="sidebar-divider">
+                        $bag1 = true;
+                    }
+                } else if ($value->id == 14 || $value->id == 15) {
+                    if ($bag2 == false) {
+                        $menu .= '<hr class="sidebar-divider">
                             <div class="sidebar-heading">
                                 Report
                             </div>';
+                        $bag2 = true;
+                    }
                 } else if ($value->id == 21) {
                     $menu .= '<hr class="sidebar-divider">';
                 }

@@ -1,10 +1,11 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class Dashboard_Api extends REST_Controller {
+class Dashboard_Api extends REST_Controller
+{
 
     public function __construct()
     {
@@ -14,61 +15,76 @@ class Dashboard_Api extends REST_Controller {
         // load model
         $this->load->model('Global_Model');
         $this->load->model('Dashboard_Model');
-        
+        $this->load->model('User_Model');
+
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         $this->user = $this->token->data->user_id;
+        $this->id_user_group = $this->token->data->id_user_group;
         $this->sales_ar = $this->token->data->sales_ar;
     }
 
     // index with one request
     public function index_get()
     {
+        $sales_ar = $this->sales_ar;
+        if ($this->id_user_group != 1 && $this->id_user_group != 4) {
+            $get = $this->User_Model->getPermissionSalesAR($this->user);
+            $sales_ar = [];
+            $sales_ar[] = $this->sales_ar;
+            foreach ($get as $g) {
+                $sales_ar[] = $g->sales_ar;
+            }
+
+            if (count($sales_ar) < 1) {
+                $sales_ar = 'KATAPANDA';
+            }
+        }
+
         try {
-            
             $data['penjualan'] = array(
-                'total_rows' =>  1, 
+                'total_rows' =>  1,
                 'total_penjualan_bulan_ini' => abs($this->Dashboard_Model->total_penjualan(date('Y-m', strtotime($this->time_server)))->result()[0]->prf_barang),
                 'last_update' => $this->Dashboard_Model->last_update_accarbon()->result()[0]->created_at
             );
-            
+
             $data['tagihan'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_tagihan($this->user, $this->sales_ar), 
-                'total_tagihan' => abs($this->Dashboard_Model->total_tagihan($this->user, $this->sales_ar)->result()[0]->sisa_ar),
+                'total_rows' =>  $this->Dashboard_Model->count_tagihan($this->user, $sales_ar),
+                'total_tagihan' => abs($this->Dashboard_Model->total_tagihan($this->user, $sales_ar)->result()[0]->sisa_ar),
                 'last_update' => $this->Dashboard_Model->last_update_tagihan()->result()[0]->created_at
             );
 
             $data['ktp'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_ktp(), 
+                'total_rows' =>  $this->Dashboard_Model->count_ktp(),
                 'last_update' => $this->Dashboard_Model->last_update_ktp()->result()[0]->created_at
             );
-    
+
             $data['npwp'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_npwp(), 
+                'total_rows' =>  $this->Dashboard_Model->count_npwp(),
                 'last_update' => $this->Dashboard_Model->last_update_npwp()->result()[0]->created_at
             );
-    
+
             $data['accdbrg'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_accdbrg(), 
+                'total_rows' =>  $this->Dashboard_Model->count_accdbrg(),
                 'last_update' => $this->Dashboard_Model->last_update_accdbrg()->result()[0]->created_at
             );
-    
+
             $data['accdlgn'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_accdlgn(), 
+                'total_rows' =>  $this->Dashboard_Model->count_accdlgn(),
                 'last_update' => $this->Dashboard_Model->last_update_accdlgn()->result()[0]->created_at
             );
-    
+
             $data['accarbon'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_accarbon(), 
+                'total_rows' =>  $this->Dashboard_Model->count_accarbon(),
                 'last_update' => $this->Dashboard_Model->last_update_accarbon()->result()[0]->created_at
             );
-    
+
             $data['accardat'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_accardat(), 
+                'total_rows' =>  $this->Dashboard_Model->count_accardat(),
                 'last_update' => $this->Dashboard_Model->last_update_accardat()->result()[0]->created_at
             );
-            
+
             $data['pending_activation'] = array(
-                'total_rows' =>  $this->Dashboard_Model->count_pending_activation(), 
+                'total_rows' =>  $this->Dashboard_Model->count_pending_activation(),
                 'last_update' => $this->Dashboard_Model->last_update_pending_activation()->result()[0]->created_at
             );
 
@@ -78,7 +94,6 @@ class Dashboard_Api extends REST_Controller {
                 'message' => 'Data Dashboard',
                 'data' => $data
             ], REST_Controller::HTTP_OK);
-
         } catch (\Throwable $th) {
 
             // response success not found data
@@ -87,9 +102,7 @@ class Dashboard_Api extends REST_Controller {
                 'message' => $th,
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
-
         }
-        
     }
 
     // tagihan
@@ -97,14 +110,14 @@ class Dashboard_Api extends REST_Controller {
     {
         $response = $this->Dashboard_Model->get_tagihan()->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -121,14 +134,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_tagihan'] = abs($this->Dashboard_Model->total_tagihan($this->user)->result()[0]->sisa_ar);
         $response['last_update'] = $this->Dashboard_Model->last_update_tagihan()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -145,28 +158,28 @@ class Dashboard_Api extends REST_Controller {
         if ($year == "0000") {
             $year = null;
         } else {
-            $message .= ' tahun '.$year;
+            $message .= ' tahun ' . $year;
         }
         if ($month == "0000") {
             $month = null;
         } else {
-            $message .= ' bulan '.$month;
+            $message .= ' bulan ' . $month;
         }
 
         $response = $this->Dashboard_Model->best_buyer($year, $month, $limit, $this->sales_ar)->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
-                'message' => 'Data'.$message.' ditemukan',
+                'message' => 'Data' . $message . ' ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
-                'message' => 'Data'.$message.' tidak ditemukan',
+                'message' => 'Data' . $message . ' tidak ditemukan',
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
@@ -179,28 +192,28 @@ class Dashboard_Api extends REST_Controller {
         if ($year == "0000") {
             $year = null;
         } else {
-            $message .= ' tahun '.$year;
+            $message .= ' tahun ' . $year;
         }
         if ($month == "0000") {
             $month = null;
         } else {
-            $message .= ' bulan '.$month;
+            $message .= ' bulan ' . $month;
         }
 
         $response = $this->Dashboard_Model->best_seller($year, $month, $limit, $this->sales_ar)->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
-                'message' => 'Data'.$message.' ditemukan',
+                'message' => 'Data' . $message . ' ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
-                'message' => 'Data'.$message.' tidak ditemukan',
+                'message' => 'Data' . $message . ' tidak ditemukan',
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
@@ -211,14 +224,14 @@ class Dashboard_Api extends REST_Controller {
     {
         $response = $this->Dashboard_Model->user_login($limit)->result();
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -234,14 +247,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_ktp();
         $response['last_update'] = $this->Dashboard_Model->last_update_ktp()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -257,14 +270,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_npwp();
         $response['last_update'] = $this->Dashboard_Model->last_update_npwp()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -280,14 +293,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_accdbrg();
         $response['last_update'] = $this->Dashboard_Model->last_update_accdbrg()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -303,14 +316,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_accdlgn();
         $response['last_update'] = $this->Dashboard_Model->last_update_accdlgn()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -326,14 +339,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_accarbon();
         $response['last_update'] = $this->Dashboard_Model->last_update_accarbon()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
@@ -349,14 +362,14 @@ class Dashboard_Api extends REST_Controller {
         $response['total_rows'] = $this->Dashboard_Model->count_accardat();
         $response['last_update'] = $this->Dashboard_Model->last_update_accardat()->result()[0]->created_at;
 
-        if($response){
+        if ($response) {
             //response success with data
             $this->response([
                 'status' => true,
                 'message' => 'Data ditemukan',
                 'data' => $response
             ], REST_Controller::HTTP_OK);
-        }else{
+        } else {
             // response success not found data
             $this->response([
                 'status' => false,
