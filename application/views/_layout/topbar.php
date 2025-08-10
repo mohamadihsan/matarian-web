@@ -1,5 +1,6 @@
 <div id="content-wrapper" class="d-flex flex-column">
     <div id="content">
+        
         <!-- TopBar -->
         <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
             <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
@@ -72,6 +73,11 @@
             </ul>
         </nav>
         <!-- Topbar -->
+
+        <!-- Development Mode Banner -->
+        <div class="alert alert-warning text-center mr-4 ml-4 mb-4 p-2 shadow-sm" style="font-weight: bold;">
+            🚧 Development Mode - This is a testing environment
+        </div>
 
 
         <script>
