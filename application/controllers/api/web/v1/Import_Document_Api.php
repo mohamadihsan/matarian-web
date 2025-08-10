@@ -18,11 +18,36 @@ class Import_Document_Api extends REST_Controller {
         $this->token = AUTHORIZATION::validateToken();
         // load model
         $this->load->model('Import_Document_Model');
+        $this->load->model('PPN_Model');
         $this->load->library('Excel'); //load librari excel
         $this->load->model('Global_Model');
         
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
         
+    }
+
+    function extractMonthAndYear($tanggal)
+    {
+        $formats = [
+            'd/m/Y', 'Y-m-d', 'm/d/Y', 'd-m-Y', 'Y/m/d',
+            DateTime::ATOM,         // 'Y-m-d\TH:i:sP'
+            'Y-m-d\TH:i:s',         // '2025-04-17T00:00:00'
+            'Y-m-d\TH:i:s.u'        // '2025-04-17T00:00:00.000000' (jika ada)
+        ];
+
+        foreach ($formats as $format) {
+            $date = DateTime::createFromFormat($format, $tanggal);
+            $errors = DateTime::getLastErrors();
+
+            if ($date && $errors['warning_count'] == 0 && $errors['error_count'] == 0) {
+                return [
+                    'bulan' => $date->format('m'), // bulan format 2 digit
+                    'tahun' => $date->format('Y')  // tahun 4 digit
+                ];
+            }
+        }
+
+        return false; // jika tidak ada format yg cocok
     }
 
     // provinsi
@@ -82,7 +107,7 @@ class Import_Document_Api extends REST_Controller {
         try {
             
             $_POST = json_decode($this->input->raw_input_stream, true);
-            $data = $this->input->post('data');
+            $data = $this->input->post('element');
             $type_document = $this->input->post('type_document');
             $index = $this->input->post('index');
             
@@ -228,8 +253,364 @@ class Import_Document_Api extends REST_Controller {
                 }
             }
 
-            if(count($post) > 0) {
+            if ($type_document == 'KODEOBJEKPAJAK') {
                 
+                if ($data[0]['Kode Objek Pajak'] != null || $data[0]['Kode Objek Pajak'] != '') {
+                    
+                    foreach ($data as $d) {
+                        
+                        $post[] = array(
+                            "kode" => !empty($d['Kode Objek Pajak']) ? $d['Kode Objek Pajak'] : null,
+                            "nama" => !empty($d['Nama Objek Pajak']) ? $d['Nama Objek Pajak'] : null,
+                            "tarif" => !empty($d['Tarif']) ? $d['Tarif'] : null
+                        );
+                    }
+                }
+            }
+
+            if ($type_document == 'KODEFASILITAS') {
+                
+                if ($data[0]['Kode Fasilitas'] != null || $data[0]['Kode Fasilitas'] != '') {
+                    
+                    foreach ($data as $d) {
+                        
+                        $post[] = array(
+                            "kode" => !empty($d['Kode Fasilitas']) ? $d['Kode Fasilitas'] : null,
+                            "nama" => !empty($d['Nama Fasilitas']) ? $d['Nama Fasilitas'] : null
+                        );
+                    }
+                }
+            }
+
+            if ($type_document == 'KODEPEMBAYARAN') {
+                
+                if ($data[0]['Kode Pembayaran IP'] != null || $data[0]['Kode Pembayaran IP'] != '') {
+                    
+                    foreach ($data as $d) {
+                        
+                        $post[] = array(
+                            "kode" => !empty($d['Kode Pembayaran IP']) ? $d['Kode Pembayaran IP'] : null,
+                            "nama" => !empty($d['Nama Pembayaran IP']) ? $d['Nama Pembayaran IP'] : null
+                        );
+                    }
+                }
+            }
+
+            if ($type_document == 'KODEDOKUMEN') {
+                
+                if ($data[0]['Kode Dokumen'] != null || $data[0]['Kode Dokumen'] != '') {
+                    
+                    foreach ($data as $d) {
+                        
+                        $post[] = array(
+                            "kode" => !empty($d['Kode Dokumen']) ? $d['Kode Dokumen'] : null,
+                            "nama" => !empty($d['Nama Dokumen Referensi']) ? $d['Nama Dokumen Referensi'] : null
+                        );
+                    }
+                }
+            }
+
+            if ($type_document == 'PPNMASUKKAN') {
+
+                // cek filename terlebih dahulu, substring nama file untuk mengecek berdasarkan NPWP Perusahaan
+                $parts = explode('_', $this->input->post('filename'));
+                $npwp_perusahaan = $parts[0];
+
+                $perusahaan = $this->Import_Document_Model->get_perusahaan_by_npwp($npwp_perusahaan);
+                if (empty($perusahaan)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Data perusahaan tidak sesuai dengan file yang diupload',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            
+                if ($data[0]['NPWP Penjual'] == "" || $data[0]['Nama Penjual'] == '' || $data[0]['Nomor Faktur Pajak'] == '' || $data[0]['Tanggal Faktur Pajak'] == '' || $data[0]['Masa Pajak'] == '' || $data[0]['Tahun'] == '' || $data[0]['Status Faktur'] == '' || $data[0]['Harga Jual/Penggantian/DPP'] == '' || $data[0]['DPP Nilai Lain/DPP'] == '' || $data[0]['PPN'] == '' || $data[0]['PPnBM'] == '' || $data[0]['Perekam'] == '' || $data[0]['Valid'] == '' || $data[0]['Dilaporkan'] == '' || $data[0]['Dilaporkan oleh Penjual'] == '') {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Format dokumen yang diupload tidak sesuai. Silakan unduh tempate dokumen terlebih dahulu!',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                } else {
+                    $i = 0;
+                    $duplicate_data = 0;
+                    
+                    $periode = $data[0]['Tanggal Faktur Pajak'];
+                    $extract_periode = $this->extractMonthAndYear($periode);
+                    $bulan = $extract_periode['bulan'];
+                    $tahun = $extract_periode['tahun'];
+
+                    foreach ($data as $d) {
+                        // get vendor
+                        $npwpUpload[$i] = $d['NPWP Penjual'];
+                        if ($i == 0 && !empty($d['NPWP Penjual'])) {
+                            $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            if (empty($vendor)) {
+                                $this->response([
+                                    'status' => false,
+                                    'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
+                                    'data' => []
+                                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                            }
+                        } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
+                            if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                if (empty($vendor)) {
+                                    $this->response([
+                                        'status' => false,
+                                        'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
+                                        'data' => []
+                                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                                }
+                            }
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'NPWP Penjual line '.($i+1).' kosong',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+
+                        // cek waktu periode pajak
+                        $periode = $d['Tanggal Faktur Pajak'];
+                        $extract_periode = $this->extractMonthAndYear($periode);
+                        if ($extract_periode == false) {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Tanggal Faktur Pajak tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        } else {
+                            // $bulan_detail = $extract_periode['bulan'];
+                            // $tahun_detail = $extract_periode['tahun'];
+
+                            // if ($bulan_detail != $bulan || $tahun_detail != $tahun) {
+                            //     $this->response([
+                            //         'status' => false,
+                            //         'message' => 'Terdapat multiple periode. Periode '.$bulan_detail.'-'.$tahun_detail.' tidak dapat di upload bersamaan di Periode '.$bulan.'-'.$tahun,
+                            //         'data' => []
+                            //     ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                            // }
+                        }
+
+                        if (is_numeric($d['Harga Jual/Penggantian/DPP'])) {
+                            $harga_jual = (int) $d['Harga Jual/Penggantian/DPP']; // atau gunakan intval($nilai);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Nilai Harga Jual/Penggantian/DPP tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+
+                        if (is_numeric($d['DPP Nilai Lain/DPP'])) {
+                            $dpp_nilai_lain = (int) $d['DPP Nilai Lain/DPP']; // atau gunakan intval($nilai);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Nilai DPP Nilai Lain/DPP tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+
+                        if (is_numeric($d['PPN'])) {
+                            $ppn = (int) $d['PPN']; // atau gunakan intval($nilai);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Nilai PPN tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+                            
+                        $i++;
+
+                        if (!empty($d['Nomor Faktur Pajak'])) {
+                            // cek nomor faktur pajak, jika sudah ada maka skip tidak usah di insert
+                            $faktur = $this->PPN_Model->get_document_by_nomor_faktur($d['Nomor Faktur Pajak']);
+                            if (!$faktur) {
+                                $post[] = array(
+                                    "master_perusahaan_id" => $perusahaan->id,
+                                    "master_vendor_id" => $vendor->id,
+                                    'ppn_persentase' => !empty($this->input->post('ppn_persentase')) ? $this->input->post('ppn_persentase') : null,
+                                    'jenis_dokumen' => 'PPN MASUKKAN',            
+                                    "npwp_penjual" => !empty($d['NPWP Penjual']) ? $d['NPWP Penjual'] : null,
+                                    "nama_penjual" => !empty($d['Nama Penjual']) ? $d['Nama Penjual'] : null,
+                                    "Cek" => $vendor->cek,
+                                    "nomor_faktur_pajak" => !empty($d['Nomor Faktur Pajak']) ? $d['Nomor Faktur Pajak'] : null,
+                                    "tanggal_faktur_pajak" => !empty($d['Tanggal Faktur Pajak']) ? $d['Tanggal Faktur Pajak'] : null,
+                                    "masa_pajak" => !empty($d['Masa Pajak']) ? $d['Masa Pajak'] : null,
+                                    "tahun_pajak" => !empty($d['Tahun']) ? $d['Tahun'] : null,
+                                    "masa_pajak_pengkreditkan" => !empty($d['Masa Pajak Pengkreditkan']) ? $d['Masa Pajak Pengkreditkan'] : null,
+                                    "tahun_pajak_pengkreditkan" => !empty($d['Tahun Pajak Pengkreditan']) ? $d['Tahun Pajak Pengkreditan'] : null,
+                                    "status_faktur_pajak" => !empty($d['Status Faktur']) ? $d['Status Faktur'] : null,
+                                    "harga_jual" => $harga_jual,
+                                    "dpp_nilai_lain" => $dpp_nilai_lain,
+                                    "ppn" => $ppn,
+                                    "ppnbm" => !empty($d['PPnBM']) ? $d['PPnBM'] : null,
+                                    "perekam" => !empty($d['Perekam']) ? $d['Perekam'] : null,
+                                    "nomor_sp2d" => !empty($d['Nomor SP2D']) ? $d['Nomor SP2D'] : null,
+                                    "valid" => !empty($d['Valid']) ? $d['Valid'] : null,
+                                    "dilaporakn" => !empty($d['Dilaporkan']) ? $d['Dilaporkan'] : null,
+                                    "dilaporkan_oleh_penjual" => !empty($d['Dilaporkan oleh Penjual']) ? $d['Dilaporkan oleh Penjual'] : null,
+                                    "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
+                                    "created_at" => $this->time_server,
+                                    "created_by" => $this->token->data->username
+                                );
+                            } else {
+                                $duplicate_data++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($type_document == 'DOKUMENLAIN') {
+
+                // cek filename terlebih dahulu, substring nama file untuk mengecek berdasarkan NPWP Perusahaan
+                $parts = explode('_', $this->input->post('filename'));
+                $npwp_perusahaan = $parts[0];
+
+                $perusahaan = $this->Import_Document_Model->get_perusahaan_by_npwp($npwp_perusahaan);
+                if (empty($perusahaan)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Data perusahaan tidak sesuai dengan file yang diupload',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            
+                if ($data[0]['NPWP Penjual'] == "" || $data[0]['Nama Penjual'] == '' || $data[0]['Nomor Dokumen'] == '' || $data[0]['Tanggal Dokumen'] == '' || $data[0]['Jenis Transaksi'] == '' || $data[0]['Masa Pajak'] == '' || $data[0]['Tahun'] == '' || $data[0]['DPP'] == '' || $data[0]['PPN'] == '' || $data[0]['PPnBM'] == '' || $data[0]['Status'] == '' || $data[0]['Valid'] == '' || $data[0]['Dilaporkan'] == '' || $data[0]['Uraian'] == '' || $data[0]['Perekam'] == '') {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Format dokumen yang diupload tidak sesuai. Silakan unduh tempate dokumen terlebih dahulu!',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                } else {
+                    $i = 0;
+                    $duplicate_data = 0;
+                    
+                    $periode = $data[0]['Tanggal Dokumen'];
+                    $extract_periode = $this->extractMonthAndYear($periode);
+                    $bulan = $extract_periode['bulan'];
+                    $tahun = $extract_periode['tahun'];
+
+                    foreach ($data as $d) {
+                        // get vendor
+                        $npwpUpload[$i] = $d['NPWP Penjual'];
+                        if ($i == 0 && !empty($d['NPWP Penjual'])) {
+                            $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            if (empty($vendor)) {
+                                $this->response([
+                                    'status' => false,
+                                    'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
+                                    'data' => []
+                                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                            }
+                        } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
+                            if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                if (empty($vendor)) {
+                                    $this->response([
+                                        'status' => false,
+                                        'message' => 'Vendor2 dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
+                                        'data' => []
+                                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                                }
+                            }
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'NPWP Penjual line '.($i+1).' kosong',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+
+                        // cek waktu periode pajak
+                        $periode = $d['Tanggal Dokumen'];
+                        $extract_periode = $this->extractMonthAndYear($periode);
+                        if ($extract_periode == false) {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Tanggal Dokumen tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        } else {
+                            // $bulan_detail = $extract_periode['bulan'];
+                            // $tahun_detail = $extract_periode['tahun'];
+
+                            // if ($bulan_detail != $bulan || $tahun_detail != $tahun) {
+                            //     $this->response([
+                            //         'status' => false,
+                            //         'message' => 'Terdapat multiple periode. Periode '.$bulan_detail.'-'.$tahun_detail.' tidak dapat di upload bersamaan di Periode '.$bulan.'-'.$tahun,
+                            //         'data' => []
+                            //     ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                            // }
+                        }
+
+                        if (is_numeric($d['DPP'])) {
+                            $dpp_nilai_lain = (int) $d['DPP']; // atau gunakan intval($nilai);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Nilai DPP tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+
+                        if (is_numeric($d['PPN'])) {
+                            $ppn = (int) $d['PPN']; // atau gunakan intval($nilai);
+                        } else {
+                            $this->response([
+                                'status' => false,
+                                'message' => 'Nilai PPN tidak valid',
+                                'data' => []
+                            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                        }
+                            
+                        $i++;
+                        
+                        if (!empty($d['Nomor Dokumen'])) {
+                            // cek nomor faktur pajak, jika sudah ada maka skip tidak usah di insert
+                            $faktur = $this->PPN_Model->get_document_by_nomor_faktur($d['Nomor Dokumen']);
+                            if (!$faktur) {
+                                $post[] = array(
+                                    "master_perusahaan_id" => $perusahaan->id,
+                                    "master_vendor_id" => $vendor->id,
+                                    'ppn_persentase' => !empty($this->input->post('ppn_persentase')) ? $this->input->post('ppn_persentase') : null,
+                                    'jenis_dokumen' => 'DOKUMEN LAIN',
+                                    "npwp_penjual" => !empty($d['NPWP Penjual']) ? $d['NPWP Penjual'] : null,
+                                    "nama_penjual" => !empty($d['Nama Penjual']) ? $d['Nama Penjual'] : null,
+                                    "cek" => $vendor->cek,
+                                    "nomor_faktur_pajak" => !empty($d['Nomor Dokumen']) ? $d['Nomor Dokumen'] : null,
+                                    "tanggal_faktur_pajak" => !empty($d['Tanggal Dokumen']) ? $d['Tanggal Dokumen'] : null,
+                                    "jenis_transaksi" => !empty($d['Jenis Transaksi']) ? $d['Jenis Transaksi'] : null,
+                                    "masa_pajak" => !empty($d['Masa Pajak']) ? $d['Masa Pajak'] : null,
+                                    "tahun_pajak" => !empty($d['Tahun']) ? $d['Tahun'] : null,
+                                    "masa_pajak_pengkreditkan" => !empty($d['Masa Pajak Pengkreditkan']) ? $d['Masa Pajak Pengkreditkan'] : null,
+                                    "tahun_pajak_pengkreditkan" => !empty($d['Tahun Pajak Pengkreditan']) ? $d['Tahun Pajak Pengkreditan'] : null,
+                                    "status_faktur_pajak" => !empty($d['Status']) ? $d['Status'] : null,
+                                    "dpp_nilai_lain" => $dpp_nilai_lain,
+                                    "ppn" => $ppn,
+                                    "ppnbm" => !empty($d['PPnBM']) ? $d['PPnBM'] : null,
+                                    "perekam" => !empty($d['Perekam']) ? $d['Perekam'] : null,
+                                    "valid" => !empty($d['Valid']) ? $d['Valid'] : null,
+                                    "dilaporakn" => !empty($d['Dilaporkan']) ? $d['Dilaporkan'] : null,
+                                    "uraian" => !empty($d['Uraian']) ? $d['Uraian'] : null,
+                                    "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
+                                    "created_at" => $this->time_server,
+                                    "created_by" => !empty($d['Dibuat Oleh']) ? $d['Dibuat Oleh'] : null
+                                );
+                            } else {
+                                $duplicate_data++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(count($post) > 0) {
+
                 $insert = $this->Import_Document_Model->import($type_document, $post, $index);
                 
                 if ($insert) {
@@ -250,14 +631,30 @@ class Import_Document_Api extends REST_Controller {
             } else {
 				if ($type_document == 'ACCARBON' || $type_document == 'ACCARDAT') {
                     $this->Import_Document_Model->import($type_document, $post, $index);
+                } else if ($type_document == 'PPNMASUKKAN' || $type_document == 'DOKUMENLAIN') {
+                    if ($i > 0) {
+                        // response not found data
+                        $this->response([
+                            'status' => false,
+                            'message' => 'Tidak ada data yang disimpan! Terdapat '.($duplicate_data).' nomor faktur pajak yang duplikat.',
+                            'data' => []
+                        ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                    } else {
+                        // response not found data
+                        $this->response([
+                            'status' => false,
+                            'message' => 'Tidak ada data yang disimpan!',
+                            'data' => []
+                        ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                    }
+                } else {
+                    // response not found data
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Tidak ada data yang disimpan!',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
                 }
-				
-                // response not found data
-                $this->response([
-                    'status' => false,
-                    'message' => 'Tidak ada data yang disimpan!',
-                    'data' => []
-                ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
             
         } catch(Exception $e) {

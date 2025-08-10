@@ -27,6 +27,9 @@ class User_Privilege_Api extends REST_Controller
             $_POST = json_decode($this->input->raw_input_stream, true);
 
             $id_user_group = $this->input->post('id_user_group');
+            if (empty($id_user_group)) {
+                $id_user_group = 0;
+            }
             $response = $this->User_Privilege_Model->get($id_user_group)->result();
 
             if ($response) {

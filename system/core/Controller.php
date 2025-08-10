@@ -136,7 +136,7 @@ class CI_Controller
 			and tup.id_user_group = $user_group_id
 			and tm.id NOT IN (23,24,25,26,27)
 		order by
-			tm.`order`, tm.parent_name asc";
+			tm.`order` asc, tm.parent_name asc";
 
 		return $this->instance->db->query($query);
 	}

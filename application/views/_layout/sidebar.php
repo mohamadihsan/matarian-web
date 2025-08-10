@@ -15,6 +15,8 @@
     if ($listMenu != '') {
         $bag1 = false;
         $bag2 = false;
+        $bag3 = false;
+        $bag4 = false;
         foreach ($listMenu as $key => $value) {
             if ($value->parent_name == null || $value->parent_name == 0) {
                 if ($value->id == 6 || $value->id == 10 || $value->id == 13) {
@@ -33,8 +35,22 @@
                             </div>';
                         $bag2 = true;
                     }
-                } else if ($value->id == 21) {
-                    $menu .= '<hr class="sidebar-divider">';
+                } else if ($value->id == 29 || $value->id == 30 || $value->id == 31 || $value->id == 32 || $value->id == 33 || $value->id == 34 || $value->id == 35 || $value->id == 36 || $value->id == 37) {
+                    if ($bag3 == false) {
+                        $menu .= '<hr class="sidebar-divider">
+                            <div class="sidebar-heading">
+                                Coretax
+                            </div>';
+                        $bag3 = true;
+                    }
+                } else if ($value->id == 28) {
+                    if ($bag4 == false) {
+                        $menu .= '<hr class="sidebar-divider">
+                            <div class="sidebar-heading">
+                                Confirguration
+                            </div>';
+                        $bag4 = true;
+                    }
                 }
 
                 if ($value->site_url == '#') {

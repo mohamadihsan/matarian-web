@@ -57,16 +57,11 @@
                 <a href="<?= site_url('report/stock') ?>" class="card-body" style="color: #757575; text-decoration: none;">
                     <div class="row align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document ACCDBRG</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumACCDBRG" class="numbers"></span></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-secondary mr-2"><i class="far fa-calendar"></i></span>
-                                <span id="lastUpdateACCDBRG"></span><br/>
-                                <span>last update</span>
-                            </div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document PPN Masukkan</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumPPNMasukkan" class="numbers"></span></div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-cubes fa-2x text-secondary"></i>
+                            <i class="fas fa-file-alt fa-2x text-success"></i>
                         </div>
                     </div>
                 </a>
@@ -75,52 +70,11 @@
                 <a href="<?= site_url('langganan') ?>" class="card-body" style="color: #757575; text-decoration: none;">
                     <div class="row align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document ACCDLGN</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumACCDLGN" class="numbers"></span></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-info mr-2"><i class="far fa-calendar"></i></span>
-                                <span id="lastUpdateACCDLGN"></span><br/>
-                                <span>last update</span>
-                            </div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document Lain</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumDokumenLain" class="numbers"></span></div>
                         </div>
                         <div class="col-auto">
-                            <i class="far fa-address-book fa-2x text-info"></i>
-                        </div>
-                    </div>   
-                </a>
-            </div>
-            <div class="card h-100 ml-2">
-                <a href="<?= site_url('report/sales') ?>" class="card-body" style="color: #757575; text-decoration: none;">
-                    <div class="row align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document ACCARBON</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumACCARBON" class="numbers"></span></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success mr-2"><i class="far fa-calendar"></i></span>
-                                <span id="lastUpdateACCARBON"></span><br/>
-                                <span>last update</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="far fa-file-alt fa-2x text-success"></i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="card h-100 ml-2">
-                <a href="<?= site_url('accardat/tagihan/klik2') ?>" class="card-body" style="color: #757575; text-decoration: none;">
-                    <div class="row align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Document ACCARDAT</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span id="sumACCARDAT" class="numbers"></span></div>
-                            <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-dark mr-2"><i class="far fa-calendar"></i></span>
-                                <span id="lastUpdateACCARDAT"></span><br/>
-                                <span>last update</span>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-shopping-cart fa-2x text-dark"></i>
+                            <i class="far fa-file-alt fa-2x text-info"></i>
                         </div>
                     </div>   
                 </a>
@@ -138,19 +92,22 @@
                     <div class="form-group col-md-4">
                         <label class="label-katapanda-sm" for="typeOfDocument">Type of Document <span class="text-danger">*</span></label>
                         <select name="typeOfDocument" id="typeOfDocument" class="selectpicker form-control form-control-md"  data-live-search="true"  title="Choose" style="border-color: #fff;">
-                            <option value="ACCDBRG">Document ACCDBRG</option>
+                            <option value="PPNMASUKKAN">Dokumen PPN Masukkan</option>
                             <option data-divider="true"></option>
-                            <option value="ACCDLGN">Document ACCDLGN</option>
+                            <option value="DOKUMENLAIN">Dokumen Lain</option>
+                            <!-- <option data-divider="true"></option>
+                            <option value="KODEOBJEKPAJAK">Unifikasi Kode Objek Pajak</option>
                             <option data-divider="true"></option>
-                            <option value="ACCARBON">Document ACCARBON</option>
+                            <option value="KODEFASILITAS">Unifikasi Kode Fasilitas</option>
                             <option data-divider="true"></option>
-                            <option value="ACCARDAT">Document ACCARDAT</option>
+                            <option value="KODEPEMBAYARAN">Unifikasi Kode Pembayaran</option>
                             <option data-divider="true"></option>
+                            <option value="KODEDOKUMEN">Unifikasi Kode Dokumen</option> -->
                         </select>
                         <span id="errorTypeOfDocument"></span>
                     </div> 
                     <div class="form-group col-md-3" id="form_ppn_persentase">
-                        <label class="label-katapanda-sm" for="ppn_persentase">PPN(%) <span class="text-danger">*</span></label>
+                        <label class="label-katapanda-sm" for="ppn_persentase">PPN(%) <span class="text-danger"></span></label>
                         <input type="number" class="form-control form-control-md" name="ppn_persentase" id="ppn_persentase" min="0" max="100" step="0.01" placeholder="0.00">
                         <small class="form-text text-muted">Nilai antara 0 hingga 100%</small>
                     </div>
@@ -187,11 +144,9 @@
     $('#btnUpload').click(function(){
 
         if ($('#typeOfDocument').val() == 'PPNMASUKKAN' || $('#typeOfDocument').val() == 'DOKUMENLAIN') {
-            if ($('#ppn_persentase').val() == "") {
-                notification('upload',  "error", "PPN Persentase tidak boleh kosong");
+            if ($('#ppn_persentase').val() > 100) {
+                notification('upload',  "error", "PPN Persentase maksimal 100");
                 return
-            } else if ($('#ppn_persentase').val() > 100) {
-                
             }
         }
         
@@ -336,15 +291,7 @@ $('#typeOfDocument').change(function() {
     let link = '';
     $('#form_ppn_persentase').hide()
 
-    if (type == 'ACCDBRG') {
-        link = `<?= base_url('assets/template-document/ACCDBRG.xlsx') ?>`;
-    } else if (type == 'ACCDLGN') {
-        link = `<?= base_url('assets/template-document/ACCDLGN.xlsx') ?>`;
-    } else if (type == 'ACCARBON') {
-        link = `<?= base_url('assets/template-document/ACCARBON.xlsx') ?>`;
-    } else if (type == 'ACCARDAT') {
-        link = `<?= base_url('assets/template-document/ACCARDAT.xlsx') ?>`;
-    } else if (type == 'KODEOBJEKPAJAK') {
+    if (type == 'KODEOBJEKPAJAK') {
         link = `<?= base_url('assets/template-document/01.03.03.01 Kode Objek Pajak.xlsx') ?>`;
     } else if (type == 'KODEFASILITAS') {
         link = `<?= base_url('assets/template-document/01.03.03.02 Kode Fasilitas.xlsx') ?>`;
@@ -369,34 +316,16 @@ $('#typeOfDocument').change(function() {
 
 // get data dashboard
 function getData() {
-    $('#sumKTP').html(`<div class="spinner-border text-primary" role="status">
+    $('#sumPPNMasukkan').html(`<div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>`);
-    $('#sumNPWP').html(`<div class="spinner-border text-primary" role="status">
+    $('#sumDokumenLain').html(`<div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>`);
-    $('#sumACCDBRG').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-    $('#sumACCDLGN').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-    $('#sumACCARBON').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-    $('#sumACCARDAT').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-    $('#sumTagihan').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-    $('#totalPenjualan').html(`<div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>`);
-
+    
     axios({
         method: `GET`,
-        url: `<?= site_url() ?>api/web/v1/dashboard`,
+        url: `<?= site_url() ?>api/web/v1/dashboard/ppn`,
         headers: {
             Authorization: 'Bearer <?= $token ?>' 
         }
@@ -404,21 +333,13 @@ function getData() {
     .then(function (response) {
         // console.log(response);
         
-        $('#sumACCDBRG').text(response.data.data.accdbrg.total_rows + ' Data');
-        $('#lastUpdateACCDBRG').text(moment(response.data.data.accdbrg.last_update, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY hh:mm:ss'));
-        $('#sumACCDLGN').text(response.data.data.accdlgn.total_rows + ' Data');
-        $('#lastUpdateACCDLGN').text(moment(response.data.data.accdlgn.last_update, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY hh:mm:ss'));
-        $('#sumACCARBON').text(response.data.data.accarbon.total_rows + ' Data');
-        $('#lastUpdateACCARBON').text(moment(response.data.data.accarbon.last_update, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY hh:mm:ss'));
-        $('#sumACCARDAT').text(response.data.data.accardat.total_rows + ' Data');
-        $('#lastUpdateACCARDAT').text(moment(response.data.data.accardat.last_update, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY hh:mm:ss'));
+        $('#sumPPNMasukkan').text(response.data.data.ppnmasukkan.total_rows + ' Data');
+        $('#sumDokumenLain').text(response.data.data.dokumenlain.total_rows + ' Data');
         
         $("span.numbers").digits();
     })
     .catch(function (error) {
         // console.log(error);
-        $('#sumKTP').text('Not Found');
-        $('#lastUpdateKTP').text('-');
     })
 }
 

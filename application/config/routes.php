@@ -65,6 +65,7 @@ $route['reset-password/(:any)']     = 'ResetPassword/confirm/$1';
 $route['ktp']                       = 'KTP/index';
 $route['npwp']                      = 'NPWP/index';
 $route['import-document']           = 'Import_Document/index';
+$route['import-document/pajak']     = 'Import_Document/pajak';
 $route['users']                     = 'User/index';
 $route['users/profile']             = 'User/profile';
 $route['users/activation']          = 'User/index';
@@ -82,8 +83,16 @@ $route['accardat/tagihan/klik3/(:any)/(:any)/from/(:any)/to/(:any)/export'] = 'A
 $route['report/sales']              = 'Report/sales';
 $route['report/sales/barang-langganan']              = 'Report/by_barang_langganan';
 $route['report/stock']          = 'Report/stock';
+$route['report/ppn']            = 'Report/ppn';
+$route['report/unifikasi']      = 'Report/unifikasi';
 $route['news']          = 'News/index';
 $route['news/(:num)']   = 'News/detail/$1';
+$route['kode-objek-pajak']  = 'Unifikasi_Kode_Objek_Pajak/index';
+$route['kode-fasilitas']    = 'Unifikasi_Kode_Fasilitas/index';
+$route['kode-pembayaran']    = 'Unifikasi_Kode_Pembayaran/index';
+$route['kode-dokumen']    = 'Unifikasi_Kode_Dokumen/index';
+$route['master/perusahaan']    = 'Master_Perusahaan/index';
+$route['master/vendor']    = 'Master_Vendor/index';
 
 //==================================== API ROUTES WEB =====================================
 
@@ -104,6 +113,7 @@ $route['api/web/v1/profile/change-password']['PUT']         = 'api/web/v1/User_A
 
 // Dashboard 
 $route['api/web/v1/dashboard']['GET']                       = 'api/web/v1/Dashboard_Api/index';
+$route['api/web/v1/dashboard/ppn']['GET']                   = 'api/web/v1/Dashboard_Api/ppn';
 $route['api/web/v1/dashboard/tagihan']['GET']               = 'api/web/v1/Dashboard_Api/show_all_tagihan';
 $route['api/web/v1/dashboard/tagihan/count']['GET']         = 'api/web/v1/Dashboard_Api/count_tagihan';
 $route['api/web/v1/dashboard/ktp/count']['GET']             = 'api/web/v1/Dashboard_Api/count_ktp';
@@ -216,8 +226,26 @@ $route['api/web/v1/accdbrg']['GET']                                             
 $route['api/web/v1/report/sales']['POST']       = 'api/web/v1/Report_Api/sales';
 $route['api/web/v1/report/sales/by-barang-langganan']['POST']       = 'api/web/v1/Report_Api/by_sales_langganan';
 $route['api/web/v1/report/stock']['POST']   = 'api/web/v1/Report_Api/stock';
+$route['api/web/v1/report/ppn']['POST']       = 'api/web/v1/Report_Api/ppn';
+$route['api/web/v1/report/ppn/(:any)/(:any)/(:num)']['DELETE']       = 'api/web/v1/Report_Api/destroy/$1/$2/$3';
+$route['api/web/v1/report/unifikasi']['POST']       = 'api/web/v1/Report_Api/unifikasi';
 
 
+// UNIFIKASI
+$route['api/web/v1/unifikasi/kode-objek-pajak']['GET']  = 'api/web/v1/Unifikasi_Kode_Objek_Pajak_Api/show_all';
+$route['api/web/v1/unifikasi/kode-fasilitas']['GET']    = 'api/web/v1/Unifikasi_Kode_Fasilitas_Api/show_all';
+$route['api/web/v1/unifikasi/kode-pembayaran']['GET']    = 'api/web/v1/Unifikasi_Kode_Pembayaran_Api/show_all';
+$route['api/web/v1/unifikasi/kode-dokumen']['GET']    = 'api/web/v1/Unifikasi_Kode_Dokumen_Api/show_all';
+
+
+// MASTER
+$route['api/web/v1/master/perusahaan']['GET']  = 'api/web/v1/Master_Perusahaan_Api/show_all';
+$route['api/web/v1/master/vendor']['GET']                 = 'api/web/v1/Master_Vendor_Api/show_all';
+$route['api/web/v1/master/vendor/count']['GET']           = 'api/web/v1/Master_Vendor_Api/count';
+$route['api/web/v1/master/vendor/(:num)']['GET']          = 'api/web/v1/Master_Vendor_Api/show_by_id/$1';
+$route['api/web/v1/master/vendor']['POST']                = 'api/web/v1/Master_Vendor_Api/create';
+$route['api/web/v1/master/vendor/(:num)']['PUT']          = 'api/web/v1/Master_Vendor_Api/update/$1';
+$route['api/web/v1/master/vendor/(:num)']['DELETE']       = 'api/web/v1/Master_Vendor_Api/destroy/$1';
 
 //==================================== API ROUTES MOBILE =====================================
 

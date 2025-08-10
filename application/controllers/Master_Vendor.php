@@ -1,11 +1,14 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Import_Document extends CI_Controller {
+class Master_Vendor extends CI_Controller {
 
     public function __construct()
     {
         parent::__construct();
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
         // validate token
         $this->token = AUTHORIZATION::validateTokenOnPage();
         
@@ -37,7 +40,7 @@ class Import_Document extends CI_Controller {
 
     public function index()
     {
-        $data['title'] = 'Import Document';
+        $data['title'] = 'Master Vendor';
         $data['token'] = $this->token;
 
         // role
@@ -49,36 +52,13 @@ class Import_Document extends CI_Controller {
         $data['action_export_to_csv'] = $this->export_to_csv_access;
         $data['action_export_to_pdf'] = $this->export_to_pdf_access;
 
-
         $this->load->view('_layout/header', $data);
         $this->load->view('_layout/sidebar', $data);
         $this->load->view('_layout/topbar', $data);
-        $this->load->view('pages/import_document', $data);
-        $this->load->view('_layout/footer');
-    }
-
-    public function pajak()
-    {
-        $data['title'] = 'Import Document Pajak';
-        $data['token'] = $this->token;
-
-        // role
-        $data['action_create'] = $this->create_access;
-        $data['action_update'] = $this->update_access;
-        $data['action_delete'] = $this->delete_access;
-        $data['action_approval'] = $this->approve_access;
-        $data['action_export_to_excel'] = $this->export_to_excel_access;
-        $data['action_export_to_csv'] = $this->export_to_csv_access;
-        $data['action_export_to_pdf'] = $this->export_to_pdf_access;
-
-
-        $this->load->view('_layout/header', $data);
-        $this->load->view('_layout/sidebar', $data);
-        $this->load->view('_layout/topbar', $data);
-        $this->load->view('pages/import_document_pajak', $data);
+        $this->load->view('pages/master_vendor', $data);
         $this->load->view('_layout/footer');
     }
 
 }
 
-/* End of file Import_Document.php */
+/* End of file Master_Vendor.php */

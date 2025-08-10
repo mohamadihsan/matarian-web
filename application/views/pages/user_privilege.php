@@ -174,7 +174,11 @@
                     complete: function(res) {
                         // console.log(res);
                         if (res.status == 200) {
-                            let btn = `<button class="btn bg-custom btn-sm btn-block">SAVE PRIVILEGE</button>`;
+                            let btn = ``
+                            if ($('#userGroup').val()) {
+                                btn = `<button class="btn bg-custom btn-sm btn-block">SAVE PRIVILEGE</button>`;
+                            }
+                            
                             $('#btnSubmit').html(btn);
                         } else {
                             $('#btnSubmit').html('');
@@ -202,7 +206,7 @@
                         data: "read_access",
                         className: "align-middle text-center",
                         render: function(data, type, row, meta) {
-                            if (row.id == "4" || row.id == "6" || row.id == "7" || row.id == "8" || row.id == "9" || row.id == "10" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20" || row.id == "21" || row.id == "22") {
+                            if (row.id == "4" || row.id == "6" || row.id == "7" || row.id == "8" || row.id == "9" || row.id == "10" || row.id == "11" || row.id == "12" || row.id == "13" || row.id == "14" || row.id == "15" || row.id == "16" || row.id == "17" || row.id == "18" || row.id == "19" || row.id == "20" || row.id == "21" || row.id == "22" || row.id == "28" || row.id == "29" || row.id == "30" || row.id == "31" || row.id == "32" || row.id == "33" || row.id == "34") {
                                 check = `<input type="checkbox" name="read_access" value="${row.id}" ${data === "1" ? 'checked' : ''}>`;
                             } else if (row.id == "1" || row.id == "2" || row.id == "3" || row.id == "4" || row.id == "5") {
                                 check = '<i class="fa fa-check text-primary"></i>';

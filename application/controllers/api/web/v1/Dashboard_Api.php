@@ -378,6 +378,34 @@ class Dashboard_Api extends REST_Controller
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
+
+    public function ppn_get()
+    {
+        try {
+            $data['ppnmasukkan'] = array(
+                'total_rows' =>  $this->Dashboard_Model->count_ppnmasukkan()
+            );
+
+            $data['dokumenlain'] = array(
+                'total_rows' =>  $this->Dashboard_Model->count_dokumenlain()
+            );
+
+            //response success with data
+            $this->response([
+                'status' => true,
+                'message' => 'Data PPN',
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } catch (\Throwable $th) {
+
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
 }
 
 /* End of file Dashboard_Api.php */

@@ -278,6 +278,20 @@ class Dashboard_Model extends CI_Model
         return $this->db->get('tbl_accardat')->num_rows();
     }
 
+    // count ppn masukkan
+    public function count_ppnmasukkan()
+    {
+        $this->db->where('jenis_dokumen', 'PPN MASUKKAN');
+        return $this->db->get('tbl_upload_dokumen_pajak')->num_rows();
+    }
+
+    // count dokumen lain
+    public function count_dokumenlain()
+    {
+        $this->db->where('jenis_dokumen', 'DOKUMEN LAIN');
+        return $this->db->get('tbl_upload_dokumen_pajak')->num_rows();
+    }
+
     // last update accardat
     public function last_update_accardat()
     {

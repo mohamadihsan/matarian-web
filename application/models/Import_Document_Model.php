@@ -15,12 +15,27 @@ class Import_Document_Model extends CI_Model {
             $table = 'tbl_accarbon';
         } else if ($type_document == 'ACCARDAT') {
             $table = 'tbl_accardat';
-        } 
+        } else if ($type_document == 'KODEOBJEKPAJAK') {
+            $table = 'tbl_unifikasi_kode_objek_pajak';
+        } else if ($type_document == 'KODEFASILITAS') {
+            $table = 'tbl_unifikasi_kode_fasilitas';
+        } else if ($type_document == 'KODEPEMBAYARAN') {
+            $table = 'tbl_unifikasi_kode_pembayaran';
+        } else if ($type_document == 'KODEDOKUMEN') {
+            $table = 'tbl_unifikasi_kode_dokumen';
+        }  else if ($type_document == 'PPNMASUKKAN') {
+            $table = 'tbl_upload_dokumen_pajak';
+        }  else if ($type_document == 'DOKUMENLAIN') {
+            $table = 'tbl_upload_dokumen_pajak';
+        }  
 
         // transaction
         // $this->db->trans_begin();
-        if ($index == 0 || $index == "0" || $index == null) {
-            $this->db->truncate($table);
+
+        if ($type_document != 'PPNMASUKKAN' && ($type_document != 'DOKUMENLAIN')) {
+            if ($index == 0 || $index == "0" || $index == null) {
+                $this->db->truncate($table);
+            }
         }
         
         $this->db->insert_batch($table, $data);
@@ -33,6 +48,24 @@ class Import_Document_Model extends CI_Model {
         //     // $this->db->trans_commit();
         //     return true;
         // } 
+    }
+
+    public function get_vendor_by_npwp($npwp)
+    {
+        $this->db->select("*");
+        $this->db->limit(1);
+        $this->db->where('new_npwp', $npwp);
+        
+        return $this->db->get('tbl_master_vendor')->row();
+    }
+
+    public function get_perusahaan_by_npwp($npwp)
+    {
+        $this->db->select("*");
+        $this->db->limit(1);
+        $this->db->where('new_npwp', $npwp);
+        
+        return $this->db->get('tbl_master_perusahaan')->row();
     }
 
 }

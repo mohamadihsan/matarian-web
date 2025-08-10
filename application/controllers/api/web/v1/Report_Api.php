@@ -16,6 +16,7 @@ class Report_Api extends REST_Controller
         $this->load->model('Global_Model');
         $this->load->model('ACCDBRG_Model');
         $this->load->model('ACCARBON_Model');
+        $this->load->model('PPN_Model');
         $this->load->model('User_Model');
 
         $this->time_server = $this->Global_Model->time_server()->result()[0]->time_server;
@@ -25,6 +26,27 @@ class Report_Api extends REST_Controller
 
         ini_set("memory_limit", "-1");
         set_time_limit(0);
+    }
+
+    public function get_nama_bulan($bulan) {
+        $bulanMap = [
+            '01' => 'JANUARI',
+            '02' => 'FEBRUARI',
+            '03' => 'MARET',
+            '04' => 'APRIL',
+            '05' => 'MEI',
+            '06' => 'JUNI',
+            '07' => 'JULI',
+            '08' => 'AGUSTUS',
+            '09' => 'SEPTEMBER',
+            '10' => 'OKTOBER',
+            '11' => 'NOVEMBER',
+            '12' => 'DESEMBER'
+        ];
+
+        $nama_bulan = $bulanMap[$bulan];
+
+        return $nama_bulan;
     }
 
     // all sales
@@ -262,6 +284,149 @@ class Report_Api extends REST_Controller
                 'prev_page_url' => null,
                 'from' => null,
                 'to' => null,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    public function ppn_post()
+    {
+        try {
+            $_POST = json_decode($this->input->raw_input_stream, true);
+
+            $bulan = $this->input->post('bulan');
+            $tahun = $this->input->post('tahun');
+            $bulan_pengkreditkan = $this->input->post('bulan_pengkreditkan');
+            $tahun_pengkreditkan = $this->input->post('tahun_pengkreditkan');
+            $status_faktur = $this->input->post('status_faktur');
+            $perusahaan = $this->input->post('perusahaan');
+
+            $nama_bulan = $this->get_nama_bulan($bulan);
+            $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
+
+            $response = $this->PPN_Model->get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur)->result();
+            $total_rows = count($response);
+
+            $total = 0;
+            // foreach ($response as $res) {
+            //     $total += $res->nilai_faktur;
+            // }
+
+            if ($response) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data ditemukan',
+                    'total_rows' => $total_rows,
+                    'total' => $total,
+                    'data' => $response
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response success not found data
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan',
+                    'total_rows' => 0,
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    public function unifikasi_post()
+    {
+        try {
+            $_POST = json_decode($this->input->raw_input_stream, true);
+
+            $bulan = $this->input->post('bulan');
+            $tahun = $this->input->post('tahun');
+            $perusahaan = $this->input->post('perusahaan');
+            $fasilitas = $this->input->post('fasilitas');
+            $kode_objek_pajak = $this->input->post('kode_objek_pajak');
+            $kode_dokumen = $this->input->post('kode_dokumen');
+            $kode_pembayaran = $this->input->post('kode_pembayaran');
+
+            $nama_bulan = $this->get_nama_bulan($bulan);
+
+            $response = $this->PPN_Model->get_unifikasi_report($perusahaan, $nama_bulan, $tahun, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)->result();
+            $total_rows = count($response);
+
+
+            $total = 0;
+            // foreach ($response as $res) {
+            //     $total += $res->nilai_faktur;
+            // }
+
+            if ($response) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data ditemukan',
+                    'total_rows' => $total_rows,
+                    'total' => $total,
+                    'data' => $response
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response success not found data
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan',
+                    'total_rows' => 0,
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response success not found data
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    public function destroy_delete($bulan, $tahun, $perusahaan)
+    {
+        try {
+
+            if ($bulan == '' || $tahun == '' || $perusahaan == '') {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Parameter tidak lengkap. Data tidak dapat dihapus',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            $nama_bulan = $this->get_nama_bulan($bulan);
+
+            $delete = $this->PPN_Model->delete($nama_bulan, $tahun, $perusahaan);
+            if ($delete) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil dihapus',
+                    'data' => $delete
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response failed
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data gagal dihapus',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response failed
+            $this->response([
+                'status' => false,
+                'message' => $th,
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }

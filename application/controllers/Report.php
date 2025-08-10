@@ -105,6 +105,54 @@ class Report extends CI_Controller
         $this->load->view('pages/report_stock', $data);
         $this->load->view('_layout/footer');
     }
+
+    public function ppn()
+    {
+        $data['title'] = 'Rekapitulasi PPN';
+        $data['token'] = $this->token;
+        $data['user_id'] = $this->user_id;
+        $data['id_user_group'] = $this->id_user_group;
+
+        // role
+        $data['action_create'] = $this->create_access;
+        $data['action_update'] = $this->update_access;
+        $data['action_delete'] = $this->delete_access;
+        $data['action_approval'] = $this->approve_access;
+        $data['action_export_to_excel'] = $this->export_to_excel_access;
+        $data['action_export_to_csv'] = $this->export_to_csv_access;
+        $data['action_export_to_pdf'] = $this->export_to_pdf_access;
+
+
+        $this->load->view('_layout/header', $data);
+        $this->load->view('_layout/sidebar', $data);
+        $this->load->view('_layout/topbar', $data);
+        $this->load->view('pages/report_ppn', $data);
+        $this->load->view('_layout/footer');
+    }
+
+    public function unifikasi()
+    {
+        $data['title'] = 'Laporan Unifikasi';
+        $data['token'] = $this->token;
+        $data['user_id'] = $this->user_id;
+        $data['id_user_group'] = $this->id_user_group;
+
+        // role
+        $data['action_create'] = $this->create_access;
+        $data['action_update'] = $this->update_access;
+        $data['action_delete'] = $this->delete_access;
+        $data['action_approval'] = $this->approve_access;
+        $data['action_export_to_excel'] = $this->export_to_excel_access;
+        $data['action_export_to_csv'] = $this->export_to_csv_access;
+        $data['action_export_to_pdf'] = $this->export_to_pdf_access;
+
+
+        $this->load->view('_layout/header', $data);
+        $this->load->view('_layout/sidebar', $data);
+        $this->load->view('_layout/topbar', $data);
+        $this->load->view('pages/report_unifikasi', $data);
+        $this->load->view('_layout/footer');
+    }
 }
 
 /* End of file Report.php */
