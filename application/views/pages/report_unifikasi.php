@@ -24,10 +24,10 @@
                                 <label class="label-katapanda-sm" for="periode">Masa Pajak <i class="text-danger">*</i></label>
                                 <input type="text" name="periode" class="form-control form-control-sm" id="periode">
                             </div>
-                            <div class="form-group col-lg-2 col-md-2">
+                            <!-- <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="status_faktur">Status</label>
                                 <select name="status_faktur" id="status_faktur" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
-                            </div>
+                            </div> -->
                         </div>
                     </form>
                     <div class="form-row">
@@ -124,45 +124,25 @@
                 exportOptions: {
                     format: {
                         body: function(data, row, column, node) {
-                            if (column === 0) {
-                                // NPWP Penjua;
+                            if (column === 0 || column === 1 || column === 2 || column === 3 || column === 4 || column === 5 || column === 8 || column === 9 || column === 11 || column === 13 || column === 12) {
+                                // Masa Pajak, Tahun Pajak, NPWP, ID TKU Penerima Penghasilan, Fasilitas, Kode Objek Pajak, Jenis Dok. Referensi, Nomor Dok. Referensi,	ID TKU Pemotong, Opsi Pembayaran (IP), Nomor SP2D (IP)
                                 return `${data}`;
-                            } else if (column === 1) {
-                                // Nama Penjual
-                                return `${data}`;
-                            } else if (column === 2) {
-                                // Cek
-                                return `${data}`;
-                            } else if (column === 3) {
-                                // Nomor Faktur Pajak
-                                return `${data}`;
-                            } else if (column === 4) {
-                                // Tanggal Faktur Pajak
+                            } else if (column === 6 || column === 15) {
+                                // DPP, PPh
+                                let nominal = data?.replace(/[^\d]/g, ''); // buang semua selain angka
+                                return parseInt(nominal) || 0;
+                            } else if (column === 7) {
+                                // Tarif
+                                let nominal = data?.replace(/[^0-9.]/g, ''); // buang semua selain angka & titik
+                                return parseFloat(nominal) || 0;
+                            } else if (column === 10 || column === 14) {
+                                // Tanggal Dok. Referensi, Tanggal Pemotongan
                                 let parsedDate = moment(data, ['DD/MM/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY'], true);
                                 if (parsedDate.isValid()) {
                                     return parsedDate.format('DD/MM/YYYY');
                                 }
                                 return data;
-                            } else if (column === 5) {
-                                // masa Pajak
-                                return `${data}`;
-                            } else if (column === 6) {
-                                // Tahun Pajak
-                                return `${data}`;
-                            } else if (column === 7) {
-                                // masa Pajak Pengkreditkan
-                                return `${data}`;
-                            } else if (column === 8) {
-                                // Tahun Pajak Pengkreditkan
-                                return `${data}`;
-                            } else if (column === 9) {
-                                // Status Faktur
-                                return `${data}`;
-                            } else if (column === 10 || column === 11 || column === 12 || column === 13 || column === 14 || column === 15 || column === 16) {
-                                // Harga Jual, DPP Nilai Lain, PPN, PPN Condition, B1, B2, B3
-                                let nominal = data?.replace(/[^\d]/g, ''); // buang semua selain angka
-                                return parseInt(nominal) || 0;
-                            } 
+                            }
 
                             return data;
                         }
