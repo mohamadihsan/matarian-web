@@ -513,7 +513,7 @@ class Import_Document_Api extends REST_Controller {
                                 if (empty($vendor)) {
                                     $this->response([
                                         'status' => false,
-                                        'message' => 'Vendor2 dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
+                                        'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
                                         'data' => []
                                     ], REST_Controller::HTTP_PARTIAL_CONTENT);
                                 }
