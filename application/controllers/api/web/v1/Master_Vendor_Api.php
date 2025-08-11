@@ -186,7 +186,7 @@ class Master_Vendor_Api extends REST_Controller
             $nomor = $this->input->post('nomor');
             $rt = $this->input->post('rt');
             $rw = $this->input->post('rw');
-            $unifikasi_kode_objek_pajak_id = $this->input->post('unifikasi_kode_objek_pajak_id');
+            $unifikasi_kode_objek_pajak_id = !empty($this->input->post('unifikasi_kode_objek_pajak_id')) ? $this->input->post('unifikasi_kode_objek_pajak_id') : null;
             $cek = $this->input->post('cek');
             $updated_at =  $this->time_server;
             $updated_by = $this->token->data->username;
