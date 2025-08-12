@@ -7,6 +7,7 @@ class PPN_Model extends CI_Model {
     public function get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur)
     {
         $this->db->select('
+            tbl_upload_dokumen_pajak.id,
             tbl_upload_dokumen_pajak.npwp_penjual,
             tbl_upload_dokumen_pajak.nama_penjual,
             tbl_upload_dokumen_pajak.cek,
@@ -62,7 +63,26 @@ class PPN_Model extends CI_Model {
                         ELSE 0
                     END
                 ELSE 0
-            END AS b3
+            END AS b3,
+            tbl_upload_dokumen_pajak.master_perusahaan_id,
+            tbl_upload_dokumen_pajak.master_vendor_id,
+            tbl_upload_dokumen_pajak.ppn_persentase,
+            tbl_upload_dokumen_pajak.jenis_dokumen,
+            tbl_upload_dokumen_pajak.cek,
+            tbl_upload_dokumen_pajak.jenis_transaksi,
+            tbl_upload_dokumen_pajak.ppnbm,
+            tbl_upload_dokumen_pajak.perekam,
+            tbl_upload_dokumen_pajak.nomor_sp2d,
+            tbl_upload_dokumen_pajak.valid,
+            tbl_upload_dokumen_pajak.dilaporkan,
+            tbl_upload_dokumen_pajak.dilaporkan_oleh_penjual,
+            tbl_upload_dokumen_pajak.uraian,
+            tbl_upload_dokumen_pajak.is_jasa,
+            tbl_upload_dokumen_pajak.nominal_jasa,
+            tbl_upload_dokumen_pajak.unifikasi_kode_fasilitas_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id
         ');
 
         $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', strtoupper($nama_bulan));
@@ -97,6 +117,7 @@ class PPN_Model extends CI_Model {
     public function get_unifikasi_report($perusahaan, $nama_bulan, $tahun, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)
     {
         $this->db->select('
+            tbl_upload_dokumen_pajak.id,
             tbl_upload_dokumen_pajak.masa_pajak,
             tbl_upload_dokumen_pajak.tahun_pajak,
             tbl_upload_dokumen_pajak.npwp_penjual,
@@ -156,6 +177,13 @@ class PPN_Model extends CI_Model {
         $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', $nama_bulan);
         $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak', $tahun);
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
+        $this->db->delete('tbl_upload_dokumen_pajak');
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+    }
+
+    public function delete_row($id)
+    {
+        $this->db->where('tbl_upload_dokumen_pajak.id', $id);
         $this->db->delete('tbl_upload_dokumen_pajak');
         return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
     }

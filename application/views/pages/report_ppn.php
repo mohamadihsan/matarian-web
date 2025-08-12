@@ -14,11 +14,11 @@
                     </div>
                 </div>
                 <div class="table-responsive p-3">
-                    <form id="form">
+                    <form id="formFilter">
                         <div class="form-row">
                             <div class="form-group col-lg-4 col-md-4">
-                                <label class="label-katapanda-sm" for="perusahaan">Perusahaan <i class="text-danger">*</i></label>
-                                <select name="perusahaan" id="perusahaan" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                                <label class="label-katapanda-sm" for="perusahaanFilter">Perusahaan <i class="text-danger">*</i></label>
+                                <select name="perusahaanFilter" id="perusahaanFilter" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
                             <div class="form-group col-md-3">
                                 <label class="label-katapanda-sm" for="periode">Masa Pajak <i class="text-danger">*</i></label>
@@ -47,6 +47,7 @@
                         <table class="table table-striped table-bordered table-md text-katapanda-sm" id="katapandaTable" width="100%">
                             <thead class="thead-light">
                                 <tr>
+                                    <th class="text-center text-nowrap"></th>
                                     <th class="text-center text-nowrap">NPWP Penjual</th>
                                     <th class="text-right text-nowrap">Nama Penjual</th>
                                     <th class="text-right text-nowrap">Cek</th>
@@ -68,6 +69,7 @@
                             </thead>
                             <tfoot class="">
                                 <tr>
+                                    <th class="text-center text-nowrap"></th>
                                     <th class="text-center text-nowrap">NPWP Penjual</th>
                                     <th class="text-right text-nowrap">Nama Penjual</th>
                                     <th class="text-right text-nowrap">Cek</th>
@@ -97,7 +99,127 @@
     </div>
     <!---Container Fluid-->
 
-    <!-- Confirm Delete -->
+    <!-- Form Add/Edit -->
+    <div class="modal fade" id="formKatapanda" tabindex="-1" role="dialog" aria-labelledby="formKatapandaTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="form">
+                <div class="modal-content">
+                    <div class="modal-header bg-custom">
+                        <h6 class="modal-title" id="formTitle"></h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="perusahaan">Perusahaan <i class="text-danger">*</i></label>
+                            <select name="perusahaan" id="perusahaan" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="vendor">Nama Penjual <i class="text-danger">*</i></label>
+                            <select name="vendor" id="vendor" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="npwpPenjual">NPWP Penjual <i class="text-danger"></i></label>
+                            <input type="text" name="npwpPenjual" class="form-control form-control-sm" id="npwpPenjual" placeholder="" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="cek">Cek <i class="text-danger">*</i></label>
+                            <select name="cek" id="cek" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Faktur Pajak <i class="text-danger">*</i></label>
+                            <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Faktur Pajak <span class="text-danger">*</span></label>
+                            <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="">                        
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <i class="text-danger">*</i></label>
+                            <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="masaPajakPengkreditkan">Masa Pajak Pengkreditkan </label>
+                            <input type="text" name="masaPajakPengkreditkan" class="form-control form-control-sm" id="masaPajakPengkreditkan">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="statusFakturPajak">Status Faktur <i class="text-danger">*</i></label>
+                            <select name="statusFakturPajak" id="statusFakturPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="hargaJualFormat">Harga Jual <span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-md" id="hargaJualFormat" placeholder="0">
+                            <input type="hidden" name="hargaJual" id="hargaJual" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-md" id="dppNilaiLainFormat" placeholder="0">
+                            <input type="hidden" name="dppNilaiLain" id="dppNilaiLain" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-md" id="ppnFormat" placeholder="0">
+                            <input type="hidden" name="ppn" id="ppn" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="checkbox" name="isJasa" class="" id="isJasa">
+                            <label class="label-katapanda-sm" for="isJasa">JASA <span class="text-danger"></span></label>
+                        </div>
+                        
+                        <div class="form-group" id="inputNominalJasa">
+                            <label class="label-katapanda-sm" for="nominalJasaFormat">Nominal Jasa <span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-md" id="nominalJasaFormat" placeholder="0">
+                            <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
+                        </div>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                        <!-- <button type="button" class="btn btn-secondary" id="btnResetFormInput">Reset Form</button> -->
+                        <button type="submit" class="btn bg-custom" id="btnSubmit"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Per Row -->
+    <div class="modal fade" id="confirmKatapanda" tabindex="-1" role="dialog" aria-labelledby="confirmKatapandaTitle" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="confirm">
+                <div class="modal-content">
+                    <div class="modal-header bg-custom">
+                        <h6 class="modal-title" id="confirmTitle"></h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah anda yakin akan menghapus data faktur pajak: <span class="font-weight-bold" id="dataDelete"></span> ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn bg-custom" id="submitDeleteRow">Yes, delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Per Periode -->
     <div class="modal fade" id="confirmDeleteReport" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteReportTitle" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <form id="confirm">
@@ -126,12 +248,18 @@
             // init variable
             // $('#sansHidden').css('display', 'none')
             let id = null;
+            let actionCreate = <?php echo $action_create == 1 ? 1 : 0; ?>;
+            let actionUpdate = <?php echo $action_update == 1 ? 1 : 0; ?>;
+            let actionDelete = <?php echo $action_delete == 1 ? 1 : 0; ?>;
             let actionExportToExcel = <?php echo $action_export_to_excel == 1 ? 1 : 0; ?>;
             let actionExportToCsv = <?php echo $action_export_to_csv == 1 ? 1 : 0; ?>;
             let actionExportToPdf = 0;
             var perusahaanName = ''
 
+            actionCreate ? $('#actionCreate').html('<button class="btn btn-sm btn-outline-primary" id="newData"><i class="fas fa-plus"></i> New Data</button>') : '';
+            
             $('#deleteReport').hide()
+            $('#inputNominalJasa').hide();
 
             // button default for action datatables
             let buttonAction = ['copyHtml5']; // add button to copy data
@@ -150,10 +278,97 @@
                 todayHighlight: true,
                 clearBtn: true
             }).datepicker();
+            $('#masaPajak').datepicker({
+                format: "mm-yyyy",
+                minViewMode: 1,          // 1 = Bulan, 2 = Tahun
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker('update', moment().format('MM-YYYY'));
+            $('#masaPajakPengkreditkan').datepicker({
+                format: "mm-yyyy",
+                minViewMode: 1,          // 1 = Bulan, 2 = Tahun
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker();
+            $('#tanggalFakturPajak').datepicker({
+                format: 'dd-mm-yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker('update', moment(new Date()).format('DD-MM-YYYY'));
+
+            $('#hargaJualFormat').on('input', function () {
+                // Ambil nilai murni hanya angka
+                let rawValue = $(this).val().replace(/\D/g, '');
+
+                // Format ribuan
+                let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                // Set tampilan format ke input text
+                $(this).val(formattedValue);
+
+                // Simpan nilai asli ke hidden input
+                $('#hargaJual').val(rawValue);
+            });
+
+            $('#dppNilaiLainFormat').on('input', function () {
+                // Ambil nilai murni hanya angka
+                let rawValue = $(this).val().replace(/\D/g, '');
+
+                // Format ribuan
+                let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                // Set tampilan format ke input text
+                $(this).val(formattedValue);
+
+                // Simpan nilai asli ke hidden input
+                $('#dppNilaiLain').val(rawValue);
+            });
+
+            $('#ppnFormat').on('input', function () {
+                // Ambil nilai murni hanya angka
+                let rawValue = $(this).val().replace(/\D/g, '');
+
+                // Format ribuan
+                let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                // Set tampilan format ke input text
+                $(this).val(formattedValue);
+
+                // Simpan nilai asli ke hidden input
+                $('#ppn').val(rawValue);
+            });
+
+            $('#nominalJasaFormat').on('input', function () {
+                // Ambil nilai murni hanya angka
+                let rawValue = $(this).val().replace(/\D/g, '');
+
+                // Format ribuan
+                let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                // Set tampilan format ke input text
+                $(this).val(formattedValue);
+
+                // Simpan nilai asli ke hidden input
+                $('#nominalJasa').val(rawValue);
+            });
+
+            $('#isJasa').change(function(){
+                if($(this).is(':checked')){
+                    $('#inputNominalJasa').show();
+                } else {
+                    $('#inputNominalJasa').hide();
+                }
+            });
 
             // store to select
             getPerusahaan();
+            getVendor();
             getStatusFaktur();
+            getStatusFakturFilter();
+            getCek();
 
             // button action by user role 
             actionExportToExcel ? buttonAction.push({
@@ -297,14 +512,16 @@
                             tahun: tahun,
                             bulan_pengkreditkan: bulanPengkreditkan,
                             tahun_pengkreditkan: tahunPengkreditkan,
-                            perusahaan: $('#perusahaan').val(),
+                            perusahaan: $('#perusahaanFilter').val(),
                             status_faktur: $('#status_faktur').val(),
                         });
                     },
                     complete: function(res) {
-                        let response = res.responseJSON
-                        if (response.status && response.total_rows > 0) {
-                            $('#deleteReport').show()   
+                        let response = res?.responseJSON
+                        if (response?.status && response?.total_rows > 0) {
+                            if (actionDelete) {
+                                $('#deleteReport').show()   
+                            }
                         } else {
                             $('#deleteReport').hide()
                         }
@@ -315,7 +532,21 @@
                     }
                 },
                 order: [],
-                columns: [{
+                columns: [
+                    {
+                        data: "id",
+                        className: "align-middle text-center",
+                        responsivePriority: 2,
+                        render: function(data, type, row, meta) {
+                            // set by role
+                            let action = `<div class="btn-group"><button class="btn btn-sm btn-outline-info detail" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-info-circle"></i></button>`;
+                            actionUpdate ? action += `<button class="btn btn-sm btn-outline-warning d-none d-sm-block edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="far fa-edit"></i></button>` : '';
+                            actionDelete ? action += `<button class="btn btn-sm btn-outline-danger d-none d-sm-block delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>` : '';
+                            action += `</div>`;
+                            return action;
+                        }
+                    },
+                    {
                         data: "npwp_penjual",
                         className: "align-middle text-nowrap",
                         responsivePriority: 1
@@ -434,15 +665,16 @@
             })
 
             $('#reset').click(function() {
-                $('#form').trigger("reset");
+                $('#formFilter').trigger("reset");
 
                 $('#periode').val(moment().subtract(0, 'years').format('MM-YYYY'));
                 $('#periode2').val();
                 $('.selectpicker').selectpicker('refresh');
-                $('#perusahaan').val().change();
+                $('#perusahaanFilter').val().change();
+                $('#status_faktur').val().change();
             })
 
-            $('#perusahaan').on('change', function() {
+            $('#perusahaanFilter').on('change', function() {
                 let selectedOption = $(this).find('option:selected');
                 let selectedName = selectedOption.data('nama');
                 
@@ -452,6 +684,142 @@
                     perusahaanName = ''
                 }
             });
+
+            $('#vendor').on('change', function() {
+                let selectedOption = $(this).find('option:selected');
+                let selectedNPWP = selectedOption.data('npwp');
+                let selectedCek = selectedOption.data('cek');
+                
+                $('#npwpPenjual').val(selectedNPWP)
+                $('#cek').val(selectedCek).trigger("change")
+            });
+
+            // Button Enable Fixed Header
+            $('#enable').on('click', function() {
+                table.fixedHeader.enable();
+                $('#enable').css("display", "none");
+                $('#disable').css("display", "");
+            });
+
+            // Button Disable Fixed Header
+            $('#disable').on('click', function() {
+                table.fixedHeader.disable();
+                $('#enable').css("display", "");
+                $('#disable').css("display", "none");
+            });
+
+            // getter and setter data in the row to form input
+            $('#katapandaTable tbody').on('click', 'tr', function() {
+
+                var ids = $.map(table.rows(this).data(), function(item) {
+                    // alert(JSON.stringify(item))
+                    // console.log('Edit');
+                    // console.log(JSON.stringify(item));
+                    
+                    // Format ribuan
+                    let itemDppNilaiLainFormat = item.dpp_nilai_lain?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    let itemHargaJualFormat = item.harga_jual?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    let itemPpnFormat = item.ppn?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    
+                    // store data to input
+                    $('#perusahaan').val(item.master_perusahaan_id).trigger('change');
+                    $('#vendor').val(item.master_vendor_id).trigger('change');
+                    $('#npwpPenjual').val(item.npwp_penjual);
+                    $('#cek').val(item.cek).trigger('change');
+                    $('#nomorFakturPajak').val(item.nomor_faktur_pajak);
+                    $('#tanggalFakturPajak').datepicker().datepicker('update', moment(new Date(item.tanggal_faktur_pajak)).format('DD-MM-YYYY'));
+                    $('#statusFakturPajak').val(item.status_faktur_pajak).trigger('change');
+                    $('#hargaJual').val(item.harga_jual);
+                    $('#hargaJualFormat').val(itemHargaJualFormat);
+                    $('#dppNilaiLain').val(item.dpp_nilai_lain);
+                    $('#dppNilaiLainFormat').val(itemDppNilaiLainFormat);
+                    $('#ppn').val(item.ppn);
+                    $('#ppnFormat').val(itemPpnFormat);
+
+                    const masaPajakClicked = bulanToNumber(item.masa_pajak)
+                    let masaTahunPajakClicked = ''
+                    if (item.masa_pajak && item.tahun_pajak) {
+                        masaTahunPajakClicked = `${masaPajakClicked}-${item.tahun_pajak}`
+                        $('#masaPajak').datepicker().datepicker('update', moment(masaTahunPajakClicked, 'MM-YYYY').format('MM-YYYY'));
+                    }
+                    
+                    const masaPajakPengkreditkanClicked = bulanToNumber(item.masa_pajak_pengkreditkan)
+                    let masaTahunPajakPengkreditkanClicked = ''
+                    if (item.masa_pajak_pengkreditkan && item.tahun_pajak_pengkreditkan) {
+                        masaTahunPajakPengkreditkanClicked = `${masaPajakPengkreditkanClicked}-${item.tahun_pajak_pengkreditkan}`
+                        $('#masaPajakPengkreditkan').datepicker().datepicker('update', moment(masaTahunPajakPengkreditkanClicked, 'MM-YYYY').format('MM'));
+                    }
+
+                    if (item.is_jasa == true) {
+                        $('#isJasa').prop('checked', true)
+                        $('#inputNominalJasa').show();
+                    } else {
+                        $('#isJasa').prop('checked', false)
+                        $('#inputNominalJasa').hide();
+                    }
+                    
+                    // set
+                    id = item.id;
+
+                    // store data to confirm delete text
+                    $('#dataDelete').text(item.nomor_faktur_pajak);
+
+                });
+
+            });
+
+            // modal form add new data  
+            $('#newData').click(function() {
+                $('.admin-hide').show();
+                // reset ID
+                id = null;
+                // reset validator in the form
+                validator.resetForm()
+                // reset Form
+                resetFormInput();
+
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> New <?= $title ?>');
+                $('#btnSubmit').text('Save');
+                $('#formKatapanda').modal({
+                    backdrop: 'static'
+                }, 'show')
+                $('#btnResetFormInput').css("display", "");
+            })
+
+            // modal form edit in desktop mode
+            $('.edit').click(function() {
+                // reset validator in the form
+                validator.resetForm()
+
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
+                $('#btnSubmit').text('Update');
+                $('#formKatapanda').modal({
+                    backdrop: 'static'
+                }, 'show')
+                $('#btnResetFormInput').css("display", "none");
+            })
+
+            // modal form edit in tablet/mobile mode
+            $('#katapandaTable tbody').on('click', '.edit', function() {
+                // reset validator in the form
+                validator.resetForm()
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
+                $('#btnSubmit').text('Update');
+                $('#formKatapanda').modal({
+                    backdrop: 'static'
+                }, 'show')
+                $('#btnResetFormInput').css("display", "none");
+            })
+
+            // confirm delete 
+            $('#katapandaTable tbody').on('click', '.delete', function() {
+                // show confirm
+                $('#confirmTitle').html('<i class="fas fa-users"></i> Delete <?= $title ?>');
+                $('#confirmKatapanda').modal('show')
+            })
 
             $('#deleteReport').click(function() {
                 // show confirm
@@ -464,7 +832,7 @@
             $('#submitDelete').click(function() {
                 let periodeDelete = $('#periode').val(); // hasil: '05-2025'
                 let [bulanDelete, tahunDelete] = periodeDelete.split('-');
-                let perusahaanDelete = $('#perusahaan').val()
+                let perusahaanDelete = $('#perusahaanFilter').val()
                 
                 // send request 
                 axios({
@@ -507,6 +875,160 @@
                     })
             })
 
+            $('#submitDeleteRow').click(function() {
+                
+                // send request 
+                axios({
+                        method: `DELETE`,
+                        url: `<?= site_url() ?>api/web/v1/report/ppn/${id}`,
+                        headers: {
+                            Authorization: 'Bearer <?= $token ?>'
+                        }
+                    })
+                    .then(function(response) {
+                        // console.log(response);
+                        let status = response.data.status;
+                        let message = response.data.message;
+                        let action = `delete`;
+                        if (status) {
+                            // show message
+                            notification(action, 'success', message);
+                            $('#confirmKatapanda').modal('hide');
+                        } else {
+                            // show message
+                            notification(action, 'error', message);
+                        }
+                    })
+                    .catch(function(error) {
+                        let messageError;
+                        let err = error.response;
+
+                        if (err.status === 404) {
+                            messageError = 'Request Failed. Please check your connection!';
+                        } else {
+                            messageError = err.statusText;
+                        }
+
+                        // show message
+                        notification('delete', 'error', messageError);
+                    })
+                    .then(function() {
+                        table.clear().draw();
+                        table.ajax.reload();
+                    })
+            })
+
+            // validate and request add new data and update existing data 
+            let validator = $('#form').validate({
+                rules: {
+                    fullname: "required",
+                    username: {
+                        required: true,
+                        minlength: 2
+                    },
+                    password: {
+                        required: false,
+                        // minlength: 5
+                    },
+                    confirm_password: {
+                        required: false,
+                        // minlength: 5,
+                        equalTo: "#password"
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    userGroup: {
+                        required: true
+                    },
+                    salesAR: {
+                        required: false,
+                        maxlength: 5
+                    }
+                },
+                messages: {
+                    fullname: "Please enter your fullname",
+                    username: {
+                        required: "Please enter a username",
+                        minlength: "Your username must consist of at least 2 characters"
+                    },
+                    password: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 5 characters long"
+                    },
+                    confirm_password: {
+                        required: "Please provide a password",
+                        minlength: "Your password must be at least 5 characters long",
+                        equalTo: "Please enter the same password as above"
+                    },
+                    email: "Please enter a valid email address",
+                    userGroup: {
+                        required: "Please select user group"
+                    },
+                    salesAR: {
+                        maxlength: "Sales AR is too long. It must be at most 5 characters long"
+                    }
+                },
+                submitHandler: function(form) {
+                    // start loading
+                    loadingStart()
+
+                    // send request 
+                    axios({
+                            method: id === null ? `POST` : `PUT`,
+                            url: id === null ? `<?= site_url() ?>api/web/v1/user` : `<?= site_url() ?>api/web/v1/user/${id}`,
+                            headers: {
+                                Authorization: 'Bearer <?= $token ?>'
+                            },
+                            data: {
+                                username: $('#username').val(),
+                                password: $('#password').val(),
+                                fullname: $('#fullname').val(),
+                                nomor_telepon: $('#nomorTelepon').val(),
+                                email: $('#email').val(),
+                                id_user_group: $('#userGroup').val(),
+                                web_group: $('#webGroup').val(),
+                                sales_ar: $('#salesAR').val()
+                            }
+                        })
+                        .then(function(response) {
+                            // console.log(response);
+                            let status = response.data.status;
+                            let message = response.data.message;
+                            let action = id === null ? `create` : `update`;
+                            if (status) {
+                                // show message
+                                notification(action, 'success', message);
+                                $('#formKatapanda').modal('hide');
+                                $('#katapandaTable').DataTable().ajax.reload();
+                                sumUser();
+                                sumPendingActivation();
+                            } else {
+                                // show message
+                                notification(action, 'error', message);
+                            }
+                        })
+                        .catch(function(error) {
+                            let messageError;
+                            let err = error.response;
+
+                            if (err.status === 404) {
+                                messageError = 'Request Failed. Please check your connection!';
+                            } else {
+                                messageError = err.statusText;
+                            }
+
+                            // show message
+                            notification(null, 'error', messageError);
+                        })
+                        .then(function() {
+                            // stop loading
+                            loadingStop()
+                        })
+                }
+            })
+
         });
 
         // get perusahaan
@@ -524,11 +1046,42 @@
                         selected = element.id
                         // add option
                         $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaanFilter').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
                     
-                    $('#perusahaan').val(selected).trigger('change');
+                    $('#perusahaanFilter').val(selected).trigger('change');
+                    setTimeout(
+                        function() {
+                            $('#filter').trigger('click');
+                        }, 1000);
+                })
+                .catch(function(error) {
+                    // console.log(error);
+                })
+        }
+
+        // get vendor
+        function getVendor() {
+            axios({
+                    method: `GET`,
+                    url: `<?= site_url() ?>api/web/v1/master/vendor`,
+                    headers: {
+                        Authorization: 'Bearer <?= $token ?>'
+                    }
+                })
+                .then(function(response) {
+                    let selected = '';
+                    response.data.data.forEach(element => {
+                        selected = element.id
+                        // add option
+                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-cek="' + element.cek + '">' + element.nama + '</option><option data-divider="true"></option>')
+                    });
+                    // refresh selectpicker
+                    $('.selectpicker').selectpicker('refresh');
+                    
+                    // $('#vendor').val(selected).trigger('change');
                     setTimeout(
                         function() {
                             $('#filter').trigger('click');
@@ -540,27 +1093,94 @@
         }
 
         async function getStatusFaktur() {
-            const $select = $('#status_faktur');
+            const $selectStatusFaktur = $('#statusFakturPajak');
 
             // Clear existing options if needed
-            $select.empty();
+            $selectStatusFaktur.empty();
 
             // Tambahkan opsi
-            $select.append('<option value="" selected>SEMUA</option>');
-            $select.append('<option value="AMENDED">AMENDED</option>');
-            $select.append('<option value="APPROVED">APPROVED</option>');
-            $select.append('<option value="CANCELED">CANCELED</option>');
-            $select.append('<option value="CREDITED">CREDITED</option>');
-            $select.append('<option value="UNCREDITED">UNCREDITED</option>');
+            $selectStatusFaktur.append('<option value="AMENDED">AMENDED</option>');
+            $selectStatusFaktur.append('<option value="APPROVED">APPROVED</option>');
+            $selectStatusFaktur.append('<option value="CANCELED">CANCELED</option>');
+            $selectStatusFaktur.append('<option value="CREDITED" selected>CREDITED</option>');
+            $selectStatusFaktur.append('<option value="UNCREDITED">UNCREDITED</option>');
 
             // Refresh selectpicker (jika pakai Bootstrap Select)
             $('.selectpicker').selectpicker('refresh');
 
             // Set value dan trigger change
-            $select.val();
+            $selectStatusFaktur.val();
+        }
+
+        async function getStatusFakturFilter() {
+            const $selectStatusFakturFilter = $('#status_faktur');
+
+            // Clear existing options if needed
+            // $selectStatusFakturFilter.empty();
+
+            // Tambahkan opsi
+            $selectStatusFakturFilter.append('<option value="" selected>SEMUA</option>');
+            $selectStatusFakturFilter.append('<option value="AMENDED">AMENDED</option>');
+            $selectStatusFakturFilter.append('<option value="APPROVED">APPROVED</option>');
+            $selectStatusFakturFilter.append('<option value="CANCELED">CANCELED</option>');
+            $selectStatusFakturFilter.append('<option value="CREDITED">CREDITED</option>');
+            $selectStatusFakturFilter.append('<option value="UNCREDITED">UNCREDITED</option>');
+
+            // Refresh selectpicker (jika pakai Bootstrap Select)
+            $('.selectpicker').selectpicker('refresh');
+
+            // Set value dan trigger change
+            $selectStatusFakturFilter.val();
+        }
+
+        async function getCek() {
+            const $selectCek = $('#cek');
+
+            // Clear existing options if needed
+            $selectCek.empty();
+
+            // Tambahkan opsi
+            $selectCek.append('<option value="FP" selected>FP</option>');
+            $selectCek.append('<option value="DL1">DL1</option>');
+            $selectCek.append('<option value="DL2">DL2</option>');
+
+            // Refresh selectpicker (jika pakai Bootstrap Select)
+            $('.selectpicker').selectpicker('refresh');
+
+            // Set value dan trigger change
+            $selectCek.val();
         }
 
         function formatNumber(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         }
+
+        // reset Form
+        function resetFormInput() {
+            $('#form').trigger("reset");
+            $('#perusahaan').val('').selectpicker('refresh');
+            $('#perusahaanFilter').val('').selectpicker('refresh');
+            $('#vendor').val('').selectpicker('refresh');
+            $('#inputNominalJasa').hide();
+        }
+
+        function bulanToNumber(bulanStr) {
+            const bulanMap = {
+                'januari': '01',
+                'februari': '02',
+                'maret': '03',
+                'april': '04',
+                'mei': '05',
+                'juni': '06',
+                'juli': '07',
+                'agustus': '08',
+                'september': '09',
+                'oktober': '10',
+                'november': '11',
+                'desember': '12'
+            };
+
+            return bulanMap[bulanStr?.toLowerCase()] || null;
+        }
+
     </script>

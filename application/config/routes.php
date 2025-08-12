@@ -228,6 +228,7 @@ $route['api/web/v1/report/sales/by-barang-langganan']['POST']       = 'api/web/v
 $route['api/web/v1/report/stock']['POST']   = 'api/web/v1/Report_Api/stock';
 $route['api/web/v1/report/ppn']['POST']       = 'api/web/v1/Report_Api/ppn';
 $route['api/web/v1/report/ppn/(:any)/(:any)/(:num)']['DELETE']       = 'api/web/v1/Report_Api/destroy/$1/$2/$3';
+$route['api/web/v1/report/ppn/(:num)']['DELETE']       = 'api/web/v1/Report_Api/destroy_per_row/$1';
 $route['api/web/v1/report/unifikasi']['POST']       = 'api/web/v1/Report_Api/unifikasi';
 
 

@@ -431,6 +431,35 @@ class Report_Api extends REST_Controller
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
     }
+
+    public function destroy_per_row_delete($id)
+    {
+        try {
+            $delete = $this->PPN_Model->delete_row($id);
+            if ($delete) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil dihapus',
+                    'data' => $delete
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response failed
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data gagal dihapus',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response failed
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
 }
 
 /* End of file Report_Api.php */
