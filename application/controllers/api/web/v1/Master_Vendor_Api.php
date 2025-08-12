@@ -105,7 +105,7 @@ class Master_Vendor_Api extends REST_Controller
                     ], REST_Controller::HTTP_PARTIAL_CONTENT);
                 }
             } else {
-                $cek_npwp = $this->Master_Vendor_Model->check_npwp($new_npwp);
+                $cek_npwp = $this->Master_Vendor_Model->check_npwp($new_npwp, null);
                 if (!empty($cek_npwp)) {
                     $this->response([
                         'status' => false,
