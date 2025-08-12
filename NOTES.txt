@@ -1,0 +1,49 @@
+#   Script copy data KTP ke table NPWP
+INSERT INTO tbl_master_npwp_new (
+npwp,
+new_npwp, 
+nama, 
+nik, 
+alamat, 
+rt, 
+rw, 
+kelurahan, 
+kecamatan, 
+kabupaten, 
+provinsi, 
+kodepos, 
+created_at,
+created_by, 
+updated_at,
+updated_by,
+deleted_at,
+deleted_by,
+created_by_user,
+updated_by_user)
+SELECT 
+k.nik,
+k.nik, 
+k.nama, 
+k.nik, 
+k.alamat, 
+k.rt, 
+k.rw, 
+k.kelurahan, 
+k.kecamatan, 
+k.kabupaten, 
+k.provinsi, 
+k.kodepos, 
+k.created_at,
+k.created_by, 
+k.updated_at,
+k.updated_by,
+k.deleted_at,
+k.deleted_by,
+k.created_by_user,
+k.updated_by_user
+FROM tbl_master_ktp k
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM tbl_master_npwp_new n
+    WHERE n.npwp = k.nik
+) limit 1;
