@@ -184,16 +184,15 @@
                         <input type="text" name="salesAR" id="salesAR" class="form-control form-control-sm" placeholder="">
                     </div>
 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                    <!-- <button type="button" class="btn btn-secondary" id="btnResetFormInput">Reset Form</button> -->
+                    <button type="submit" class="btn bg-custom" id="btnSubmit"></button>
+                </div>
+            </div>
         </form>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
-        <!-- <button type="button" class="btn btn-secondary" id="btnResetFormInput">Reset Form</button> -->
-        <button type="submit" class="btn bg-custom" id="btnSubmit"></button>
-    </div>
-</div>
-</form>
-</div>
 </div>
 
 <!-- Confirm Delete -->
