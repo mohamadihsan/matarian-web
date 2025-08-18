@@ -76,6 +76,8 @@ class NPWP_Api extends REST_Controller
 
             $npwp = $this->input->post('npwp');
             $new_npwp = $this->input->post('new_npwp');
+            $nitku = $this->input->post('nitku');
+            $nitku_digit = $this->input->post('nitku_digit');
             $nama = $this->input->post('nama');
             $nik = $this->input->post('nik');
             $provinsi = $this->input->post('provinsi');
@@ -93,6 +95,8 @@ class NPWP_Api extends REST_Controller
             $post = array(
                 'npwp' => $npwp,
                 'new_npwp' => $new_npwp,
+                'nitku' => $nitku,
+                'nitku_digit' => $nitku_digit,
                 'nama' => $nama,
                 'nik' => $nik,
                 'provinsi' => $provinsi,
@@ -143,6 +147,8 @@ class NPWP_Api extends REST_Controller
 
             $npwp = $this->input->post('npwp');
             $new_npwp = $this->input->post('new_npwp');
+            $nitku = $this->input->post('nitku');
+            $nitku_digit = $this->input->post('nitku_digit');
             $nama = $this->input->post('nama');
             $nik = $this->input->post('nik');
             $provinsi = $this->input->post('provinsi');
@@ -161,6 +167,8 @@ class NPWP_Api extends REST_Controller
             $post = array(
                 'npwp' => $npwp,
                 'new_npwp' => $new_npwp,
+                'nitku' => $nitku,
+                'nitku_digit' => $nitku_digit,
                 'nama' => $nama,
                 'nik' => $nik,
                 'provinsi' => $provinsi,

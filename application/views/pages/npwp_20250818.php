@@ -66,7 +66,6 @@
                             <tr>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
-                                <th class="text-center text-nowrap">NITKU</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -81,7 +80,6 @@
                             <tr>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
-                                <th class="text-center text-nowrap">NITKU</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -116,26 +114,12 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="npwp">NPWP16 <i class="text-danger">*</i></label>
-                        <input type="text" name="new_npwp" class="form-control form-control-sm" id="new_npwp" placeholder="">
-                        <small id="charNewNPWPCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
+                        <label class="label-katapanda-sm" for="npwp">NPWP <i class="text-danger"></i></label>
+                        <input type="text" name="npwp" class="form-control form-control-sm" id="npwp" placeholder="">
                     </div>
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="npwp">NPWP15 <i class="text-danger"></i></label>
-                        <input type="text" name="npwp" class="form-control form-control-sm" id="npwp" placeholder="">
-                        <small id="charNPWPCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-8">
-                            <label class="label-katapanda-sm" for="nitku">NITKU</label>
-                            <input type="text" name="nitku" class="form-control form-control-sm" id="nitku" placeholder="">
-                        <small id="charNitkuCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="label-katapanda-sm text-white" for="nitku_digit">DIGIT</label>
-                            <input type="text" name="nitku_digit" class="form-control form-control-sm" id="nitku_digit" placeholder="" value="000000">
-                        <small id="charNitkuDigitCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
-                        </div>
+                        <label class="label-katapanda-sm" for="npwp">NPWP16/NITKU <i class="text-danger">*</i></label>
+                        <input type="text" name="new_npwp" class="form-control form-control-sm" id="new_npwp" placeholder="">
                     </div>
                     <div class="form-group">
                         <label class="label-katapanda-sm" for="nama">Nama <span class="text-danger">*</span></label>
@@ -254,80 +238,18 @@
 <div class="modal fade" id="detailKatapanda" tabindex="-1" role="dialog" aria-labelledby="detailKatapandaTitle" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <!-- <div class="modal-header bg-custom">
+            <div class="modal-header bg-custom">
                 <h6 class="modal-title" id="detailTitle"></h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div> -->
+            </div>
             <div class="modal-body">
                 <div id="dataLengkap"></div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .card-npwp {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 20px;
-      position: relative;
-      font-family: Arial, sans-serif;
-    }
-    .npwp-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .npwp-header img {
-      width: 140px;
-      height: 50px;
-    }
-    .npwp-number {
-      font-size: 26px;
-      font-weight: bold;
-      margin: 20px 0 10px;
-    }
-    .npwp-name {
-      font-size: 16px;
-      font-weight: bold;
-    }
-    .npwp-nitku {
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-    .npwp-address {
-      font-size: 13px;
-      line-height: 1.4;
-      margin-bottom: 40px;
-    }
-    .npwp-footer {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      text-align: right;
-      font-size: 12px;
-    }
-
-    .npwp-footer img {
-      width: 140px;
-      height: 50px;
-    }
-    .npwp-qr {
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      font-size: 12px;
-    }
-    .npwp-qr img {
-      width: 70px;
-      height: 70px;
-    }
-  </style>
 
 <script>
     $(document).ready(function() {
@@ -347,78 +269,9 @@
         sumNPWP();
         getProvinsi();
 
-        // $('#npwp').mask('00.000.000.0-000.000', {
-        //     placeholder: "__.___.___._-___.___"
-        // });
-
-        $('#nitku_digit').mask('000000', {
-            placeholder: "000000"
+        $('#npwp').mask('00.000.000.0-000.000', {
+            placeholder: "__.___.___._-___.___"
         });
-
-        $('#nitku').mask('0000000000000000', {
-            placeholder: ""
-        });
-
-        $('#new_npwp').mask('0000000000000000', {
-            placeholder: ""
-        });
-
-        $('#npwp').mask('000000000000000', {
-            placeholder: ""
-        });
-
-        $('#new_npwp').on('input', function () {
-            var count = $(this).val().length;
-            
-            if (count > 0) {
-                $('#charNewNPWPCount').text('Jumlah karakter: ' + count).show();
-                $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
-            } else {
-                $('#charNewNPWPCount').hide();
-                $('#charNitkuCount').hide();
-            }
-        });
-
-        $('#npwp').on('input', function () {
-            var count = $(this).val().length;
-            
-            if (count > 0) {
-                $('#charNPWPCount').text('Jumlah karakter: ' + count).show();
-            } else {
-                $('#charNPWPCount').hide();
-            }
-        });
-
-        $('#nitku').on('input', function () {
-            var count = $(this).val().length;
-            
-            if (count > 0) {
-                $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
-            } else {
-                $('#charNitkuCount').hide();
-            }
-        });
-
-        $('#nitku_digit').on('input', function () {
-            var count = $(this).val().length;
-            
-            if (count > 0) {
-                $('#charNitkuDigitCount').text('Jumlah karakter: ' + count).show();
-            } else {
-                $('#charNitkuDigitCount').hide();
-            }
-        });
-
-        $('#new_npwp').on('input', function () {
-            let npwp16Value = $(this).val();
-            $('#nitku').val(npwp16Value);
-        });
-
-        // Sembunyikan saat pertama kali load halaman
-        $('#charNewNPWPCount').hide();
-        $('#charNPWPCount').hide();
-        $('#charNitkuCount').hide();
-        $('#charNitkuDigitCount').hide();
 
         // button default for action datatables
         let buttonAction = ['copyHtml5']; // add button to copy data
@@ -536,14 +389,6 @@
                     responsivePriority: 1
                 },
                 {
-                    data: "nitku",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 2,
-                    render: function(data, type, row, meta) {
-                        return `${data}${row.nitku_digit}`
-                    }
-                },
-                {
                     data: "nama",
                     className: "align-middle",
                     responsivePriority: 3
@@ -643,8 +488,6 @@
                 // store data to input
                 $('#npwp').val(item.npwp);
                 $('#new_npwp').val(item.new_npwp);
-                $('#nitku').val(item.nitku);
-                $('#nitku_digit').val(item.nitku_digit);
                 $('#nik').val(item.nik);
                 $('#nama').val(item.nama);
                 $('#blok').val(item.blok);
@@ -679,70 +522,21 @@
                 }
                 let new_npwp = item.new_npwp != null ? item.new_npwp : '-';
 
-                // let template = `<div class="h6 text-center font-weight-bold mb-4">KEMENTRIAN KEUANGAN REPUBLIK INDONESIA <br/> DIREKTORAT JENDERAL PAJAK</div>
-                // <dl class="row">
-                //     <dt class="col-sm-12 text-uppercase font-weight-bold mb-2">NPWP : ${item.npwp !== null ? npwp : '-' }</dt>
-                //     <dt class="col-sm-12 text-uppercase mb-2">${item.nama !== null ? item.nama : '-' }</dt>
-                //     <dt class="col-sm-12 text-uppercase font-weight-bold mb-2">NPWP16 : ${item.new_npwp !== null ? item.new_npwp : '-' }</dt>
-                //     <dt class="col-sm-12 text-uppercase font-weight-bold mb-4">NITKU : ${item.nitku !== null ? item.nitku+item.nitku_digit : '-' }</dt>
+                let template = `<div class="h6 text-center font-weight-bold mb-4">KEMENTRIAN KEUANGAN REPUBLIK INDONESIA <br/> DIREKTORAT JENDERAL PAJAK</div>
+                <dl class="row">
+                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-2">NPWP : ${item.npwp !== null ? npwp : '-' }</dt>
+                    <dt class="col-sm-12 text-uppercase mb-2">${item.nama !== null ? item.nama : '-' }</dt>
+                    <dt class="col-sm-12 text-uppercase font-weight-bold mb-4">NPWP16/NITKU : ${item.new_npwp !== null ? item.new_npwp : '-' }</dt>
 
-                //     <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px">${ alamat } ${ blok } ${ nomor } ${ rt } ${ rw }</dd>
-                //     <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kelurahan }  ${ kecamatan }</dd>
-                //     <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kabupaten }  ${ provinsi } ${kodepos}</dd>
-                // </dl>
-                // <hr/>
-                // <dl class="row">
-                //     <dd class="col-sm-12" style="font-size: 13px"><b>Created By / Time</b> : ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } / ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
-                //     <dd class="col-sm-12" style="font-size: 13px"><b>Updated By / Time</b> : ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } / ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
-                // </dl>`;
-
-                let template = `<div class="card-npwp">
-                    <!-- Header -->
-                    <div class="npwp-header d-flex justify-content-between">
-                        <div>
-                            <img src="<?= base_url('assets/img/logo/logo_npwp.png') ?>" alt="NPWP">
-                        </div>
-                        <div>
-                        <span>
-                            <i class="far fa-file-alt ms-2" data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="created_by: ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } at ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }&#10;updated_by: ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } at ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }"></i>
-                        </span>
-                        </div>
-                    </div>
-
-                    <!-- Nomor NPWP -->
-                    <div class="npwp-number">
-                        ${item.new_npwp !== null ? item.new_npwp.substring(0, 16) : '-'}
-                    </div>
-
-                    <!-- Nama -->
-                    <div class="npwp-name">
-                        ${item.nama !== null ? item.nama : '-'}
-                    </div>
-
-                    <!-- Nitku -->
-                    <div class="npwp-nitku">
-                        ${item.nitku !== null ? item.nitku+item.nitku_digit : '-'}
-                    </div>
-
-                    <!-- Alamat -->
-                    <div class="npwp-address">
-                        ${alamat} ${blok} ${nomor} ${rt} ${rw} <br/>
-                        ${kelurahan} ${kecamatan} <br/>
-                        ${kabupaten} ${provinsi} ${kodepos}
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="npwp-footer">
-                        <img src="<?= base_url('assets/img/logo/logo_djp.png') ?>" alt="DJP">
-                    </div>
-                    
-                    <!-- QR Code -->
-                    <div class="npwp-qr">
-                        
-                    </div>
-                    </div>`;
+                    <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px">${ alamat } ${ blok } ${ nomor } ${ rt } ${ rw }</dd>
+                    <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kelurahan }  ${ kecamatan }</dd>
+                    <dd class="col-sm-12 text-uppercase text-katapanda-sm" style="font-size: 13px"> ${ kabupaten }  ${ provinsi } ${kodepos}</dd>
+                </dl>
+                <hr/>
+                <dl class="row">
+                    <dd class="col-sm-12" style="font-size: 13px"><b>Created By / Time</b> : ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } / ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
+                    <dd class="col-sm-12" style="font-size: 13px"><b>Updated By / Time</b> : ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } / ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
+                </dl>`;
                 $('#dataLengkap').html(template);
             });
 
@@ -883,8 +677,6 @@
                 // start loading
                 loadingStart()
 
-                const nitkuDigit = $('#nitku_digit').val() ? $('#nitku_digit').val() : '000000'
-
                 // send request 
                 axios({
                         method: id === null ? `POST` : `PUT`,
@@ -895,8 +687,6 @@
                         data: {
                             npwp: $('#npwp').val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''),
                             new_npwp: $('#new_npwp').val(),
-                            nitku: $('#nitku').val(),
-                            nitku_digit: nitkuDigit,
                             nama: $('#nama').val(),
                             nik: $('#nik').val(),
                             provinsi: $('#provinsi option:selected').text(),

@@ -9,7 +9,7 @@ class NPWP_Model extends CI_Model
     public function get($param = null)
     {
 
-        $this->db->select('id, npwp, new_npwp, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
+        $this->db->select('id, npwp, new_npwp, nitku, nitku_digit, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
         $this->db->where('deleted_at', null);
         $this->db->order_by('nama', 'asc');
         if ($param != null) {
@@ -43,7 +43,7 @@ class NPWP_Model extends CI_Model
     // pagination
     public function pagination($page, $per_page, $search = null)
     {
-        $this->db->select('id, npwp, new_npwp, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
+        $this->db->select('id, npwp, new_npwp, nitku, nitku_digit, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
         if ($search != null) {
             $this->db->like('npwp', $search);
             $this->db->or_like('nama', $search);
@@ -61,7 +61,7 @@ class NPWP_Model extends CI_Model
     // count pagination
     public function count_pagination($search = null)
     {
-        $this->db->select('id, npwp, new_npwp, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
+        $this->db->select('id, npwp, new_npwp, nitku, nitku_digit, nik, nama, alamat, nomor, blok, rt, rw, kelurahan, kecamatan, kabupaten, provinsi, kodepos, nomor_telepon, created_by, created_at, updated_by, updated_at, created_by_user, updated_by_user');
         if ($search != null) {
             $this->db->like('npwp', $search);
             $this->db->or_like('nama', $search);
