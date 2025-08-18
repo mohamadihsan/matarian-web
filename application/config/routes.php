@@ -230,6 +230,8 @@ $route['api/web/v1/report/ppn']['POST']       = 'api/web/v1/Report_Api/ppn';
 $route['api/web/v1/report/ppn/(:any)/(:any)/(:num)']['DELETE']       = 'api/web/v1/Report_Api/destroy/$1/$2/$3';
 $route['api/web/v1/report/ppn/(:num)']['DELETE']       = 'api/web/v1/Report_Api/destroy_per_row/$1';
 $route['api/web/v1/report/unifikasi']['POST']       = 'api/web/v1/Report_Api/unifikasi';
+$route['api/web/v1/report/ppn/create']['POST']                = 'api/web/v1/Report_Api/create';
+$route['api/web/v1/report/ppn/update/(:num)']['PUT']          = 'api/web/v1/Report_Api/update/$1';
 
 
 // UNIFIKASI

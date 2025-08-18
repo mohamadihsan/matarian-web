@@ -196,6 +196,37 @@ class PPN_Model extends CI_Model {
 
         return $this->db->get('tbl_upload_dokumen_pajak')->row();
     }
+
+    public function get_vendor_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_master_vendor')->row();
+    }
+
+    public function get_perusahaan_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_master_perusahaan')->row();
+    }
+
+    // insert new data
+    public function insert($data)
+    {
+        $this->db->insert('tbl_upload_dokumen_pajak', $data);
+        return $this->db->insert_id();
+    }
+
+    // update
+    public function update($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('tbl_upload_dokumen_pajak', $data);
+        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+    }
 }
 
 /* End of file PPN_Model.php */

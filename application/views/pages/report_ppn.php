@@ -163,14 +163,14 @@
                         </div>
                         
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" id="dppNilaiLainFormat" placeholder="0">
+                            <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-md" name="dppNilaiLainFormat" id="dppNilaiLainFormat" placeholder="0">
                             <input type="hidden" name="dppNilaiLain" id="dppNilaiLain" readonly>
                         </div>
                         
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" id="ppnFormat" placeholder="0">
+                            <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-md" name="ppnFormat" id="ppnFormat" placeholder="0">
                             <input type="hidden" name="ppn" id="ppn" readonly>
                         </div>
                         
@@ -187,7 +187,7 @@
                     
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-dark cancel" data-dismiss="modal">Cancel</button>
                         <!-- <button type="button" class="btn btn-secondary" id="btnResetFormInput">Reset Form</button> -->
                         <button type="submit" class="btn bg-custom" id="btnSubmit"></button>
                     </div>
@@ -199,7 +199,7 @@
     <!-- Confirm Delete Per Row -->
     <div class="modal fade" id="confirmKatapanda" tabindex="-1" role="dialog" aria-labelledby="confirmKatapandaTitle" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
-            <form id="confirm">
+            <form id="confirmDeletePerRow">
                 <div class="modal-content">
                     <div class="modal-header bg-custom">
                         <h6 class="modal-title" id="confirmTitle"></h6>
@@ -374,6 +374,8 @@
             actionExportToExcel ? buttonAction.push({
                 extend: 'excelHtml5',
                 exportOptions: {
+                    // exclude column[0]
+                    columns: ':not(:first-child)',
                     format: {
                         body: function(data, row, column, node) {
                             if (column === 0) {
@@ -720,6 +722,7 @@
                     let itemDppNilaiLainFormat = item.dpp_nilai_lain?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     let itemHargaJualFormat = item.harga_jual?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     let itemPpnFormat = item.ppn?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    let itemNominalJasaFormat = item.nominal_jasa?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     
                     // store data to input
                     $('#perusahaan').val(item.master_perusahaan_id).trigger('change');
@@ -735,6 +738,8 @@
                     $('#dppNilaiLainFormat').val(itemDppNilaiLainFormat);
                     $('#ppn').val(item.ppn);
                     $('#ppnFormat').val(itemPpnFormat);
+                    $('#nominalJasaFormat').val(itemNominalJasaFormat);
+                    $('#nominalJasa').val(item.nominal_jasa);
 
                     const masaPajakClicked = bulanToNumber(item.masa_pajak)
                     let masaTahunPajakClicked = ''
@@ -789,29 +794,85 @@
 
             // modal form edit in desktop mode
             $('.edit').click(function() {
-                // reset validator in the form
-                validator.resetForm()
+                validator.resetForm();
 
-                // show modal
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
+                $('#btnSubmit').show();
                 $('#btnSubmit').text('Update');
                 $('#formKatapanda').modal({
                     backdrop: 'static'
-                }, 'show')
-                $('#btnResetFormInput').css("display", "none");
+                }, 'show');
+                $('#btnResetFormInput').css("display", "block");
+
+                // enable semua input, select, textarea, button
+                $('#formKatapanda').find('input, select, textarea, button').prop('disabled', false);
+
+                // kalau pakai selectpicker
+                $('#formKatapanda').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
             })
 
             // modal form edit in tablet/mobile mode
             $('#katapandaTable tbody').on('click', '.edit', function() {
-                // reset validator in the form
-                validator.resetForm()
-                // show modal
+                validator.resetForm();
+
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
+                $('#btnSubmit').show();
                 $('#btnSubmit').text('Update');
                 $('#formKatapanda').modal({
                     backdrop: 'static'
-                }, 'show')
+                }, 'show');
+                $('#btnResetFormInput').css("display", "block");
+
+                // enable semua input, select, textarea, button
+                $('#formKatapanda').find('input, select, textarea, button').prop('disabled', false);
+
+                // kalau pakai selectpicker
+                $('#formKatapanda').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
+            })
+
+            // modal form edit in desktop mode
+            $('.detail').click(function() {
+                // reset validator in the form
+                validator.resetForm();
+
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> Detail <?= $title ?>');
+                $('#btnSubmit').hide();
+                $('#btnSubmit').text('Update');
+                $('#formKatapanda').modal({
+                    backdrop: 'static'
+                }, 'show');
                 $('#btnResetFormInput').css("display", "none");
+
+                // disable semua input, select, textarea, checkbox
+                $('#formKatapanda').find('input, select, textarea, button').prop('disabled', true);
+
+                // kalau mau button close modal tetap bisa diklik, enable lagi:
+                $('#formKatapanda').find('.close').prop('disabled', false);
+                $('#formKatapanda').find('.cancel').prop('disabled', false);
+            })
+
+            // modal form detail in tablet/mobile mode
+            $('#katapandaTable tbody').on('click', '.detail', function() {
+                // reset validator in the form
+                validator.resetForm();
+
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> Detail <?= $title ?>');
+                $('#btnSubmit').hide();
+                $('#btnSubmit').text('Update');
+                $('#formKatapanda').modal({
+                    backdrop: 'static'
+                }, 'show');
+                $('#btnResetFormInput').css("display", "none");
+
+                // disable semua input, select, textarea, checkbox
+                $('#formKatapanda').find('input, select, textarea, button').prop('disabled', true);
+
+                // kalau mau button close modal tetap bisa diklik, enable lagi:
+                $('#formKatapanda').find('.close').prop('disabled', false);
+                $('#formKatapanda').find('.cancel').prop('disabled', false);
+
             })
 
             // confirm delete 
@@ -921,111 +982,104 @@
             // validate and request add new data and update existing data 
             let validator = $('#form').validate({
                 rules: {
-                    fullname: "required",
-                    username: {
-                        required: true,
-                        minlength: 2
-                    },
-                    password: {
-                        required: false,
-                        // minlength: 5
-                    },
-                    confirm_password: {
-                        required: false,
-                        // minlength: 5,
-                        equalTo: "#password"
-                    },
-                    email: {
-                        required: true,
-                        email: true
-                    },
-                    userGroup: {
-                        required: true
-                    },
-                    salesAR: {
-                        required: false,
-                        maxlength: 5
-                    }
+                    perusahaan: "required",
+                    vendor: "required",
+                    cek: "required",
+                    nomorFakturPajak: "required",
+                    tanggalFakturPajak: "required",
+                    masaPajak: "required",
+                    statusFakturPajak: "required",
+                    dppNilaiLainFormat: "required",
+                    ppnFormat: "required",
                 },
                 messages: {
-                    fullname: "Please enter your fullname",
-                    username: {
-                        required: "Please enter a username",
-                        minlength: "Your username must consist of at least 2 characters"
-                    },
-                    password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long"
-                    },
-                    confirm_password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long",
-                        equalTo: "Please enter the same password as above"
-                    },
-                    email: "Please enter a valid email address",
-                    userGroup: {
-                        required: "Please select user group"
-                    },
-                    salesAR: {
-                        maxlength: "Sales AR is too long. It must be at most 5 characters long"
-                    }
+                    perusahaan: "Please select perusahaan",
+                    vendor: "Please select vendor",
+                    cek: "Please select cek",
+                    nomorFakturPajak: "Nomor Faktur Pajak is required",
+                    tanggalFakturPajak: "Tanggal Faktur Pajak is required",
+                    masaPajak: "Masa Pajak is required",
+                    statusFakturPajak: "Status Faktur Pajak is required",
+                    dppNilaiLainFormat: "DPP Nilai Lain is required",
+                    ppnFormat: "PPN is required",
                 },
                 submitHandler: function(form) {
                     // start loading
                     loadingStart()
 
+                    const monthNames = [
+                        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                    ];
+
+                    const [bulanPajakNum, tahunPajak] = $('#masaPajak').val()?.split("-");
+                    const [bulanPajakPengkreditkanNum, tahunPajakPengkreditkan] = $('#masaPajakPengkreditkan').val()?.split("-");
+
+                    // ubah bulan angka ke nama bulan
+                    const bulanPajak = monthNames[parseInt(bulanPajakNum, 10) - 1];
+                    const bulanPajakPengkreditkan = monthNames[parseInt(bulanPajakPengkreditkanNum, 10) - 1];
+
+                    const tanggalFakturPajak = moment($('#tanggalFakturPajak').val(), "DD-MM-YYYY").format("YYYY-MM-DD");
+
+                    const requestData = {
+                        perusahaan: $('#perusahaan').val(),
+                        vendor: $('#vendor').val(),
+                        cek: $('#cek').val(),
+                        nomor_faktur_pajak: $('#nomorFakturPajak').val(),
+                        tanggal_faktur_pajak: tanggalFakturPajak,
+                        masa_pajak: bulanPajak,
+                        tahun_pajak: tahunPajak,
+                        masa_pajak_pengreditkan: bulanPajakPengkreditkan ? bulanPajakPengkreditkan : null,
+                        tahun_pajak_pengreditkan: tahunPajakPengkreditkan ? tahunPajakPengkreditkan : null,
+                        status_faktur_pajak: $('#statusFakturPajak').val(),
+                        harga_jual: $('#hargaJual').val(),
+                        dpp_nilai_lain: $('#dppNilaiLain').val(),
+                        ppn: $('#ppn').val(),
+                        is_jasa: $("#isJasa").is(":checked"),
+                        nominal_jasa: $('#nominalJasa').val(),
+                    }
+
                     // send request 
                     axios({
-                            method: id === null ? `POST` : `PUT`,
-                            url: id === null ? `<?= site_url() ?>api/web/v1/user` : `<?= site_url() ?>api/web/v1/user/${id}`,
-                            headers: {
-                                Authorization: 'Bearer <?= $token ?>'
-                            },
-                            data: {
-                                username: $('#username').val(),
-                                password: $('#password').val(),
-                                fullname: $('#fullname').val(),
-                                nomor_telepon: $('#nomorTelepon').val(),
-                                email: $('#email').val(),
-                                id_user_group: $('#userGroup').val(),
-                                web_group: $('#webGroup').val(),
-                                sales_ar: $('#salesAR').val()
-                            }
-                        })
-                        .then(function(response) {
-                            // console.log(response);
-                            let status = response.data.status;
-                            let message = response.data.message;
-                            let action = id === null ? `create` : `update`;
-                            if (status) {
-                                // show message
-                                notification(action, 'success', message);
-                                $('#formKatapanda').modal('hide');
-                                $('#katapandaTable').DataTable().ajax.reload();
-                                sumUser();
-                                sumPendingActivation();
-                            } else {
-                                // show message
-                                notification(action, 'error', message);
-                            }
-                        })
-                        .catch(function(error) {
-                            let messageError;
-                            let err = error.response;
-
-                            if (err.status === 404) {
-                                messageError = 'Request Failed. Please check your connection!';
-                            } else {
-                                messageError = err.statusText;
-                            }
-
+                        method: id === null ? `POST` : `PUT`,
+                        url: id === null ? `<?= site_url() ?>api/web/v1/report/ppn/create` : `<?= site_url() ?>api/web/v1/report/ppn/update/${id}`,
+                        headers: {
+                            Authorization: 'Bearer <?= $token ?>'
+                        },
+                        data: requestData
+                    })
+                    .then(function(response) {
+                        // console.log(response);
+                        let status = response.data.status;
+                        let message = response.data.message;
+                        let action = id === null ? `create` : `update`;
+                        if (status) {
                             // show message
-                            notification(null, 'error', messageError);
-                        })
-                        .then(function() {
-                            // stop loading
-                            loadingStop()
-                        })
+                            notification(action, 'success', message);
+                            $('#formKatapanda').modal('hide');
+                            $('#katapandaTable').DataTable().ajax.reload();
+                        } else {
+                            // show message
+                            notification(action, 'error', message);
+                        }
+                    })
+                    .catch(function(error) {
+                        let messageError;
+                        let err = error.response;
+
+                        if (err.status === 404) {
+                            messageError = 'Request Failed. Please check your connection!';
+                        } else {
+                            messageError = err.statusText;
+                        }
+
+                        // show message
+                        notification(null, 'error', messageError);
+                    })
+                    .then(function() {
+                        // stop loading
+                        loadingStop()
+                    })
                 }
             })
 
