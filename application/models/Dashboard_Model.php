@@ -205,7 +205,7 @@ class Dashboard_Model extends CI_Model
             $this->db->where('id', $param);
         }
 
-        return $this->db->get('tbl_master_npwp')->num_rows();
+        return $this->db->get('tbl_master_npwp_new')->num_rows();
     }
 
     // last update NPWP
@@ -214,7 +214,7 @@ class Dashboard_Model extends CI_Model
         $this->db->select_max('created_at');
         $this->db->where('deleted_at', null);
 
-        return $this->db->get('tbl_master_npwp');
+        return $this->db->get('tbl_master_npwp_new');
     }
 
     // count accdbrg
