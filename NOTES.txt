@@ -1,49 +1,54 @@
 #   Script copy data KTP ke table NPWP
+-- Copy dari KTP ke NPWP (hanya yang belum ada)
 INSERT INTO tbl_master_npwp_new (
-npwp,
-new_npwp, 
-nama, 
-nik, 
-alamat, 
-rt, 
-rw, 
-kelurahan, 
-kecamatan, 
-kabupaten, 
-provinsi, 
-kodepos, 
-created_at,
-created_by, 
-updated_at,
-updated_by,
-deleted_at,
-deleted_by,
-created_by_user,
-updated_by_user)
-SELECT 
-k.nik,
-k.nik, 
-k.nama, 
-k.nik, 
-k.alamat, 
-k.rt, 
-k.rw, 
-k.kelurahan, 
-k.kecamatan, 
-k.kabupaten, 
-k.provinsi, 
-k.kodepos, 
-k.created_at,
-k.created_by, 
-k.updated_at,
-k.updated_by,
-k.deleted_at,
-k.deleted_by,
-k.created_by_user,
-k.updated_by_user
+  npwp,
+  new_npwp,
+  nama,
+  nik,
+  alamat,
+  rt,
+  rw,
+  kelurahan,
+  kecamatan,
+  kabupaten,
+  provinsi,
+  kodepos,
+  created_at,
+  created_by,
+  updated_at,
+  updated_by,
+  deleted_at,
+  deleted_by,
+  created_by_user,
+  updated_by_user
+)
+SELECT
+  NULL AS npwp,
+  k.nik AS new_npwp,
+  k.nama,
+  k.nik AS nik,
+  k.alamat,
+  k.rt,
+  k.rw,
+  k.kelurahan,
+  k.kecamatan,
+  k.kabupaten,
+  k.provinsi,
+  k.kodepos,
+  k.created_at,
+  k.created_by,
+  '2025-09-01 00:00:00' AS updated_at,
+  k.updated_by,
+  k.deleted_at,
+  k.deleted_by,
+  k.created_by_user,
+  k.updated_by_user
 FROM tbl_master_ktp k
-WHERE NOT EXISTS (
-    SELECT 1 
+WHERE k.nik IS NOT NULL
+  AND CHAR_LENGTH(k.nik) = 16
+  AND NOT EXISTS (
+    SELECT 1
     FROM tbl_master_npwp_new n
-    WHERE n.npwp = k.nik
-) limit 1;
+    -- ambil bagian sebelum '/', buang spasi, ambil 16 digit pertama
+    WHERE LEFT(REPLACE(TRIM(SUBSTRING_INDEX(n.new_npwp,'/',1)),' ',''),16) = k.nik
+);
