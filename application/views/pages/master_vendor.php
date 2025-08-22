@@ -18,34 +18,28 @@
                     <table class="table table-striped table-bordered table-sm text-katapanda-sm" id="katapandaTable" width="100%">
                         <thead class="thead-light">
                             <tr>
-                                <th class="text-center text-nowrap">Nama</th>
+                                <th class="text-center text-nowrap"></th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16</th>
                                 <th class="text-center text-nowrap">NITKU</th>
-                                <th class="text-center text-nowrap">Email</th>
+                                <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
-                                <th class="text-center text-nowrap">Kelurahan</th>
-                                <th class="text-center text-nowrap">Kecamatan</th>
-                                <th class="text-center text-nowrap">Kabupaten</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
-                                <th class="text-center text-nowrap">Kode Pos</th>
-                                <th class="text-center text-nowrap"></th>
+                                <th class="text-center text-nowrap">Kode Objek Pajak</th>
+                                <th class="text-center text-nowrap">Cek</th>
                             </tr>
                         </thead>
                         <tfoot class="">
                             <tr>
-                                <th class="text-center text-nowrap">Nama</th>
+                                <th class="text-center text-nowrap"></th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16</th>
                                 <th class="text-center text-nowrap">NITKU</th>
-                                <th class="text-center text-nowrap">Email</th>
+                                <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
-                                <th class="text-center text-nowrap">Kelurahan</th>
-                                <th class="text-center text-nowrap">Kecamatan</th>
-                                <th class="text-center text-nowrap">Kabupaten</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
-                                <th class="text-center text-nowrap">Kode Pos</th>
-                                <th class="text-center text-nowrap"></th>
+                                <th class="text-center text-nowrap">Kode Objek Pajak</th>
+                                <th class="text-center text-nowrap">Cek</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -400,65 +394,6 @@
             },
             columns: [
                 {
-                    data: "nama",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 3
-                },
-                {
-                    data: "npwp",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 1
-                },
-                {
-                    data: "new_npwp",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 2
-                },
-                {
-                    data: "nitku",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 2,
-                    render: function(data, type, row, meta) {
-                        return `${data}${row.nitku_digit}`
-                    }
-                },
-                {
-                    data: "email",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 4
-                },
-                {
-                    data: "alamat",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 5
-                },
-                {
-                    data: "kelurahan",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 6
-                },
-                {
-                    data: "kecamatan",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 7
-                },
-                {
-                    data: "kabupaten",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 8
-                },
-                {
-                    data: "provinsi",
-                    className: "align-middle text-nowrap",
-                    responsivePriority: 9
-                },
-                {
-                    data: "kodepos",
-                    className: "align-middle text-nowrap",
-                    visible: false,
-                    responsivePriority: 10
-                },
-                {
                     data: "id",
                     className: "align-middle text-center",
                     responsivePriority: 2,
@@ -470,6 +405,49 @@
                         action += `</div>`;
                         return action;
                     }
+                },
+                {
+                    data: "npwp",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 1
+                },
+                {
+                    data: "new_npwp",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 2
+                },
+                {
+                    data: "nitku",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 3,
+                    render: function(data, type, row, meta) {
+                        return `${data}${row.nitku_digit}`
+                    }
+                },
+                {
+                    data: "nama",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 4
+                },
+                {
+                    data: "alamat",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 5
+                },
+                {
+                    data: "provinsi",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 6
+                },
+                {
+                    data: "unifikasi_kode_objek_pajak_kode",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 7
+                },
+                {
+                    data: "cek",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 8
                 },
             ],
             language: {

@@ -307,10 +307,18 @@ class Report_Api extends REST_Controller
             $response = $this->PPN_Model->get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur)->result();
             $total_rows = count($response);
 
-            $total = 0;
-            // foreach ($response as $res) {
-            //     $total += $res->nilai_faktur;
-            // }
+            $totalPPN = 0;
+            $totalPPNCondition = 0;
+            $totalB1 = 0;
+            $totalB2 = 0;
+            $totalB3 = 0;
+            foreach ($response as $res) {
+                $totalPPN += $res->ppn;
+                $totalPPNCondition += $res->ppn_condition;
+                $totalB1 += $res->b1;
+                $totalB2 += $res->b2;
+                $totalB3 += $res->b3;
+            }
 
             if ($response) {
                 //response success with data
@@ -318,7 +326,11 @@ class Report_Api extends REST_Controller
                     'status' => true,
                     'message' => 'Data ditemukan',
                     'total_rows' => $total_rows,
-                    'total' => $total,
+                    'total_ppn' => $totalPPN,
+                    'total_ppn_condition' => $totalPPNCondition,
+                    'total_b1' => $totalB1,
+                    'total_b2' => $totalB2,
+                    'total_b3' => $totalB3,
                     'data' => $response
                 ], REST_Controller::HTTP_OK);
             } else {
