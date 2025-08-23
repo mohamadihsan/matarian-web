@@ -54,7 +54,7 @@
         <div class="d-flex flex-row">
             
             <div class="card h-100">
-                <a href="<?= site_url('report/stock') ?>" class="card-body" style="color: #757575; text-decoration: none;">
+                <a href="<?= site_url('report/ppn?cek=fp') ?>" class="card-body" style="color: #757575; text-decoration: none;">
                     <div class="row align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-uppercase mb-1">Document PPN Masukkan</div>
@@ -67,7 +67,7 @@
                 </a>
             </div>
             <div class="card h-100 ml-2">
-                <a href="<?= site_url('langganan') ?>" class="card-body" style="color: #757575; text-decoration: none;">
+                <a href="<?= site_url('report/ppn?cek=dl') ?>" class="card-body" style="color: #757575; text-decoration: none;">
                     <div class="row align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-uppercase mb-1">Document Lain</div>
