@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class PPN_Model extends CI_Model {
 
-    public function get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur)
+    public function get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)
     {
         $this->db->select('
             tbl_upload_dokumen_pajak.id,
@@ -79,12 +79,14 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.uraian,
             tbl_upload_dokumen_pajak.is_jasa,
             tbl_upload_dokumen_pajak.nominal_jasa,
+            tbl_upload_dokumen_pajak.is_unifikasi_only,
             tbl_upload_dokumen_pajak.unifikasi_kode_fasilitas_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id
         ');
 
+        $this->db->where('tbl_upload_dokumen_pajak.is_unifikasi_only', false);
         $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', strtoupper($nama_bulan));
         $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak', $tahun);
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
@@ -95,6 +97,10 @@ class PPN_Model extends CI_Model {
 
         if ($tahun_pengkreditkan != '') {
             $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak_pengkreditkan', $tahun);
+        }
+
+        if ($jenis_dokumen != '') {
+            $this->db->where('tbl_upload_dokumen_pajak.jenis_dokumen', $jenis_dokumen);
         }
 
         if ($status_faktur != '') {
@@ -133,9 +139,17 @@ class PPN_Model extends CI_Model {
             tbl_unifikasi_kode_pembayaran.kode as kode_pembayaran,
             tbl_upload_dokumen_pajak.nomor_sp2d,
             LAST_DAY(tbl_upload_dokumen_pajak.tanggal_faktur_pajak) as tanggal_pemotongan,
-            (tbl_upload_dokumen_pajak.nominal_jasa * tbl_unifikasi_kode_objek_pajak.tarif) as pph
+            (tbl_upload_dokumen_pajak.nominal_jasa / 100 * tbl_unifikasi_kode_objek_pajak.tarif) as pph,
+            tbl_upload_dokumen_pajak.master_perusahaan_id,
+            tbl_upload_dokumen_pajak.master_vendor_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_fasilitas_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id,
+            tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id
         ');
 
+        $this->db->where('tbl_upload_dokumen_pajak.is_jasa', true);
+        $this->db->where('tbl_upload_dokumen_pajak.nominal_jasa >', 0);
         $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', strtoupper($nama_bulan));
         $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak', $tahun);
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
@@ -226,6 +240,38 @@ class PPN_Model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->update('tbl_upload_dokumen_pajak', $data);
         return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+    }
+
+    public function get_dokumen_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_unifikasi_kode_dokumen')->row();
+    }
+
+    public function get_fasilitas_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_unifikasi_kode_fasilitas')->row();
+    }
+
+    public function get_objek_pajak_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_unifikasi_kode_objek_pajak')->row();
+    }
+
+    public function get_pembayaran_by_id($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+        
+        return $this->db->get('tbl_unifikasi_kode_pembayaran')->row();
     }
 }
 

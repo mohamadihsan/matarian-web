@@ -28,7 +28,8 @@ class Report_Api extends REST_Controller
         set_time_limit(0);
     }
 
-    public function get_nama_bulan($bulan) {
+    public function get_nama_bulan($bulan)
+    {
         $bulanMap = [
             '01' => 'JANUARI',
             '02' => 'FEBRUARI',
@@ -298,13 +299,14 @@ class Report_Api extends REST_Controller
             $tahun = $this->input->post('tahun');
             $bulan_pengkreditkan = $this->input->post('bulan_pengkreditkan');
             $tahun_pengkreditkan = $this->input->post('tahun_pengkreditkan');
+            $jenis_dokumen = $this->input->post('jenis_dokumen');
             $status_faktur = $this->input->post('status_faktur');
             $perusahaan = $this->input->post('perusahaan');
 
             $nama_bulan = $this->get_nama_bulan($bulan);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
-            $response = $this->PPN_Model->get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur)->result();
+            $response = $this->PPN_Model->get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)->result();
             $total_rows = count($response);
 
             $totalPPN = 0;
@@ -425,6 +427,7 @@ class Report_Api extends REST_Controller
             $ppn = $this->input->post('ppn');
             $is_jasa = $this->input->post('is_jasa');
             $nominal_jasa = $this->input->post('nominal_jasa');
+            $is_unifikasi_only = $this->input->post('is_unifikasi_only');
             $created_by = $this->token->data->username;
 
             $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
@@ -435,7 +438,7 @@ class Report_Api extends REST_Controller
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-                
+
             // get vendor
             $vendor = $this->PPN_Model->get_vendor_by_id($vendor_id);
             if (empty($vendor)) {
@@ -476,14 +479,22 @@ class Report_Api extends REST_Controller
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
 
+            if ($is_jasa && $nominal_jasa <= 0) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Nominal Jasa harus lebih dari 0',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
             $post = array(
                 "master_perusahaan_id" => $perusahaan->id,
                 "master_vendor_id" => $vendor->id,
                 'ppn_persentase' => null,
-                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',            
+                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
                 "npwp_penjual" => $vendor->new_npwp,
                 "nama_penjual" => $vendor->nama,
-                "Cek" => $cek,
+                "cek" => $cek,
                 "nomor_faktur_pajak" => $nomor_faktur_pajak,
                 "tanggal_faktur_pajak" => $tanggal_faktur_pajak,
                 "masa_pajak" => $masa_pajak,
@@ -503,6 +514,7 @@ class Report_Api extends REST_Controller
                 "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
                 "is_jasa" => $is_jasa,
                 "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
+                "is_unifikasi_only" => $is_unifikasi_only,
                 "created_at" => $this->time_server,
                 "created_by" => $created_by
             );
@@ -564,7 +576,7 @@ class Report_Api extends REST_Controller
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
-                
+
             // get vendor
             $vendor = $this->PPN_Model->get_vendor_by_id($vendor_id);
             if (empty($vendor)) {
@@ -609,10 +621,10 @@ class Report_Api extends REST_Controller
                 "master_perusahaan_id" => $perusahaan->id,
                 "master_vendor_id" => $vendor->id,
                 'ppn_persentase' => null,
-                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',            
+                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
                 "npwp_penjual" => $vendor->new_npwp,
                 "nama_penjual" => $vendor->nama,
-                "Cek" => $cek,
+                "cek" => $cek,
                 "nomor_faktur_pajak" => $nomor_faktur_pajak,
                 "tanggal_faktur_pajak" => $tanggal_faktur_pajak,
                 "masa_pajak" => $masa_pajak,
@@ -632,6 +644,99 @@ class Report_Api extends REST_Controller
                 "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
                 "is_jasa" => $is_jasa,
                 "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
+                'updated_at' => $this->time_server,
+                'updated_by' => $updated_by
+            );
+
+            $update = $this->PPN_Model->update($post, $id);
+            if ($update) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil diperbaharui',
+                    'data' => $update
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response failed
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data gagal diperbaharui',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response failed
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    public function unifikasi_update_put($id)
+    {
+        try {
+
+            $_POST = json_decode($this->input->raw_input_stream, true);
+
+            $unifikasi_kode_fasilitas_id = $this->input->post('fasilitas');
+            $unifikasi_kode_objek_pajak_id = $this->input->post('objek_pajak');
+            $unifikasi_kode_dokumen_id = $this->input->post('dokumen');
+            $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
+            $nomor_sp2d = $this->input->post('nomor_sp2d');
+            $updated_by = $this->token->data->username;
+
+            if ($unifikasi_kode_fasilitas_id) {
+                $fasilitas = $this->PPN_Model->get_fasilitas_by_id($unifikasi_kode_fasilitas_id);
+                if (empty($fasilitas)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Kode Fasilitas tidak ditemukan',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
+
+            if ($unifikasi_kode_objek_pajak_id) {
+                $objek_pajak = $this->PPN_Model->get_objek_pajak_by_id($unifikasi_kode_objek_pajak_id);
+                if (empty($objek_pajak)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Kode Objek Pajak tidak ditemukan',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
+
+            if ($unifikasi_kode_dokumen_id) {
+                $dokumen = $this->PPN_Model->get_dokumen_by_id($unifikasi_kode_dokumen_id);
+                if (empty($dokumen)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Kode Dokumen tidak ditemukan',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
+
+            if ($unifikasi_kode_pembayaran_id) {
+                $pembayaran = $this->PPN_Model->get_pembayaran_by_id($unifikasi_kode_pembayaran_id);
+                if (empty($pembayaran)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Kode Pembayaran tidak ditemukan',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
+
+            $post = array(
+                "unifikasi_kode_fasilitas_id" => $unifikasi_kode_fasilitas_id,
+                "unifikasi_kode_objek_pajak_id" => $unifikasi_kode_objek_pajak_id,
+                "unifikasi_kode_dokumen_id" => $unifikasi_kode_dokumen_id,
+                "unifikasi_kode_pembayaran_id" => $unifikasi_kode_pembayaran_id,
+                "nomor_sp2d" => $nomor_sp2d,
                 'updated_at' => $this->time_server,
                 'updated_by' => $updated_by
             );
