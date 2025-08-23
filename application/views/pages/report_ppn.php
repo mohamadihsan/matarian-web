@@ -20,13 +20,17 @@
                                 <label class="label-katapanda-sm" for="perusahaanFilter">Perusahaan <i class="text-danger">*</i></label>
                                 <select name="perusahaanFilter" id="perusahaanFilter" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label class="label-katapanda-sm" for="periode">Masa Pajak <i class="text-danger">*</i></label>
                                 <input type="text" name="periode" class="form-control form-control-sm" id="periode">
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label class="label-katapanda-sm" for="periode2">Masa Pajak Pengkreditkan </label>
                                 <input type="text" name="periode2" class="form-control form-control-sm" id="periode2">
+                            </div>
+                            <div class="form-group col-lg-2 col-md-2">
+                                <label class="label-katapanda-sm" for="jenisDokumen">Kategori</label>
+                                <select name="jenisDokumen" id="jenisDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
                             <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="status_faktur">Status</label>
@@ -38,7 +42,7 @@
                         <div class="form-group col-lg-12 col-md-12 col-sm-12 text-right">
                             <div class="button-group">
                                 <button class="btn btn-sm btn-secondary" id="reset"><i class="fas fa-sync-alt"></i> Reset</button>
-                                <button class="btn btn-sm btn-danger" id="deleteReport"><i class="fas fa-trash"></i> Delete</button>
+                                <!-- <button class="btn btn-sm btn-danger" id="deleteReport"><i class="fas fa-trash"></i> Delete</button> -->
                                 <button class="btn btn-sm btn-primary" id="filter"><i class="fas fa-envelope-open-text"></i> Generate Report</button>
                             </div>
                         </div>
@@ -167,10 +171,17 @@
                             <label class="label-katapanda-sm" for="isJasa">JASA <span class="text-danger"></span></label>
                         </div>
 
-                        <div class="form-group" id="inputNominalJasa">
-                            <label class="label-katapanda-sm" for="nominalJasaFormat">Nominal Jasa <span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" id="nominalJasaFormat" placeholder="0">
-                            <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
+                        <div id="inputNominalJasa">
+                            <div class="form-group">
+                                <label class="label-katapanda-sm" for="nominalJasaFormat">Nominal Jasa <span class="text-danger"></span></label>
+                                <input type="text" class="form-control form-control-md" id="nominalJasaFormat" placeholder="0">
+                                <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="checkbox" name="isUnifikasiOnly" class="" id="isUnifikasiOnly">
+                                <label class="label-katapanda-sm" for="isUnifikasiOnly"> Jadikan sebagai Laporan Unifikasi saja<span class="text-danger"></span></label>
+                            </div>
                         </div>
 
                     </div>
@@ -356,6 +367,7 @@
             getVendor();
             getStatusFaktur();
             getStatusFakturFilter();
+            getJenisDokumen();
             getCek();
 
             // button action by user role 
@@ -504,6 +516,7 @@
                             tahun_pengkreditkan: tahunPengkreditkan,
                             perusahaan: $('#perusahaanFilter').val(),
                             status_faktur: $('#status_faktur').val(),
+                            jenis_dokumen: $('#jenisDokumen').val(),
                         });
                     },
                     complete: function(res) {
@@ -679,6 +692,7 @@
                 $('.selectpicker').selectpicker('refresh');
                 $('#perusahaanFilter').val().change();
                 $('#status_faktur').val().change();
+                $('#jenisDokumen').val().change();
             })
 
             $('#perusahaanFilter').on('change', function() {
@@ -766,6 +780,12 @@
                     } else {
                         $('#isJasa').prop('checked', false)
                         $('#inputNominalJasa').hide();
+                    }
+
+                    if (item.is_nofikasi == true) {
+                        $('#isUnifikasiOnly').prop('checked', true)
+                    } else {
+                        $('#isUnifikasiOnly').prop('checked', false)
                     }
 
                     // set
@@ -1042,6 +1062,7 @@
                         ppn: $('#ppn').val(),
                         is_jasa: $("#isJasa").is(":checked"),
                         nominal_jasa: $('#nominalJasa').val(),
+                        is_unifikasi_only: $("#isUnifikasiOnly").is(":checked"),
                     }
 
                     // send request 
@@ -1190,6 +1211,33 @@
 
             // Set value dan trigger change
             $selectStatusFakturFilter.val();
+        }
+
+        async function getJenisDokumen() {
+            const $selectJenisDokumen = $('#jenisDokumen');
+
+            // Clear existing options if needed
+            // $selectJenisDokumen.empty();
+
+            // Ambil query string dari URL
+            let params = new URLSearchParams(window.location.search);
+
+            // Ambil parameter "cek"
+            let cek = params.get("cek");
+
+            $selectJenisDokumen.append('<option value="" selected>SEMUA</option>');    
+            $selectJenisDokumen.append('<option value="PPN MASUKKAN">PPN MASUKKAN</option>');    
+            $selectJenisDokumen.append('<option value="DOKUMEN LAIN">DOKUMEN LAIN</option>');
+
+            // Refresh selectpicker (jika pakai Bootstrap Select)
+            $('.selectpicker').selectpicker('refresh');
+
+            // Set value dan trigger change
+            if (cek == 'fp') {
+                $selectJenisDokumen.val("PPN MASUKKAN").trigger("change");
+            } else if (cek == 'dl') {
+                $selectJenisDokumen.val("DOKUMEN LAIN").trigger("change");
+            }
         }
 
         async function getCek() {
