@@ -295,18 +295,23 @@ class Report_Api extends REST_Controller
         try {
             $_POST = json_decode($this->input->raw_input_stream, true);
 
-            $bulan = $this->input->post('bulan');
-            $tahun = $this->input->post('tahun');
+            $bulan_awal = $this->input->post('bulan_awal');
+            $tahun_awal = $this->input->post('tahun_awal');
+            $bulan_akhir = $this->input->post('bulan_akhir');
+            $tahun_akhir = $this->input->post('tahun_akhir');
             $bulan_pengkreditkan = $this->input->post('bulan_pengkreditkan');
             $tahun_pengkreditkan = $this->input->post('tahun_pengkreditkan');
             $jenis_dokumen = $this->input->post('jenis_dokumen');
             $status_faktur = $this->input->post('status_faktur');
             $perusahaan = $this->input->post('perusahaan');
 
-            $nama_bulan = $this->get_nama_bulan($bulan);
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
+        
+            // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
-            $response = $this->PPN_Model->get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)->result();
+            $response = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)->result();
             $total_rows = count($response);
 
             $totalPPN = 0;
@@ -359,17 +364,22 @@ class Report_Api extends REST_Controller
         try {
             $_POST = json_decode($this->input->raw_input_stream, true);
 
-            $bulan = $this->input->post('bulan');
-            $tahun = $this->input->post('tahun');
+            $bulan_awal = $this->input->post('bulan_awal');
+            $tahun_awal = $this->input->post('tahun_awal');
+            $bulan_akhir = $this->input->post('bulan_akhir');
+            $tahun_akhir = $this->input->post('tahun_akhir');
             $perusahaan = $this->input->post('perusahaan');
             $fasilitas = $this->input->post('fasilitas');
             $kode_objek_pajak = $this->input->post('kode_objek_pajak');
             $kode_dokumen = $this->input->post('kode_dokumen');
             $kode_pembayaran = $this->input->post('kode_pembayaran');
 
-            $nama_bulan = $this->get_nama_bulan($bulan);
+            // $nama_bulan = $this->get_nama_bulan($bulan);
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
+        
 
-            $response = $this->PPN_Model->get_unifikasi_report($perusahaan, $nama_bulan, $tahun, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)->result();
+            $response = $this->PPN_Model->get_unifikasi_report($perusahaan, $start, $end, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)->result();
             $total_rows = count($response);
 
 

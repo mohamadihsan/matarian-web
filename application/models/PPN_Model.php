@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class PPN_Model extends CI_Model {
 
-    public function get_ppn_report($perusahaan, $nama_bulan, $tahun, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)
+    public function get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)
     {
         $this->db->select('
             tbl_upload_dokumen_pajak.id,
@@ -23,30 +23,24 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.ppn,
             CASE 
                 WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED")
-                    AND UPPER(tbl_upload_dokumen_pajak.masa_pajak) = UPPER('.$this->db->escape($nama_bulan).')
-                    AND tbl_upload_dokumen_pajak.tahun_pajak = '.$this->db->escape($tahun).' 
                 THEN tbl_upload_dokumen_pajak.ppn
                 ELSE 0
             END AS ppn_condition,
             CASE
-                WHEN tbl_upload_dokumen_pajak.cek = "DL1"
-                    AND UPPER(tbl_upload_dokumen_pajak.masa_pajak) = UPPER('.$this->db->escape($nama_bulan).')
-                    AND tbl_upload_dokumen_pajak.tahun_pajak = '.$this->db->escape($tahun).' 
+                WHEN tbl_upload_dokumen_pajak.cek = "DL1" 
                 THEN 
                     CASE 
-                        WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED") THEN tbl_upload_dokumen_pajak.ppn
+                        WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED") 
+                        THEN tbl_upload_dokumen_pajak.ppn
                         ELSE 0
                     END
                 ELSE 0
             END AS b1,
             CASE
-                WHEN tbl_upload_dokumen_pajak.cek IN ("FP", "DL2")
-                    AND tbl_upload_dokumen_pajak.status_faktur_pajak = "CREDITED"
+                WHEN tbl_upload_dokumen_pajak.cek IN ("FP", "DL2") AND tbl_upload_dokumen_pajak.status_faktur_pajak = "CREDITED"
                 THEN 
                     CASE 
                         WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED")
-                            AND UPPER(tbl_upload_dokumen_pajak.masa_pajak) = UPPER('.$this->db->escape($nama_bulan).')
-                            AND tbl_upload_dokumen_pajak.tahun_pajak = '.$this->db->escape($tahun).' 
                         THEN tbl_upload_dokumen_pajak.ppn
                         ELSE 0
                     END
@@ -57,8 +51,6 @@ class PPN_Model extends CI_Model {
                 THEN 
                     CASE 
                         WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED")
-                            AND UPPER(tbl_upload_dokumen_pajak.masa_pajak) = UPPER('.$this->db->escape($nama_bulan).')
-                            AND tbl_upload_dokumen_pajak.tahun_pajak = '.$this->db->escape($tahun).'
                         THEN tbl_upload_dokumen_pajak.ppn
                         ELSE 0
                     END
@@ -87,8 +79,8 @@ class PPN_Model extends CI_Model {
         ');
 
         $this->db->where('tbl_upload_dokumen_pajak.is_unifikasi_only', false);
-        $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', strtoupper($nama_bulan));
-        $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak', $tahun);
+        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
+        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
 
         if ($nama_bulan_pengkreditkan != '') {
@@ -96,7 +88,7 @@ class PPN_Model extends CI_Model {
         }
 
         if ($tahun_pengkreditkan != '') {
-            $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak_pengkreditkan', $tahun);
+            $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak_pengkreditkan', $tahun_pengkreditkan);
         }
 
         if ($jenis_dokumen != '') {
@@ -120,7 +112,7 @@ class PPN_Model extends CI_Model {
         return $this->db->get('tbl_upload_dokumen_pajak');
     }
 
-    public function get_unifikasi_report($perusahaan, $nama_bulan, $tahun, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)
+    public function get_unifikasi_report($perusahaan, $start, $end, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)
     {
         $this->db->select('
             tbl_upload_dokumen_pajak.id,
@@ -150,8 +142,8 @@ class PPN_Model extends CI_Model {
 
         $this->db->where('tbl_upload_dokumen_pajak.is_jasa', true);
         $this->db->where('tbl_upload_dokumen_pajak.nominal_jasa >', 0);
-        $this->db->where('UPPER(tbl_upload_dokumen_pajak.masa_pajak)', strtoupper($nama_bulan));
-        $this->db->where('tbl_upload_dokumen_pajak.tahun_pajak', $tahun);
+        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
+        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
 
         if (!empty($fasilitas)) {

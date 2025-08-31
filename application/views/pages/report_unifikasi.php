@@ -20,9 +20,13 @@
                                 <label class="label-katapanda-sm" for="perusahaan">Perusahaan <i class="text-danger">*</i></label>
                                 <select name="perusahaan" id="perusahaan" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label class="label-katapanda-sm" for="periode">Masa Pajak <i class="text-danger">*</i></label>
-                                <input type="text" name="periode" class="form-control form-control-sm" id="periode">
+                            <div class="form-group col-md-2">
+                                <label class="label-katapanda-sm" for="periode_awal">Masa Pajak (Start) <i class="text-danger">*</i></label>
+                                <input type="text" id="periode_awal" class="form-control form-control-sm">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label class="label-katapanda-sm" for="periode_akhir">Masa Pajak (End) <i class="text-danger">*</i></label>
+                                <input type="text" id="periode_akhir" class="form-control form-control-sm">
                             </div>
                             <!-- <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="status_faktur">Status</label>
@@ -222,11 +226,28 @@
             // button default for action datatables
             let buttonAction = ['copyHtml5']; // add button to copy data
             $.fn.datepicker.defaults.format = "dd-mm-yyyy";
-            $('#periode').datepicker({
+            $('#periode_awal').datepicker({
                 format: "mm-yyyy",
-                minViewMode: 1, // 1 = Bulan, 2 = Tahun
+                minViewMode: 1, // Bulan
                 autoclose: true,
-                todayHighlight: true,
+                clearBtn: true
+            }).on('changeDate', function(e) {
+                let start = moment(e.date);
+                let maxEnd = moment(start).add(3, 'months').endOf('month'); // +3 bulan
+                let minEnd = moment(start).startOf('month');
+
+                // Set range untuk periode akhir
+                $('#periode_akhir').datepicker('setStartDate', minEnd.toDate());
+                $('#periode_akhir').datepicker('setEndDate', maxEnd.toDate());
+
+                // Jika periode akhir kosong, auto set ke sama dengan awal
+                $('#periode_akhir').datepicker('update', start.format('MM-YYYY'));
+            }).datepicker('update', moment().format('MM-YYYY'));
+
+            $('#periode_akhir').datepicker({
+                format: "mm-yyyy",
+                minViewMode: 1,
+                autoclose: true,
                 clearBtn: true
             }).datepicker('update', moment().format('MM-YYYY'));
             $('#masaPajak').datepicker({
@@ -380,11 +401,15 @@
                     contentType: "application/json",
                     type: "POST",
                     data: function() {
-                        let periode = $('#periode').val(); // misal: "08-2025"
-                        let [bulan, tahun] = periode.split('-');
+                        let periode_awal = $('#periode_awal').val(); // misal: "08-2025"
+                        let periode_akhir = $('#periode_akhir').val(); // misal: "08-2025"
+                        let [bulanAwal, tahunAwal] = periode_awal.split('-');
+                        let [bulanAkhir, tahunAkhir] = periode_akhir.split('-');
                         return JSON.stringify({
-                            bulan: bulan,
-                            tahun: tahun,
+                            bulan_awal: bulanAwal,
+                            tahun_awal: tahunAwal,
+                            bulan_akhir: bulanAkhir,
+                            tahun_akhir: tahunAkhir,
                             perusahaan: $('#perusahaan').val(),
                         });
                     },
@@ -514,7 +539,7 @@
                 $('#form').trigger("reset");
                 $('#formUpdate').trigger("reset");
 
-                $('#periode').val(moment().subtract(0, 'years').format('MM-YYYY'));
+                $('#periode_awal').val(moment().subtract(0, 'years').format('MM-YYYY'));
                 $('.selectpicker').selectpicker('refresh');
                 $('#perusahaan').val().change();
             })
