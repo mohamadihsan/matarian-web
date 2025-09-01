@@ -28,7 +28,7 @@
                                 <label class="label-katapanda-sm" for="periode_akhir">Masa Pajak (End) <i class="text-danger">*</i></label>
                                 <input type="text" id="periode_akhir" class="form-control form-control-sm">
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label class="label-katapanda-sm" for="periode2">Masa Pajak Pengkreditkan </label>
                                 <input type="text" name="periode2" class="form-control form-control-sm" id="periode2">
                             </div>
