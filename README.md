@@ -1,3 +1,8 @@
+#   Cara Running Local Server
+-   masuk ke folder project
+-   php -S localhost:8000 -t .
+-   jangan lupa tetap jalanin MAMP/XAMPP untuk running mysql nya                                                       
+
 # RuangAdmin
 
 RuangAdmin - Free Admin Control Panel Themes Based on Bootstrap 4
