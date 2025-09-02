@@ -74,6 +74,7 @@ class NPWP_Api extends REST_Controller
 
             $_POST = json_decode($this->input->raw_input_stream, true);
 
+            $tipe_dokumen = $this->input->post('tipe_dokumen');
             $npwp = $this->input->post('npwp');
             $new_npwp = $this->input->post('new_npwp');
             $nitku = $this->input->post('nitku');
@@ -93,6 +94,7 @@ class NPWP_Api extends REST_Controller
             $created_by = $this->token->data->username;
 
             $post = array(
+                'tipe_dokumen' => $tipe_dokumen,
                 'npwp' => $npwp,
                 'new_npwp' => $new_npwp,
                 'nitku' => $nitku,
@@ -145,6 +147,7 @@ class NPWP_Api extends REST_Controller
 
             $_POST = json_decode($this->input->raw_input_stream, true);
 
+            $tipe_dokumen = $this->input->post('tipe_dokumen');
             $npwp = $this->input->post('npwp');
             $new_npwp = $this->input->post('new_npwp');
             $nitku = $this->input->post('nitku');
@@ -165,6 +168,7 @@ class NPWP_Api extends REST_Controller
             $updated_by = $this->token->data->username;
 
             $post = array(
+                'tipe_dokumen' => $tipe_dokumen,
                 'npwp' => $npwp,
                 'new_npwp' => $new_npwp,
                 'nitku' => $nitku,

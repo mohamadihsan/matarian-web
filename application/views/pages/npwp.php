@@ -64,6 +64,7 @@
                     <table class="table table-striped table-bordered table-sm text-katapanda-sm" id="katapandaTable" width="100%">
                         <thead class="thead-light">
                             <tr>
+                                <th class="text-center text-nowrap">Tipe Dokumen</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">NITKU</th>
@@ -79,6 +80,7 @@
                         </thead>
                         <tfoot class="">
                             <tr>
+                                <th class="text-center text-nowrap">Tipe Dokumen</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">NITKU</th>
@@ -114,7 +116,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-
+                    <div class="form-group">
+                        <label class="label-katapanda-sm" for="npwp">Tipe Dokumen <i class="text-danger">*</i></label>
+                        <select name="tipeDokumen" id="tipeDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Tipe Dokumen"></select>
+                    </div>
                     <div class="form-group">
                         <label class="label-katapanda-sm" for="npwp">NPWP16 <i class="text-danger">*</i></label>
                         <input type="text" name="new_npwp" class="form-control form-control-sm" id="new_npwp" placeholder="">
@@ -346,6 +351,7 @@
         sumKTP();
         sumNPWP();
         getProvinsi();
+        getTipeDokumen();
 
         // $('#npwp').mask('00.000.000.0-000.000', {
         //     placeholder: "__.___.___._-___.___"
@@ -454,7 +460,8 @@
                     doc.content[1].table.body[i][5].alignment = 'left';
                     doc.content[1].table.body[i][6].alignment = 'left';
                     doc.content[1].table.body[i][7].alignment = 'left';
-                    doc.content[1].table.body[i][8].alignment = 'center';
+                    doc.content[1].table.body[i][8].alignment = 'left';
+                    doc.content[1].table.body[i][9].alignment = 'center';
                 }
                 doc['footer'] = (function(page, pages) {
                     return {
@@ -525,7 +532,13 @@
                     Authorization: 'Bearer <?= $token ?>'
                 }
             },
-            columns: [{
+            columns: [
+                {
+                    data: "tipe_dokumen",
+                    className: "align-left",
+                    responsivePriority: 2
+                },
+                {
                     data: "npwp",
                     className: "align-middle",
                     responsivePriority: 1
@@ -641,6 +654,7 @@
                 await getWilayah(tempProvinsi, tempKabupaten, tempKecamatan, tempKelurahan, tempKodePos);
 
                 // store data to input
+                $('#tipeDokumen').val(item.tipe_dokumen).trigger('change');
                 $('#npwp').val(item.npwp);
                 $('#new_npwp').val(item.new_npwp);
                 $('#nitku').val(item.nitku);
@@ -893,6 +907,7 @@
                             Authorization: 'Bearer <?= $token ?>'
                         },
                         data: {
+                            tipe_dokumen: $('#tipeDokumen').val(),
                             npwp: $('#npwp').val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''),
                             new_npwp: $('#new_npwp').val(),
                             nitku: $('#nitku').val(),
@@ -1364,5 +1379,22 @@
             .catch(function(error) {
                 // console.log(error);
             })
+    }
+
+    async function getTipeDokumen() {
+        const $select = $('#tipeDokumen');
+
+        // Clear existing options if needed
+        $select.empty();
+
+        // Tambahkan opsi
+        $select.append('<option value="National ID" selected>National ID</option>');
+        $select.append('<option value="Passport">Passport</option>');
+        $select.append('<option value="Driver’s License">Driver’s License</option>');
+        // Refresh selectpicker (jika pakai Bootstrap Select)
+        $('.selectpicker').selectpicker('refresh');
+
+        // Set value dan trigger change
+        $select.val();
     }
 </script>
