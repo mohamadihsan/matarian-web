@@ -5,6 +5,14 @@ UPDATE tbl_master_npwp_new
 SET nitku = SUBSTRING(TRIM(SUBSTRING_INDEX(new_npwp, '/', -1)), 1, 16),
     nitku_digit = SUBSTRING(TRIM(SUBSTRING_INDEX(new_npwp, '/', -1)), 17);
 
+alter table tbl_master_npwp_new add column tipe_dokumen varchar(255) after id
+
+UPDATE tbl_master_npwp_new
+SET tipe_dokumen = CASE
+    WHEN npwp IS NULL OR npwp = '' THEN 'National ID'
+    ELSE 'TIN'
+END;
+
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Announcement', 'Pengumuman', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('CommercialInvoice', 'Surat Tagihan', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Contract', 'Kontrak', '2025-07-31 22:14:28');

@@ -16,15 +16,15 @@
                 <div class="table-responsive p-3">
                     <form id="form">
                         <div class="form-row">
-                            <div class="form-group col-lg-4 col-md-4">
+                            <div class="form-group col-lg-3 col-md-3">
                                 <label class="label-katapanda-sm" for="perusahaan">Perusahaan <i class="text-danger">*</i></label>
                                 <select name="perusahaan" id="perusahaan" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="periode_awal">Masa Pajak (Start) <i class="text-danger">*</i></label>
                                 <input type="text" id="periode_awal" class="form-control form-control-sm">
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="periode_akhir">Masa Pajak (End) <i class="text-danger">*</i></label>
                                 <input type="text" id="periode_akhir" class="form-control form-control-sm">
                             </div>
@@ -790,8 +790,8 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
-                        $('#perusahaanSelect').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaanSelect').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');

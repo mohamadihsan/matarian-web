@@ -16,29 +16,27 @@
                 <div class="table-responsive p-3">
                     <form id="formFilter">
                         <div class="form-row">
-                            <div class="form-group col-lg-4 col-md-4">
+                            <div class="form-group col-lg-3 col-md-3">
                                 <label class="label-katapanda-sm" for="perusahaanFilter">Perusahaan <i class="text-danger">*</i></label>
                                 <select name="perusahaanFilter" id="perusahaanFilter" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="periode_awal">Masa Pajak (Start) <i class="text-danger">*</i></label>
                                 <input type="text" id="periode_awal" class="form-control form-control-sm">
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="periode_akhir">Masa Pajak (End) <i class="text-danger">*</i></label>
                                 <input type="text" id="periode_akhir" class="form-control form-control-sm">
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label class="label-katapanda-sm" for="periode2">Masa Pajak Pengkreditkan </label>
                                 <input type="text" name="periode2" class="form-control form-control-sm" id="periode2">
                             </div>
-                        </div>
-                        <div class="form-row">
                             <div class="form-group col-lg-2 col-md-2">
                                 <label class="label-katapanda-sm" for="jenisDokumen">Kategori</label>
                                 <select name="jenisDokumen" id="jenisDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
-                            <div class="form-group col-lg-2 col-md-2">
+                            <div class="form-group col-lg-1 col-md-1">
                                 <label class="label-katapanda-sm" for="status_faktur">Status</label>
                                 <select name="status_faktur" id="status_faktur" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                             </div>
@@ -1152,8 +1150,8 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
-                        $('#perusahaanFilter').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaanFilter').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');

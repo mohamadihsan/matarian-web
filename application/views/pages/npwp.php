@@ -64,10 +64,10 @@
                     <table class="table table-striped table-bordered table-sm text-katapanda-sm" id="katapandaTable" width="100%">
                         <thead class="thead-light">
                             <tr>
-                                <th class="text-center text-nowrap">Tipe Dokumen</th>
-                                <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
+                                <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
+                                <th class="text-center text-nowrap">Tipe Dokumen</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -80,10 +80,10 @@
                         </thead>
                         <tfoot class="">
                             <tr>
-                                <th class="text-center text-nowrap">Tipe Dokumen</th>
-                                <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
+                                <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
+                                <th class="text-center text-nowrap">Tipe Dokumen</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -117,7 +117,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="npwp">Tipe Dokumen <i class="text-danger">*</i></label>
+                        <label class="label-katapanda-sm" for="npwp">Tipe Dokumen <i class="text-danger"></i></label>
                         <select name="tipeDokumen" id="tipeDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Tipe Dokumen"></select>
                     </div>
                     <div class="form-group">
@@ -532,20 +532,19 @@
                     Authorization: 'Bearer <?= $token ?>'
                 }
             },
+            order: [], // ⬅️ hilangkan default sorting bawaan
+            columnDefs: [
+                // { orderable: false, targets: 0 } // ⬅️ kolom pertama (index 0)
+            ],
             columns: [
                 {
-                    data: "tipe_dokumen",
-                    className: "align-left",
-                    responsivePriority: 2
-                },
-                {
-                    data: "npwp",
-                    className: "align-middle",
+                    data: "new_npwp",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 1
                 },
                 {
-                    data: "new_npwp",
-                    className: "align-middle",
+                    data: "npwp",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 1
                 },
                 {
@@ -557,38 +556,43 @@
                     }
                 },
                 {
+                    data: "tipe_dokumen",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 2
+                },
+                {
                     data: "nama",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 3
                 },
                 {
                     data: "alamat",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 5
                 },
                 {
                     data: "kelurahan",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 6
                 },
                 {
                     data: "kecamatan",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 7
                 },
                 {
                     data: "kabupaten",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 8
                 },
                 {
                     data: "provinsi",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     responsivePriority: 9
                 },
                 {
                     data: "kodepos",
-                    className: "align-middle",
+                    className: "align-middle text-nowrap",
                     visible: false,
                     responsivePriority: 4
                 },
@@ -742,7 +746,7 @@
 
                     <!-- Alamat -->
                     <div class="npwp-address">
-                        ${alamat} ${blok} ${nomor} ${rt} ${rw} <br/>
+                        ${alamat} ${blok ? blok : '-'} ${nomor} ${rt ? rt : ''} ${rw ? rw : ''} <br/>
                         ${kelurahan} ${kecamatan} <br/>
                         ${kabupaten} ${provinsi} ${kodepos}
                     </div>
@@ -1388,9 +1392,11 @@
         $select.empty();
 
         // Tambahkan opsi
-        $select.append('<option value="National ID" selected>National ID</option>');
+        $select.append('<option value="" selected></option>');
+        $select.append('<option value="TIN">TIN</option>');
+        $select.append('<option value="National ID">National ID</option>');
         $select.append('<option value="Passport">Passport</option>');
-        $select.append('<option value="Driver’s License">Driver’s License</option>');
+        $select.append('<option value="Others">Others</option>');
         // Refresh selectpicker (jika pakai Bootstrap Select)
         $('.selectpicker').selectpicker('refresh');
 
