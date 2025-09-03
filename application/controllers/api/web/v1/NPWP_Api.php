@@ -93,6 +93,16 @@ class NPWP_Api extends REST_Controller
             $rw = $this->input->post('rw');
             $created_by = $this->token->data->username;
 
+            if (empty($blok)) {
+                $blok = '-';
+            }
+            if (empty($rt)) {
+                $rt = '000';
+            }
+            if (empty($rw)) {
+                $rw = '000';
+            }
+
             $post = array(
                 'tipe_dokumen' => $tipe_dokumen,
                 'npwp' => $npwp,
