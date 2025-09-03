@@ -38,7 +38,7 @@
                         <div class="form-group col-lg-12 col-md-12 col-sm-12 text-right">
                             <div class="button-group">
                                 <button class="btn btn-sm btn-secondary" id="reset"><i class="fas fa-sync-alt"></i> Reset</button>
-                                <button class="btn btn-sm btn-danger" id="deleteReport"><i class="fas fa-trash"></i> Delete</button>
+                                <!-- <button class="btn btn-sm btn-danger" id="deleteReport"><i class="fas fa-trash"></i> Delete</button> -->
                                 <button class="btn btn-sm btn-primary" id="filter"><i class="fas fa-envelope-open-text"></i> Generate Report</button>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
     <!---Container Fluid-->
 
     <!-- Form Edit -->
-    <div class="modal fade" id="formUpdateReportUnifikasi" tabindex="-1" role="dialog" aria-labelledby="formUpdateReportUnifikasiTitle" aria-hidden="true">
+    <div class="modal fade" id="formReportUnifikasi" tabindex="-1" role="dialog" aria-labelledby="formUpdateReportUnifikasiTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <form id="formUpdate">
                 <div class="modal-content">
@@ -111,64 +111,64 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="perusahaanSelect">Nama Pemotong <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="perusahaanSelect">Nama Pemotong <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <select name="perusahaanSelect" id="perusahaanSelect" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose" readonly></select>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="nitkuPerusahaan">ID TKU Pemotong <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="nitkuPerusahaan">ID TKU Pemotong <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <input type="text" name="nitkuPerusahaan" class="form-control form-control-sm" id="nitkuPerusahaan" placeholder="" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="vendor">Nama Penerima <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="vendor">Nama Penerima <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <select name="vendor" id="vendor" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose" readonly></select>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="npwpPenjual">NPWP Penerima <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="npwpPenjual">NPWP Penerima <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <input type="text" name="npwpPenjual" class="form-control form-control-sm" id="npwpPenjual" placeholder="" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="nitkuPenjual">ID TKU Penerima Penghasilan <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="nitkuPenjual">ID TKU Penerima Penghasilan <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <input type="text" name="nitkuPenjual" class="form-control form-control-sm" id="nitkuPenjual" placeholder="" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Dok. Referensi <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Dok. Referensi <span class="text-sm text-secondary">(read-only)</span><span class="text-danger"></span></label>
+                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
                             <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <span class="text-sm text-secondary">(read-only)</span><i class="text-danger"></i></label>
+                            <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
                             <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary">(read-only)</span><span class="text-danger"></span></label>
+                            <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
                             <input type="text" class="form-control form-control-md" name="dppFormat" id="dppFormat" placeholder="0" readonly>
                             <input type="hidden" name="dpp" id="dpp" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="tarifFormat">Tarif <span class="text-sm text-secondary">(read-only)</span><span class="text-danger"></span></label>
+                            <label class="label-katapanda-sm" for="tarifFormat">Tarif <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
                             <input type="text" class="form-control form-control-md" name="tarifFormat" id="tarifFormat" placeholder="0">
                             <input type="hidden" name="tarif" id="tarif" readonly>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="tanggalPemotongan">Tanggal Pemotongan <span class="text-sm text-secondary">(read-only)</span><span class="text-danger"></span></label>
+                            <label class="label-katapanda-sm" for="tanggalPemotongan">Tanggal Pemotongan <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
                             <input type="text" name="tanggalPemotongan" class="form-control form-control-sm" id="tanggalPemotongan" placeholder="">
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary">(read-only)</span><span class="text-danger"></span></label>
+                            <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
                             <input type="text" class="form-control form-control-md" id="pphFormat" placeholder="0">
                             <input type="hidden" name="pph" id="pph" readonly>
                         </div>
@@ -215,13 +215,16 @@
             // init variable
             // $('#sansHidden').css('display', 'none')
             let id = null;
+            let actionCreate = <?php echo $action_create == 1 ? 1 : 0; ?>;
             let actionUpdate = <?php echo $action_update == 1 ? 1 : 0; ?>;
             let actionExportToExcel = <?php echo $action_export_to_excel == 1 ? 1 : 0; ?>;
             let actionExportToCsv = <?php echo $action_export_to_csv == 1 ? 1 : 0; ?>;
             let actionExportToPdf = 0;
             var perusahaanName = ''
 
-            $('#deleteReport').hide()
+            actionCreate ? $('#actionCreate').html('<button class="btn btn-sm btn-outline-primary" id="newData"><i class="fas fa-plus"></i> New Data</button>') : '';
+
+            // $('#deleteReport').hide()
 
             // button default for action datatables
             let buttonAction = ['copyHtml5']; // add button to copy data
@@ -611,20 +614,43 @@
 
             });
 
+            // modal form add new data  
+            $('#newData').click(function() {
+                $('.admin-hide').show();
+
+                $('.readonly-text').text('')
+                // reset ID
+                id = null;
+                // reset validator in the form
+                validator.resetForm()
+                // reset Form
+                resetFormInput();
+
+                // show modal
+                $('#formTitle').html('<i class="fas fa-users"></i> New <?= $title ?>');
+                $('#btnSubmit').text('Save');
+                $('#formReportUnifikasi').modal({
+                    backdrop: 'static'
+                }, 'show')
+                // $('#btnResetFormInput').css("display", "");
+            })
+
             // modal form edit in desktop mode
             $('.edit').click(function() {
                 validator.resetForm();
 
+                $('.readonly-text').text('(read-only)')
+                
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
                 $('#btnSubmit').show();
                 $('#btnSubmit').text('Update');
-                $('#formUpdateReportUnifikasi').modal({
+                $('#formReportUnifikasi').modal({
                     backdrop: 'static'
                 }, 'show');
-                $('#btnResetFormInput').css("display", "block");
+                // $('#btnResetFormInput').css("display", "block");
 
                 // enable semua input, select, textarea, button
-                // $('#formUpdateReportUnifikasi').find('input, select, textarea, button').prop('disabled', true);
+                // $('#formReportUnifikasi').find('input, select, textarea, button').prop('disabled', true);
                 $('#perusahaanSelect').prop('disabled', true);
                 $('#perusahaanSelect').selectpicker('refresh');
                 $('#nitkuPerusahaan').prop('disabled', true);
@@ -641,23 +667,25 @@
                 $('#pphFormat').prop('disabled', true);
 
                 // kalau pakai selectpicker
-                // $('#formUpdateReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
+                // $('#formReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
             })
 
             // modal form edit in tablet/mobile mode
             $('#katapandaTable tbody').on('click', '.edit', function() {
                 validator.resetForm();
 
+                $('.readonly-text').text('(read-only)')
+
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
                 $('#btnSubmit').show();
                 $('#btnSubmit').text('Update');
-                $('#formUpdateReportUnifikasi').modal({
+                $('#formReportUnifikasi').modal({
                     backdrop: 'static'
                 }, 'show');
-                $('#btnResetFormInput').css("display", "block");
+                // $('#btnResetFormInput').css("display", "block");
 
                 // enable semua input, select, textarea, button
-                // $('#formUpdateReportUnifikasi').find('input, select, textarea, button').prop('disabled', true);
+                // $('#formReportUnifikasi').find('input, select, textarea, button').prop('disabled', true);
                 $('#perusahaanSelect').prop('disabled', true);
                 $('#perusahaanSelect').selectpicker('refresh');
                 $('#nitkuPerusahaan').prop('disabled', true);
@@ -674,7 +702,7 @@
                 $('#pphFormat').prop('disabled', true);
 
                 // kalau pakai selectpicker
-                // $('#formUpdateReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
+                // $('#formReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
             })
 
             $('#perusahaan').on('change', function() {
@@ -719,7 +747,7 @@
                             if (status) {
                                 // show message
                                 notification(action, 'success', message);
-                                $('#formUpdateReportUnifikasi').modal('hide');
+                                $('#formReportUnifikasi').modal('hide');
                                 $('#katapandaTable').DataTable().ajax.reload();
                             } else {
                                 // show message
@@ -953,6 +981,30 @@
 
         function formatNumber(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
+
+        // reset Form
+        function resetFormInput() {
+            $('#form').trigger("reset");
+            $('#perusahaan').val('').selectpicker('refresh');
+            $('#perusahaanFilter').val('').selectpicker('refresh');
+            $('#vendor').val('').selectpicker('refresh');
+            $('#inputNominalJasa').hide();
+
+            $('#perusahaanSelect').prop('disabled', false);
+            $('#perusahaanSelect').selectpicker('refresh');
+            $('#nitkuPerusahaan').prop('disabled', false);
+            $('#vendor').prop('disabled', false);
+            $('#vendor').selectpicker('refresh');
+            $('#npwpPenjual').prop('disabled', false);
+            $('#nitkuPenjual').prop('disabled', false);
+            $('#nomorFakturPajak').prop('disabled', false);
+            $('#tanggalFakturPajak').prop('disabled', false);
+            $('#masaPajak').prop('disabled', false);
+            $('#dppFormat').prop('disabled', false);
+            $('#tarifFormat').prop('disabled', false);
+            $('#tanggalPemotongan').prop('disabled', false);
+            $('#pphFormat').prop('disabled', false);
         }
 
         function bulanToNumber(bulanStr) {
