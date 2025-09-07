@@ -134,7 +134,7 @@ class Report_Api extends REST_Controller
             }
 
             // die('tes - '.$kode_langganan);
-            $response = $this->ACCARBON_Model->get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $sales_ar)->result();
+            $response = $this->ACCARBON_Model->get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $sales_ar);
             $total_rows = count($response);
 
             $total = 0;
@@ -142,7 +142,7 @@ class Report_Api extends REST_Controller
                 $total += $res->total;
             }
 
-            if ($response) {
+            if ($total > 0) {
                 //response success with data
                 $this->response([
                     'status' => true,
@@ -165,7 +165,9 @@ class Report_Api extends REST_Controller
             // response success not found data
             $this->response([
                 'status' => false,
-                'message' => $th,
+                'message' => 'Data tidak ditemukan. Err',
+                'total_rows' => 0,
+                'total' => 0,
                 'data' => []
             ], REST_Controller::HTTP_PARTIAL_CONTENT);
         }
@@ -671,6 +673,153 @@ class Report_Api extends REST_Controller
                 $this->response([
                     'status' => false,
                     'message' => 'Data gagal diperbaharui',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+        } catch (\Throwable $th) {
+            // response failed
+            $this->response([
+                'status' => false,
+                'message' => $th,
+                'data' => []
+            ], REST_Controller::HTTP_PARTIAL_CONTENT);
+        }
+    }
+
+    public function unifikasi_create_post()
+    {
+        try {
+
+            $_POST = json_decode($this->input->raw_input_stream, true);
+
+            $perusahaan_id = $this->input->post('perusahaan');
+            $vendor_id = $this->input->post('vendor');
+            // $cek = $this->input->post('cek');
+            $nomor_faktur_pajak = $this->input->post('nomor_faktur_pajak');
+            $tanggal_faktur_pajak = $this->input->post('tanggal_faktur_pajak');
+            $masa_pajak = $this->input->post('masa_pajak');
+            $tahun_pajak = $this->input->post('tahun_pajak');
+            $masa_pajak_pengreditkan = null;
+            $tahun_pajak_pengreditkan = null;
+            $status_faktur_pajak = $this->input->post('status_faktur_pajak');
+            $harga_jual = null;
+            $dpp_nilai_lain = $this->input->post('dpp_nilai_lain');
+            $ppn = $this->input->post('ppn');
+            $is_jasa = $this->input->post('is_jasa');
+            $nominal_jasa = $this->input->post('nominal_jasa');
+            $is_unifikasi_only = $this->input->post('is_unifikasi_only');
+            $unifikasi_kode_fasilitas_id = $this->input->post('fasilitas');
+            $unifikasi_kode_objek_pajak_id = $this->input->post('objek_pajak');
+            $unifikasi_kode_dokumen_id = $this->input->post('dokumen');
+            $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
+            $nomor_sp2d = $this->input->post('nomor_sp2d');
+            $created_by = $this->token->data->username;
+
+            $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
+            if (empty($perusahaan)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data perusahaan tidak terdaftar',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            // get vendor
+            $vendor = $this->PPN_Model->get_vendor_by_id($vendor_id);
+            if (empty($vendor)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data vendor tidak terdaftar!',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            if (is_numeric($dpp_nilai_lain)) {
+                $dpp_nilai_lain = (int) $dpp_nilai_lain; // atau gunakan intval($nilai);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Nilai DPP Nilai Lain/DPP tidak valid',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            if (is_numeric($ppn)) {
+                $ppn = (int) $ppn; // atau gunakan intval($nilai);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Nilai PPN tidak valid',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            // cek nomor faktur pajak, jika sudah ada maka skip tidak usah di insert
+            $faktur = $this->PPN_Model->get_document_by_nomor_faktur($nomor_faktur_pajak);
+            if (!empty($faktur)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Nomor Faktur Pajak duplikat',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            if ($is_jasa && $nominal_jasa <= 0) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Nominal Jasa harus lebih dari 0',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
+            $post = array(
+                "master_perusahaan_id" => $perusahaan->id,
+                "master_vendor_id" => $vendor->id,
+                'ppn_persentase' => null,
+                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
+                "npwp_penjual" => $vendor->new_npwp,
+                "nama_penjual" => $vendor->nama,
+                "cek" => $vendor->cek,
+                "nomor_faktur_pajak" => $nomor_faktur_pajak,
+                "tanggal_faktur_pajak" => $tanggal_faktur_pajak,
+                "masa_pajak" => $masa_pajak,
+                "tahun_pajak" => $tahun_pajak,
+                "masa_pajak_pengkreditkan" => $masa_pajak_pengreditkan,
+                "tahun_pajak_pengkreditkan" => $tahun_pajak_pengreditkan,
+                "status_faktur_pajak" => $status_faktur_pajak,
+                "harga_jual" => $harga_jual,
+                "dpp_nilai_lain" => $dpp_nilai_lain,
+                "ppn" => $ppn,
+                "ppnbm" => null,
+                "perekam" => null,
+                "nomor_sp2d" => $nomor_sp2d,
+                "valid" => null,
+                "dilaporkan" => null,
+                "dilaporkan_oleh_penjual" => null,
+                "unifikasi_kode_objek_pajak_id" => $unifikasi_kode_objek_pajak_id,
+                "unifikasi_kode_fasilitas_id" => $unifikasi_kode_fasilitas_id,
+                "unifikasi_kode_dokumen_id" => $unifikasi_kode_dokumen_id,
+                "unifikasi_kode_pembayaran_id" => $unifikasi_kode_pembayaran_id,
+                "is_jasa" => $is_jasa,
+                "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
+                "is_unifikasi_only" => $is_unifikasi_only,
+                "created_at" => $this->time_server,
+                "created_by" => $created_by
+            );
+
+            $save = $this->PPN_Model->insert($post);
+            if ($save) {
+                //response success with data
+                $this->response([
+                    'status' => true,
+                    'message' => 'Data berhasil ditambahkan',
+                    'data' => $save
+                ], REST_Controller::HTTP_OK);
+            } else {
+                // response failed
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data gagal ditambahkan',
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }

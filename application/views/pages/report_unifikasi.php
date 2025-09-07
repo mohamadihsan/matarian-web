@@ -111,91 +111,101 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="perusahaanSelect">Nama Pemotong <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <select name="perusahaanSelect" id="perusahaanSelect" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose" readonly></select>
+                            <label class="label-katapanda-sm" for="perusahaanSelect">Nama Pemotong <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <select name="perusahaanSelect" id="perusahaanSelect" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        </div>
+
+                        <div class="form-group" hidden>
+                            <label class="label-katapanda-sm" for="nitkuPerusahaan">ID TKU Pemotong <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <input type="text" name="nitkuPerusahaan" class="form-control form-control-sm" id="nitkuPerusahaan" placeholder="">
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="nitkuPerusahaan">ID TKU Pemotong <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <input type="text" name="nitkuPerusahaan" class="form-control form-control-sm" id="nitkuPerusahaan" placeholder="" readonly>
+                            <label class="label-katapanda-sm" for="vendor">Nama Penerima <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <select name="vendor" id="vendor" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="vendor">Nama Penerima <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <select name="vendor" id="vendor" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose" readonly></select>
+                            <label class="label-katapanda-sm" for="npwpPenjual">NPWP Penerima <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <input type="text" name="npwpPenjual" class="form-control form-control-sm" id="npwpPenjual" placeholder="">
+                        </div>
+
+                        <div class="form-group" hidden>
+                            <label class="label-katapanda-sm" for="nitkuPenjual">ID TKU Penerima Penghasilan <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <input type="text" name="nitkuPenjual" class="form-control form-control-sm" id="nitkuPenjual" placeholder="">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="kodeFasilitas">Fasilitas <i class="text-danger"></i></label>
+                                <select name="kodeFasilitas" id="kodeFasilitas" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="kodeDokumen">Jenis Dok. Referensi <i class="text-danger"></i></label>
+                                <select name="kodeDokumen" id="kodeDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="kodePembayaran">Opsi Pembayaran (IP) <i class="text-danger"></i></label>
+                                <select name="kodePembayaran" id="kodePembayaran" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="nomorSP2D">Nomor SP2D (IP) <i class="text-danger"></i></label>
+                                <input type="text" name="nomorSP2D" class="form-control form-control-sm" id="nomorSP2D" placeholder="">
+                            </div>
+                        </div>
+                                
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="kodeObjekPajak">Kode Objek Pajak <i class="text-danger"></i></label>
+                                <select name="kodeObjekPajak" id="kodeObjekPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="tarifFormat">Tarif <span class="text-sm text-secondary readonly-text"></span></span></label>
+                                <input type="text" class="form-control form-control-sm" name="tarifFormat" id="tarifFormat" placeholder="0">
+                                <input type="hidden" name="tarif" id="tarif">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <input type="text" class="form-control form-control-sm" name="dppFormat" id="dppFormat" placeholder="0">
+                                <input type="hidden" name="dpp" id="dpp">
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <input type="text" class="form-control form-control-sm" id="pphFormat" placeholder="0">
+                                <input type="hidden" name="pph" id="pph">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak">
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="tanggalPemotongan">Tanggal Pemotongan <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <input type="text" name="tanggalPemotongan" class="form-control form-control-sm" id="tanggalPemotongan" placeholder="">
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="npwpPenjual">NPWP Penerima <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <input type="text" name="npwpPenjual" class="form-control form-control-sm" id="npwpPenjual" placeholder="" readonly>
+                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="">
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="nitkuPenjual">ID TKU Penerima Penghasilan <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <input type="text" name="nitkuPenjual" class="form-control form-control-sm" id="nitkuPenjual" placeholder="" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
-                            <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <span class="text-sm text-secondary readonly-text"></span><i class="text-danger"></i></label>
-                            <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" name="dppFormat" id="dppFormat" placeholder="0" readonly>
-                            <input type="hidden" name="dpp" id="dpp" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="tarifFormat">Tarif <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" name="tarifFormat" id="tarifFormat" placeholder="0">
-                            <input type="hidden" name="tarif" id="tarif" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="tanggalPemotongan">Tanggal Pemotongan <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
-                            <input type="text" name="tanggalPemotongan" class="form-control form-control-sm" id="tanggalPemotongan" placeholder="">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary readonly-text"></span><span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" id="pphFormat" placeholder="0">
-                            <input type="hidden" name="pph" id="pph" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="kodeFasilitas">Fasilitas <i class="text-danger"></i></label>
-                            <select name="kodeFasilitas" id="kodeFasilitas" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="kodeObjekPajak">Kode Objek Pajak <i class="text-danger"></i></label>
-                            <select name="kodeObjekPajak" id="kodeObjekPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="kodeDokumen">Jenis Dok. Referensi <i class="text-danger"></i></label>
-                            <select name="kodeDokumen" id="kodeDokumen" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="kodePembayaran">Opsi Pembayaran (IP) <i class="text-danger"></i></label>
-                            <select name="kodePembayaran" id="kodePembayaran" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="nomorSP2D">Nomor SP2D (IP) <i class="text-danger"></i></label>
-                            <input type="text" name="nomorSP2D" class="form-control form-control-sm" id="nomorSP2D" placeholder="">
+                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Dok. Referensi <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="">
                         </div>
 
                     </div>
@@ -329,7 +339,7 @@
                 orientation: 'portrait', //landscape
                 pageSize: 'A4', //A3 , A5 , A6 , legal , letter
                 exportOptions: {
-                    columns: ':visible',
+                    columns: ':visible:not(:first-child)',
                     search: 'applied',
                     order: 'applied'
                 },
@@ -619,6 +629,7 @@
                 $('.admin-hide').show();
 
                 $('.readonly-text').text('')
+                $('.field-required').text('*');
                 // reset ID
                 id = null;
                 // reset validator in the form
@@ -640,7 +651,8 @@
                 validator.resetForm();
 
                 $('.readonly-text').text('(read-only)')
-                
+                $('.field-required').text('');
+
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
                 $('#btnSubmit').show();
                 $('#btnSubmit').text('Update');
@@ -675,6 +687,7 @@
                 validator.resetForm();
 
                 $('.readonly-text').text('(read-only)')
+                $('.field-required').text('');
 
                 $('#formTitle').html('<i class="fas fa-users"></i> Edit <?= $title ?>');
                 $('#btnSubmit').show();
@@ -716,24 +729,119 @@
                 }
             });
 
+            $('#perusahaanSelect').on('change', function() {
+                let selectedOption = $(this).find('option:selected');
+                let idTKUPemotong = selectedOption.data('nitku');
+
+                if (idTKUPemotong) {
+                    $('#nitkuPerusahaan').val(idTKUPemotong)
+                } else {
+                    $('#nitkuPerusahaan').val()
+                }
+            });
+
+            $('#vendor').on('change', function() {
+                let selectedOption = $(this).find('option:selected');
+                let npwpPenerima = selectedOption.data('npwp');
+                let idTKUPenerima = selectedOption.data('nitku');
+                let kodeObjekPajak = selectedOption.data('pajak');
+
+                $('#npwpPenjual').val(npwpPenerima)
+                $('#nitkuPenjual').val(idTKUPenerima)
+                $('#kodeObjekPajak').val(kodeObjekPajak).trigger('change');
+            });
+
+            $('#kodeObjekPajak').on('change', function() {
+                let selectedOption = $(this).find('option:selected');
+                let tarif = selectedOption.data('tarif');
+                $('#tarifFormat').val(tarif)
+                $('#tarif').val(tarif)
+
+                let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
+                let pph = (parseFloat(tarif) / 100) * dpp
+                let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                $('#pph').val(pph)
+                $('#pphFormat').val(pphFormatted)
+            });
+
+            $('#dppFormat').on('input', function() {
+                // Ambil nilai murni hanya angka
+                let rawValue = $(this).val().replace(/\D/g, '');
+
+                // Format ribuan
+                let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                // Set tampilan format ke input text
+                $(this).val(formattedValue);
+
+                // Simpan nilai asli ke hidden input
+                $('#dpp').val(rawValue);
+
+                let tarif = $('#tarif').val() ? $('#tarif').val() : 0
+                let pph = parseInt(rawValue) * (parseFloat(tarif) / 100)
+                let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                $('#pph').val(pph)
+                $('#pphFormat').val(pphFormatted)
+            });
+
             // validate and request add new data and update existing data 
             let validator = $('#formUpdate').validate({
                 submitHandler: function(form) {
                     // start loading
                     loadingStart()
 
-                    const requestData = {
+                    const monthNames = [
+                        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                    ];
+
+                    const [bulanPajakNum, tahunPajak] = $('#masaPajak').val()?.split("-");
+
+                    // ubah bulan angka ke nama bulan
+                    const bulanPajak = monthNames[parseInt(bulanPajakNum, 10) - 1];
+
+                    const tanggalFakturPajak = moment($('#tanggalFakturPajak').val(), "DD-MM-YYYY").format("YYYY-MM-DD");
+
+                    // default request for create
+                    let requestData = {
+                        perusahaan: $('#perusahaanSelect').val(),
+                        vendor: $('#vendor').val(),
                         fasilitas: $('#kodeFasilitas').val(),
                         objek_pajak: $('#kodeObjekPajak').val(),
                         dokumen: $('#kodeDokumen').val(),
                         pembayaran: $('#kodePembayaran').val(),
                         nomor_sp2d: $('#nomorSP2D').val(),
+                        dpp_nilai_lain: $('#dpp').val(),
+                        ppn: $('#pph').val(),
+                        masa_pajak: bulanPajak,
+                        tahun_pajak: tahunPajak,
+                        tanggal_pemotongan: $('#tanggalPemotongan').val(),
+                        nomor_faktur_pajak: $('#nomorFakturPajak').val(),
+                        tanggal_faktur_pajak: tanggalFakturPajak,
+                        is_unifikasi_only: true,
+                        is_jasa: true,
+                        nominal_jasa: null,
+                        status_faktur_pajak: null,
+                        cek: null,
+                    }
+
+                    if (id) {
+                        // request for update
+                        requestData = {
+                            fasilitas: $('#kodeFasilitas').val(),
+                            objek_pajak: $('#kodeObjekPajak').val(),
+                            dokumen: $('#kodeDokumen').val(),
+                            pembayaran: $('#kodePembayaran').val(),
+                            nomor_sp2d: $('#nomorSP2D').val(),
+                        }   
                     }
 
                     // send request 
                     axios({
-                            method: `PUT`,
-                            url: `<?= site_url() ?>api/web/v1/report/unifikasi/update/${id}`,
+                            method: id === null ? `POST` : `PUT`,
+                            url: id === null ? `<?= site_url() ?>api/web/v1/report/unifikasi/create` : `<?= site_url() ?>api/web/v1/report/unifikasi/update/${id}`,
                             headers: {
                                 Authorization: 'Bearer <?= $token ?>'
                             },
@@ -791,13 +899,23 @@
                         selected = element.id
                         // add option
                         $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
-                        $('#perusahaanSelect').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#perusahaanSelect').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-nitku="' + element.nitku + element.nitku_digit + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
 
                     $('#perusahaan').val(selected).trigger('change');
                     $('#perusahaanSelect').val(selected).trigger('change');
+
+                    if (selected) {
+                        let idTKUPemotong = element.nitku + element.nitku_digit;
+                        if (idTKUPemotong) {
+                            $('#nitkuPerusahaan').val(idTKUPemotong)
+                        } else {
+                            $('#nitkuPerusahaan').val()
+                        }
+                    }
+
                     setTimeout(
                         function() {
                             $('#filter').trigger('click');
@@ -822,7 +940,7 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-cek="' + element.cek + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-nitku="' + element.nitku+element.nitku_digit + '" data-cek="' + element.cek + '" data-pajak="' + element.unifikasi_kode_objek_pajak_id + '">' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
@@ -880,14 +998,17 @@
                 .then(function(response) {
                     let selected = '';
                     response.data.data.forEach(element => {
-                        selected = element.id
+                        if (element.id == 1) {
+                            selected = element.id    
+                        }
+                        
                         // add option
                         $('#kodeFasilitas').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.kode + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
 
-                    // $('#kodeFasilitas').val(selected).trigger('change');
+                    $('#kodeFasilitas').val(selected).trigger('change');
                     setTimeout(
                         function() {
                             $('#filter').trigger('click');
@@ -912,7 +1033,7 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#kodeObjekPajak').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.kode + '</option><option data-divider="true"></option>')
+                        $('#kodeObjekPajak').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-tarif="' + element.tarif + '">' + element.kode + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
@@ -940,14 +1061,17 @@
                 .then(function(response) {
                     let selected = '';
                     response.data.data.forEach(element => {
-                        selected = element.id
+                        if (element.id == 1) {
+                            selected = element.id    
+                        }
+
                         // add option
                         $('#kodePembayaran').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.kode + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
 
-                    // $('#kodePembayaran').val(selected).trigger('change');
+                    $('#kodePembayaran').val(selected).trigger('change');
                     setTimeout(
                         function() {
                             $('#filter').trigger('click');
@@ -986,25 +1110,39 @@
         // reset Form
         function resetFormInput() {
             $('#form').trigger("reset");
-            $('#perusahaan').val('').selectpicker('refresh');
-            $('#perusahaanFilter').val('').selectpicker('refresh');
+            // $('#perusahaan').val('').selectpicker('refresh');
+            // $('#perusahaanFilter').val('').selectpicker('refresh');
             $('#vendor').val('').selectpicker('refresh');
             $('#inputNominalJasa').hide();
 
+            $('#vendor').val('').selectpicker('refresh');
+            $('#npwpPenjual').val('');
+            $('#nitkuPenjual').val('');
+            $('#kodeObjekPajak').val('').selectpicker('refresh');
+            $('#kodeDokumen').val(12).selectpicker('refresh');
+            $('#kodePembayaran').val(1).selectpicker('refresh');
+            $('#nomorFakturPajak').val('');
+            $('#tanggalFakturPajak').val('');
+            $('#masaPajak').val('');
+            $('#dppFormat').val('');
+            $('#tarifFormat').val('');
+            $('#tanggalPemotongan').val('');
+            $('#pphFormat').val('');
+
             $('#perusahaanSelect').prop('disabled', false);
             $('#perusahaanSelect').selectpicker('refresh');
-            $('#nitkuPerusahaan').prop('disabled', false);
+            $('#nitkuPerusahaan').prop('disabled', true);
             $('#vendor').prop('disabled', false);
             $('#vendor').selectpicker('refresh');
-            $('#npwpPenjual').prop('disabled', false);
-            $('#nitkuPenjual').prop('disabled', false);
+            $('#npwpPenjual').prop('disabled', true);
+            $('#nitkuPenjual').prop('disabled', true);
             $('#nomorFakturPajak').prop('disabled', false);
             $('#tanggalFakturPajak').prop('disabled', false);
             $('#masaPajak').prop('disabled', false);
             $('#dppFormat').prop('disabled', false);
-            $('#tarifFormat').prop('disabled', false);
-            $('#tanggalPemotongan').prop('disabled', false);
-            $('#pphFormat').prop('disabled', false);
+            $('#tarifFormat').prop('disabled', true);
+            $('#tanggalPemotongan').prop('disabled', true);
+            $('#pphFormat').prop('disabled', true);
         }
 
         function bulanToNumber(bulanStr) {

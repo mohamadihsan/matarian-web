@@ -87,34 +87,109 @@ class ACCARBON_Model extends CI_Model
     }
 
     // get sales
+    // public function get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $sales_ar)
+    // {
+    //     if ($from_date != '' && $end_date != '') {
+    //         if ($from_date == $end_date) {
+    //             $this->db->where('tbl_accarbon.tanggal_bon', $from_date);
+    //         } else {
+    //             $this->db->where("tbl_accarbon.tanggal_bon BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
+    //         }
+    //     }
+    //     if ($kode_langganan != '') {
+    //         $this->db->where('tbl_accarbon.kode_langganan', $kode_langganan);
+    //     }
+    //     if ($kode_barang != '') {
+    //         $this->db->where('tbl_accarbon.kode_barang', $kode_barang);
+    //     }
+    //     if ($sales_ar != null) {
+    //         // $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
+    //     }
+    //     $this->db->group_by('tbl_accarbon.nomor_bon, tbl_accarbon.tanggal_bon, tbl_accdlgn.kode_langganan, tbl_accarbon.kode_barang');
+    //     // $this->db->select('GROUP_CONCAT(tbl_accarbon.nomor_bon) as nomor_nota, tbl_accarbon.tanggal_bon as tanggal_nota, tbl_accdlgn.kode_langganan, tbl_accdlgn.nama_toko as nama_langganan, tbl_accdlgn.npwp_langganan, tbl_accdbrg.kode_barang, tbl_accdbrg.nama_barang, tbl_accdbrg.satuan, COUNT(tbl_accdbrg.kode_barang) as jumlah_transaksi, SUM(tbl_accarbon.banyak_barang) as quantity, tbl_accarbon.harga_barang as harga_satuan, (SUM(tbl_accarbon.banyak_barang)*tbl_accarbon.harga_barang) as total');
+    //     $this->db->select('tbl_accarbon.nomor_bon as nomor_nota, tbl_accarbon.tanggal_bon as tanggal_nota, tbl_accdlgn.kode_langganan, tbl_accdlgn.nama_toko as nama_langganan, tbl_accdlgn.npwp_langganan, tbl_accdbrg.kode_barang, tbl_accdbrg.nama_barang, tbl_accdbrg.satuan, COUNT(tbl_accdbrg.kode_barang) as jumlah_transaksi, SUM(tbl_accarbon.banyak_barang) as quantity, tbl_accarbon.harga_barang as harga_satuan, (SUM(tbl_accarbon.banyak_barang)*tbl_accarbon.harga_barang) as total');
+    //     $this->db->join('tbl_accdlgn', 'tbl_accdlgn.kode_langganan = tbl_accarbon.kode_langganan', 'left');
+    //     $this->db->join('tbl_accdbrg', 'tbl_accdbrg.kode_barang = tbl_accarbon.kode_barang', 'left');
+    //     $this->db->join('tbl_accardat', 'tbl_accardat.nomor_nota = tbl_accarbon.nomor_bon', 'left');
+    //     $this->db->order_by('tbl_accarbon.tanggal_bon', 'asc');
+    //     $this->db->order_by('SUBSTRING(tbl_accarbon.nomor_bon, 3,6)', FALSE, 'asc');
+    //     return $this->db->get('tbl_accarbon');
+    // }
+
     public function get_sales($from_date, $end_date, $kode_langganan, $kode_barang, $sales_ar)
     {
-        if ($from_date != '' && $end_date != '') {
-            if ($from_date == $end_date) {
-                $this->db->where('tbl_accarbon.tanggal_bon', $from_date);
-            } else {
-                $this->db->where("tbl_accarbon.tanggal_bon BETWEEN '" . $from_date . "' AND '" . $end_date . "'");
-            }
-        }
-        if ($kode_langganan != '') {
-            $this->db->where('tbl_accarbon.kode_langganan', $kode_langganan);
-        }
-        if ($kode_barang != '') {
-            $this->db->where('tbl_accarbon.kode_barang', $kode_barang);
-        }
-        if ($sales_ar != null) {
-            // $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
-        }
-        $this->db->group_by('tbl_accarbon.nomor_bon, tbl_accarbon.tanggal_bon, tbl_accdlgn.kode_langganan, tbl_accarbon.kode_barang');
-        // $this->db->select('GROUP_CONCAT(tbl_accarbon.nomor_bon) as nomor_nota, tbl_accarbon.tanggal_bon as tanggal_nota, tbl_accdlgn.kode_langganan, tbl_accdlgn.nama_toko as nama_langganan, tbl_accdlgn.npwp_langganan, tbl_accdbrg.kode_barang, tbl_accdbrg.nama_barang, tbl_accdbrg.satuan, COUNT(tbl_accdbrg.kode_barang) as jumlah_transaksi, SUM(tbl_accarbon.banyak_barang) as quantity, tbl_accarbon.harga_barang as harga_satuan, (SUM(tbl_accarbon.banyak_barang)*tbl_accarbon.harga_barang) as total');
-        $this->db->select('tbl_accarbon.nomor_bon as nomor_nota, tbl_accarbon.tanggal_bon as tanggal_nota, tbl_accdlgn.kode_langganan, tbl_accdlgn.nama_toko as nama_langganan, tbl_accdlgn.npwp_langganan, tbl_accdbrg.kode_barang, tbl_accdbrg.nama_barang, tbl_accdbrg.satuan, COUNT(tbl_accdbrg.kode_barang) as jumlah_transaksi, SUM(tbl_accarbon.banyak_barang) as quantity, tbl_accarbon.harga_barang as harga_satuan, (SUM(tbl_accarbon.banyak_barang)*tbl_accarbon.harga_barang) as total');
+        $this->db->select("
+            tbl_accarbon.nomor_bon AS nomor_nota,
+            tbl_accarbon.tanggal_bon AS tanggal_nota,
+            tbl_accdlgn.kode_langganan,
+            tbl_accdlgn.nama_toko AS nama_langganan,
+            tbl_accdlgn.npwp_langganan,
+            tbl_accdbrg.kode_barang,
+            tbl_accdbrg.nama_barang,
+            tbl_accdbrg.satuan,
+            COUNT(tbl_accdbrg.kode_barang) AS jumlah_transaksi,
+            SUM(tbl_accarbon.banyak_barang) AS quantity,
+            tbl_accarbon.harga_barang AS harga_satuan,
+            (SUM(tbl_accarbon.banyak_barang) * tbl_accarbon.harga_barang) AS total
+        ");
+
+        $this->db->from('tbl_accarbon');
         $this->db->join('tbl_accdlgn', 'tbl_accdlgn.kode_langganan = tbl_accarbon.kode_langganan', 'left');
         $this->db->join('tbl_accdbrg', 'tbl_accdbrg.kode_barang = tbl_accarbon.kode_barang', 'left');
         $this->db->join('tbl_accardat', 'tbl_accardat.nomor_nota = tbl_accarbon.nomor_bon', 'left');
+
+        // Filter tanggal
+        if (!empty($from_date) && !empty($end_date)) {
+            if ($from_date === $end_date) {
+                $this->db->where('tbl_accarbon.tanggal_bon', $from_date);
+            } else {
+                $this->db->where('tbl_accarbon.tanggal_bon >=', $from_date);
+                $this->db->where('tbl_accarbon.tanggal_bon <=', $end_date);
+            }
+        }
+
+        // Filter kode langganan
+        if (!empty($kode_langganan)) {
+            $this->db->where('tbl_accarbon.kode_langganan', $kode_langganan);
+        }
+
+        // Filter kode barang
+        if (!empty($kode_barang)) {
+            $this->db->where('tbl_accarbon.kode_barang', $kode_barang);
+        }
+
+        // Filter sales_ar kalau ada
+        if (!empty($sales_ar)) {
+            $this->db->where_in('tbl_accardat.sales_ar', $sales_ar);
+        }
+
+        // Grouping
+        $this->db->group_by([
+            'tbl_accarbon.nomor_bon',
+            'tbl_accarbon.tanggal_bon',
+            'tbl_accdlgn.kode_langganan',
+            'tbl_accarbon.kode_barang',
+            'tbl_accdlgn.nama_toko',
+            'tbl_accdlgn.npwp_langganan',
+            'tbl_accdbrg.kode_barang',
+            'tbl_accdbrg.nama_barang',
+            'tbl_accdbrg.satuan',
+            'tbl_accarbon.harga_barang',
+        ]);
+
+        // Order
         $this->db->order_by('tbl_accarbon.tanggal_bon', 'asc');
-        $this->db->order_by('SUBSTRING(tbl_accarbon.nomor_bon, 3,6)', FALSE, 'asc');
-        return $this->db->get('tbl_accarbon');
+        $this->db->order_by('SUBSTRING(tbl_accarbon.nomor_bon, 3,6)', 'asc', false);
+
+        $query = $this->db->get();
+        if (!$query) {
+            $error = $this->db->error(); // array: ['code' => int, 'message' => string]
+            show_error("DB Error: " . $error['message'] . "<br>Query: " . $this->db->last_query());
+        }
+
+        return $query->result(); // langsung return array of objects
     }
+
 
     // get sales by sales ar
     public function get_sales_by_sales_ar($from_date, $end_date, $sales_ar)

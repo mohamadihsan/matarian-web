@@ -123,33 +123,39 @@
                             <input type="text" name="npwpPenjual" class="form-control form-control-sm" id="npwpPenjual" placeholder="" readonly>
                         </div>
 
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="cek">Cek <i class="text-danger">*</i></label>
-                            <select name="cek" id="cek" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="cek">Cek <i class="text-danger">*</i></label>
+                                <select name="cek" id="cek" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="statusFakturPajak">Status Faktur <i class="text-danger">*</i></label>
+                                <select name="statusFakturPajak" id="statusFakturPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Faktur Pajak <i class="text-danger">*</i></label>
-                            <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="">
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="nomorFakturPajak">Nomor Faktur Pajak <i class="text-danger">*</i></label>
+                                <input type="text" name="nomorFakturPajak" class="form-control form-control-sm" id="nomorFakturPajak" placeholder="">
+                            </div>
+
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Faktur Pajak <span class="text-danger">*</span></label>
+                                <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="">
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="tanggalFakturPajak">Tanggal Faktur Pajak <span class="text-danger">*</span></label>
-                            <input type="text" name="tanggalFakturPajak" class="form-control form-control-sm" id="tanggalFakturPajak" placeholder="">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <i class="text-danger">*</i></label>
-                            <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak">
-                        </div>
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="masaPajakPengkreditkan">Masa Pajak Pengkreditkan </label>
-                            <input type="text" name="masaPajakPengkreditkan" class="form-control form-control-sm" id="masaPajakPengkreditkan">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="statusFakturPajak">Status Faktur <i class="text-danger">*</i></label>
-                            <select name="statusFakturPajak" id="statusFakturPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="masaPajak">Masa Pajak <i class="text-danger">*</i></label>
+                                <input type="text" name="masaPajak" class="form-control form-control-sm" id="masaPajak">
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="masaPajakPengkreditkan">Masa Pajak Pengkreditkan </label>
+                                <input type="text" name="masaPajakPengkreditkan" class="form-control form-control-sm" id="masaPajakPengkreditkan">
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -158,16 +164,18 @@
                             <input type="hidden" name="hargaJual" id="hargaJual" readonly>
                         </div>
 
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-md" name="dppNilaiLainFormat" id="dppNilaiLainFormat" placeholder="0">
-                            <input type="hidden" name="dppNilaiLain" id="dppNilaiLain" readonly>
-                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-md" name="dppNilaiLainFormat" id="dppNilaiLainFormat" placeholder="0">
+                                <input type="hidden" name="dppNilaiLain" id="dppNilaiLain" readonly>
+                            </div>
 
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-md" name="ppnFormat" id="ppnFormat" placeholder="0">
-                            <input type="hidden" name="ppn" id="ppn" readonly>
+                            <div class="form-group col-lg-6 col-md-6">
+                                <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-md" name="ppnFormat" id="ppnFormat" placeholder="0">
+                                <input type="hidden" name="ppn" id="ppn" readonly>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -182,7 +190,7 @@
                                 <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" hidden>
                                 <input type="checkbox" name="isUnifikasiOnly" class="" id="isUnifikasiOnly">
                                 <label class="label-katapanda-sm" for="isUnifikasiOnly"> Jadikan sebagai Laporan Unifikasi saja<span class="text-danger"></span></label>
                             </div>
@@ -392,53 +400,84 @@
             getCek();
 
             // button action by user role 
+            // actionExportToExcel ? buttonAction.push({
+            //     extend: 'excelHtml5',
+            //     exportOptions: {
+            //         // exclude column[0]
+            //         columns: ':not(:first-child):not(:nth-child(2)):not(:nth-child(7)):not(:nth-child(8)):not(:nth-child(13)):not(:nth-child(14))',
+            //         title: '', // kosongkan judul
+            //         messageTop: '', // hilangkan message di atas
+            //         footer: true, // <<-- penting biar footer ikut diexport
+            //         format: {
+            //             body: function(data, row, column, node) {
+            //                 if (column === 2) {
+            //                     // Nomor Faktur Pajak
+            //                     if (/^\d+$/.test(data)) {
+            //                         // Jika semua karakter numeric → tambahkan ' di depan
+            //                         return "'" + data;
+            //                     }
+            //                     return data; // kalau ada huruf/simbol, biarkan
+            //                 } else if (column === 3) {
+            //                     // Tanggal Faktur Pajak
+            //                     let parsedDate = moment(data, ['DD/MM/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY'], true);
+            //                     if (parsedDate.isValid()) {
+            //                         return parsedDate.format('DD/MM/YYYY');
+            //                     }
+            //                     return data;
+            //                 } else if (column >= 7 && column <= 11) {
+            //                     // Nominal (hilangkan titik)
+            //                     let nominal = data?.replace(/\./g, '');
+            //                     return nominal;
+            //                 }
+            //                 return data;
+            //             },
+            //             footer: function(data, row, column, node) {
+            //                 // Format footer juga (total)
+            //                 if (column >= 7 && column <= 11) {
+            //                     return data?.replace(/\./g, '');
+            //                 }
+            //                 return data;
+            //             }
+            //         },
+            //     },
+            //     customizeData: function(data) {
+            //         // Jaga-jaga, kalau Excel masih detect angka panjang di kolom faktur
+            //         for (let i = 0; i < data.body.length; i++) {
+            //             data.body[i][2] = data.body[i][2].toString();
+            //         }
+            //     }
+            // }) : ''; // button export to excel
+
             actionExportToExcel ? buttonAction.push({
-                extend: 'excelHtml5',
-                exportOptions: {
-                    // exclude column[0]
-                    columns: ':not(:first-child):not(:nth-child(2)):not(:nth-child(7)):not(:nth-child(8)):not(:nth-child(13)):not(:nth-child(14))',
-                    title: '', // kosongkan judul
-                    messageTop: '', // hilangkan message di atas
-                    footer: true, // <<-- penting biar footer ikut diexport
-                    format: {
-                        body: function(data, row, column, node) {
-                            if (column === 2) {
-                                // Nomor Faktur Pajak
-                                if (/^\d+$/.test(data)) {
-                                    // Jika semua karakter numeric → tambahkan ' di depan
-                                    return "'" + data;
-                                }
-                                return data; // kalau ada huruf/simbol, biarkan
-                            } else if (column === 3) {
-                                // Tanggal Faktur Pajak
-                                let parsedDate = moment(data, ['DD/MM/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY'], true);
-                                if (parsedDate.isValid()) {
-                                    return parsedDate.format('DD/MM/YYYY');
-                                }
-                                return data;
-                            } else if (column >= 7 && column <= 11) {
-                                // Nominal (hilangkan titik)
-                                let nominal = data?.replace(/\./g, '');
-                                return nominal;
-                            }
-                            return data;
-                        },
-                        footer: function(data, row, column, node) {
-                            // Format footer juga (total)
-                            if (column >= 7 && column <= 11) {
-                                return data?.replace(/\./g, '');
-                            }
-                            return data;
-                        }
-                    },
-                },
-                customizeData: function(data) {
-                    // Jaga-jaga, kalau Excel masih detect angka panjang di kolom faktur
-                    for (let i = 0; i < data.body.length; i++) {
-                        data.body[i][2] = data.body[i][2].toString();
-                    }
+                text: 'Excel Custom',
+                action: function (e, dt, node, config) {
+                    // Ambil parameter dari input/filter
+                    let periode_awal = $('#periode_awal').val(); // misal: "08-2025"
+                    let periode_akhir = $('#periode_akhir').val(); // misal: "08-2025"
+                    let periode2 = $('#periode2').val(); // misal: "08-2025"
+
+                    let [bulanAwal, tahunAwal] = periode_awal.split('-');
+                    let [bulanAkhir, tahunAkhir] = periode_akhir.split('-');
+                    let [bulanPengkreditkan, tahunPengkreditkan] = periode2.split('-');
+
+                    // Buat query string
+                    var params = $.param({
+                        bulan_awal: bulanAwal,
+                        tahun_awal: tahunAwal,
+                        bulan_akhir: bulanAkhir,
+                        tahun_akhir: tahunAkhir,
+                        bulan_pengkreditkan: bulanPengkreditkan,
+                        tahun_pengkreditkan: tahunPengkreditkan,
+                        perusahaan: $('#perusahaanFilter').val(),
+                        status_faktur: $('#status_faktur').val(),
+                        jenis_dokumen: $('#jenisDokumen').val()
+                    });
+
+                    // Trigger download file Excel dari server (PHPExcel)
+                    window.location.href = "<?php echo base_url('report/ppn'); ?>?" + params;
                 }
             }) : ''; // button export to excel
+
             actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
             actionExportToPdf ? buttonAction.push({ // button export to pdf
                 text: 'PDF',
@@ -702,6 +741,32 @@
                 }
             }).columns.adjust();
             table.fixedHeader.adjust();
+
+            $('#btnDownload').on('click', function () {
+                // Ambil parameter dari input/filter
+                let periode_awal = $('#periode_awal').val(); // misal: "08-2025"
+                let periode_akhir = $('#periode_akhir').val(); // misal: "08-2025"
+                let periode2 = $('#periode2').val(); // misal: "08-2025"
+                let [bulanAwal, tahunAwal] = periode_awal.split('-');
+                let [bulanAkhir, tahunAkhir] = periode_akhir.split('-');
+                let [bulanPengkreditkan, tahunPengkreditkan] = periode2.split('-');
+                
+                // Buat query string
+                var params = $.param({
+                    bulan_awal: bulanAwal,
+                    tahun_awal: tahunAwal,
+                    bulan_akhir: bulanAkhir,
+                    tahun_akhir: tahunAkhir,
+                    bulan_pengkreditkan: bulanPengkreditkan,
+                    tahun_pengkreditkan: tahunPengkreditkan,
+                    perusahaan: $('#perusahaanFilter').val(),
+                    status_faktur: $('#status_faktur').val(),
+                    jenis_dokumen: $('#jenisDokumen').val()
+                });
+
+                // Trigger download
+                window.location.href = "<?php echo base_url('report/ppn'); ?>?" + params;
+            });
 
             $('#filter').click(function() {
                 // $('#sansHidden').css('display', '')
@@ -1157,6 +1222,7 @@
                     $('.selectpicker').selectpicker('refresh');
 
                     $('#perusahaanFilter').val(selected).trigger('change');
+                    $('#perusahaan').val(selected).trigger('change');
                     setTimeout(
                         function() {
                             $('#filter').trigger('click');
@@ -1290,8 +1356,8 @@
         // reset Form
         function resetFormInput() {
             $('#form').trigger("reset");
-            $('#perusahaan').val('').selectpicker('refresh');
-            $('#perusahaanFilter').val('').selectpicker('refresh');
+            // $('#perusahaan').val('').selectpicker('refresh');
+            // $('#perusahaanFilter').val('').selectpicker('refresh');
             $('#vendor').val('').selectpicker('refresh');
             $('#inputNominalJasa').hide();
         }

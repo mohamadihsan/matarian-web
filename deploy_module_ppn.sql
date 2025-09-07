@@ -274,3 +274,59 @@ INSERT INTO matarian_unit.tbl_user_privilege (id_user_group, id_menu, create_acc
 INSERT INTO matarian_unit.tbl_user_privilege (id_user_group, id_menu, create_access, read_access, update_access, delete_access, approve_access, reject_access, print_access, export_to_excel_access, export_to_csv_access, export_to_pdf_access, created_at, created_by, updated_at, updated_by, deleted_at, deleted_by) VALUES(1, 37, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, '2025-08-03 10:15:06', 'Administrator', NULL, NULL, NULL, NULL);
 INSERT INTO matarian_unit.tbl_user_privilege (id_user_group, id_menu, create_access, read_access, update_access, delete_access, approve_access, reject_access, print_access, export_to_excel_access, export_to_csv_access, export_to_pdf_access, created_at, created_by, updated_at, updated_by, deleted_at, deleted_by) VALUES(1, 38, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, '2025-08-03 10:15:06', 'Administrator', NULL, NULL, NULL, NULL);
 INSERT INTO matarian_unit.tbl_user_privilege (id_user_group, id_menu, create_access, read_access, update_access, delete_access, approve_access, reject_access, print_access, export_to_excel_access, export_to_csv_access, export_to_pdf_access, created_at, created_by, updated_at, updated_by, deleted_at, deleted_by) VALUES(1, 39, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, '2025-08-03 10:15:06', 'Administrator', NULL, NULL, NULL, NULL);
+
+
+-- #   Script copy data KTP ke table NPWP
+-- Copy dari KTP ke NPWP (hanya yang belum ada)
+INSERT INTO tbl_master_npwp_new (
+  npwp,
+  new_npwp,
+  nama,
+  nik,
+  alamat,
+  rt,
+  rw,
+  kelurahan,
+  kecamatan,
+  kabupaten,
+  provinsi,
+  kodepos,
+  created_at,
+  created_by,
+  updated_at,
+  updated_by,
+  deleted_at,
+  deleted_by,
+  created_by_user,
+  updated_by_user
+)
+SELECT
+  NULL AS npwp,
+  k.nik AS new_npwp,
+  k.nama,
+  k.nik AS nik,
+  k.alamat,
+  k.rt,
+  k.rw,
+  k.kelurahan,
+  k.kecamatan,
+  k.kabupaten,
+  k.provinsi,
+  k.kodepos,
+  k.created_at,
+  k.created_by,
+  '2025-09-01 00:00:00' AS updated_at,
+  k.updated_by,
+  k.deleted_at,
+  k.deleted_by,
+  k.created_by_user,
+  k.updated_by_user
+FROM tbl_master_ktp k
+WHERE k.nik IS NOT NULL
+  AND CHAR_LENGTH(k.nik) = 16
+  AND NOT EXISTS (
+    SELECT 1
+    FROM tbl_master_npwp_new n
+    -- ambil bagian sebelum '/', buang spasi, ambil 16 digit pertama
+    WHERE LEFT(REPLACE(TRIM(SUBSTRING_INDEX(n.new_npwp,'/',1)),' ',''),16) = k.nik
+);

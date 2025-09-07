@@ -64,6 +64,7 @@
                     <table class="table table-striped table-bordered table-sm text-katapanda-sm" id="katapandaTable" width="100%">
                         <thead class="thead-light">
                             <tr>
+                                <th class="text-center text-nowrap"></th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
@@ -75,11 +76,11 @@
                                 <th class="text-center text-nowrap">Kabupaten</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
                                 <th class="text-center text-nowrap">Kode Pos</th>
-                                <th class="text-center text-nowrap"></th>
                             </tr>
                         </thead>
                         <tfoot class="">
                             <tr>
+                                <th class="text-center text-nowrap"></th>
                                 <th class="text-center text-nowrap">NPWP16/NITKU</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
@@ -91,7 +92,6 @@
                                 <th class="text-center text-nowrap">Kabupaten</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
                                 <th class="text-center text-nowrap">Kode Pos</th>
-                                <th class="text-center text-nowrap"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -134,12 +134,12 @@
                         <div class="form-group col-md-8">
                             <label class="label-katapanda-sm" for="nitku">NITKU</label>
                             <input type="text" name="nitku" class="form-control form-control-sm" id="nitku" placeholder="">
-                        <small id="charNitkuCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
+                            <small id="charNitkuCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="label-katapanda-sm text-white" for="nitku_digit">DIGIT</label>
                             <input type="text" name="nitku_digit" class="form-control form-control-sm" id="nitku_digit" placeholder="" value="000000">
-                        <small id="charNitkuDigitCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
+                            <small id="charNitkuDigitCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -274,65 +274,74 @@
 
 <style>
     .card-npwp {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 20px;
-      position: relative;
-      font-family: Arial, sans-serif;
+        width: 100%;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        position: relative;
+        font-family: Arial, sans-serif;
     }
+
     .npwp-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: bold;
     }
+
     .npwp-header img {
-      width: 140px;
-      height: 50px;
+        width: 140px;
+        height: 50px;
     }
+
     .npwp-number {
-      font-size: 26px;
-      font-weight: bold;
-      margin: 20px 0 10px;
+        font-size: 26px;
+        font-weight: bold;
+        margin: 20px 0 10px;
     }
+
     .npwp-name {
-      font-size: 16px;
-      font-weight: bold;
+        font-size: 16px;
+        font-weight: bold;
     }
+
     .npwp-nitku {
-      font-size: 14px;
-      margin-bottom: 15px;
+        font-size: 14px;
+        margin-bottom: 15px;
     }
+
     .npwp-address {
-      font-size: 13px;
-      line-height: 1.4;
-      margin-bottom: 40px;
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 40px;
     }
+
     .npwp-footer {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      text-align: right;
-      font-size: 12px;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        text-align: right;
+        font-size: 12px;
     }
 
     .npwp-footer img {
-      width: 140px;
-      height: 50px;
+        width: 140px;
+        height: 50px;
     }
+
     .npwp-qr {
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      font-size: 12px;
+        position: absolute;
+        bottom: 15px;
+        left: 20px;
+        font-size: 12px;
     }
+
     .npwp-qr img {
-      width: 70px;
-      height: 70px;
+        width: 70px;
+        height: 70px;
     }
-  </style>
+</style>
 
 <script>
     $(document).ready(function() {
@@ -373,9 +382,9 @@
             placeholder: ""
         });
 
-        $('#new_npwp').on('input', function () {
+        $('#new_npwp').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNewNPWPCount').text('Jumlah karakter: ' + count).show();
                 $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
@@ -385,9 +394,9 @@
             }
         });
 
-        $('#npwp').on('input', function () {
+        $('#npwp').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNPWPCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -395,9 +404,9 @@
             }
         });
 
-        $('#nitku').on('input', function () {
+        $('#nitku').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -405,9 +414,9 @@
             }
         });
 
-        $('#nitku_digit').on('input', function () {
+        $('#nitku_digit').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNitkuDigitCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -415,7 +424,7 @@
             }
         });
 
-        $('#new_npwp').on('input', function () {
+        $('#new_npwp').on('input', function() {
             let npwp16Value = $(this).val();
             $('#nitku').val(npwp16Value);
         });
@@ -431,7 +440,12 @@
 
         // button action by user role 
         actionCreate ? $('#actionCreate').html('<button class="btn btn-sm btn-outline-primary" id="newData"><i class="fas fa-plus"></i> New Data</button>') : '';
-        actionExportToExcel ? buttonAction.push('excelHtml5') : ''; // button export to excel 
+        actionExportToExcel ? buttonAction.push({
+            extend: 'excelHtml5',
+            exportOptions: {
+                columns: ':not(:first-child)',
+            }
+        }) : ''; // button export to excel 
         actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
         actionExportToPdf ? buttonAction.push({ // button export to pdf
             text: 'PDF',
@@ -439,7 +453,7 @@
             orientation: 'landscape', //landscape
             pageSize: 'A4', //A3 , A5 , A6 , legal , letter
             exportOptions: {
-                columns: ':visible',
+                columns: ':visible:not(:first-child)',
                 search: 'applied',
                 order: 'applied'
             },
@@ -536,7 +550,20 @@
             columnDefs: [
                 // { orderable: false, targets: 0 } // ⬅️ kolom pertama (index 0)
             ],
-            columns: [
+            columns: [{
+                    data: "id",
+                    className: "align-middle text-center",
+                    responsivePriority: 2,
+                    render: function(data, type, row, meta) {
+                        // set by role
+                        let action = `<div class="btn-group"><button class="btn btn-sm btn-outline-info detail" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-info-circle"></i></button>`;
+                        // actionApproval ? action += `<button class="btn btn-sm btn-outline-success approval" data-toggle="tooltip" data-placement="top" title="Approval"><i class="far fa-clipboard"></i></button>` : '';
+                        actionUpdate ? action += `<button class="btn btn-sm btn-outline-warning d-none d-sm-block edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="far fa-edit"></i></button>` : '';
+                        actionDelete ? action += `<button class="btn btn-sm btn-outline-danger d-none d-sm-block delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>` : '';
+                        action += `</div>`;
+                        return action;
+                    }
+                },
                 {
                     data: "new_npwp",
                     className: "align-middle text-nowrap",
@@ -595,20 +622,6 @@
                     className: "align-middle text-nowrap",
                     visible: false,
                     responsivePriority: 4
-                },
-                {
-                    data: "id",
-                    className: "align-middle text-center",
-                    responsivePriority: 2,
-                    render: function(data, type, row, meta) {
-                        // set by role
-                        let action = `<div class="btn-group"><button class="btn btn-sm btn-outline-info detail" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-info-circle"></i></button>`;
-                        // actionApproval ? action += `<button class="btn btn-sm btn-outline-success approval" data-toggle="tooltip" data-placement="top" title="Approval"><i class="far fa-clipboard"></i></button>` : '';
-                        actionUpdate ? action += `<button class="btn btn-sm btn-outline-warning d-none d-sm-block edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="far fa-edit"></i></button>` : '';
-                        actionDelete ? action += `<button class="btn btn-sm btn-outline-danger d-none d-sm-block delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>` : '';
-                        action += `</div>`;
-                        return action;
-                    }
                 },
             ],
             language: {
@@ -902,6 +915,7 @@
                 loadingStart()
 
                 const nitkuDigit = $('#nitku_digit').val() ? $('#nitku_digit').val() : '000000'
+                const blok = $('#blok').val() ? $('#blok').val() : '-'                
 
                 // send request 
                 axios({
@@ -924,10 +938,10 @@
                             kelurahan: $('#kelurahan option:selected').text(),
                             kodepos: $('#kodePos option:selected').text(),
                             jalan: $('#jalan').val(),
-                            blok: $('#blok').val(),
+                            blok: blok,
                             nomor: $('#nomor').val(),
-                            rt: $('#rt').val(),
-                            rw: $('#rw').val()
+                            rt: $('#rt').val() ? $('#rt').val() : '000',
+                            rw: $('#rw').val() ? $('#rw').val() : '000'
                         }
                     })
                     .then(function(response) {
