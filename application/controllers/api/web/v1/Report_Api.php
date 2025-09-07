@@ -776,7 +776,7 @@ class Report_Api extends REST_Controller
                 "master_perusahaan_id" => $perusahaan->id,
                 "master_vendor_id" => $vendor->id,
                 'ppn_persentase' => null,
-                'jenis_dokumen' => $cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
+                'jenis_dokumen' => $vendor->cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
                 "npwp_penjual" => $vendor->new_npwp,
                 "nama_penjual" => $vendor->nama,
                 "cek" => $vendor->cek,
