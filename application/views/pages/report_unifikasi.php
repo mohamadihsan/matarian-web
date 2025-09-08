@@ -174,13 +174,13 @@
 
                         <div class="form-row">
                             <div class="form-group col-lg-6 col-md-6">
-                                <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <label class="label-katapanda-sm" for="dppFormat">DPP <span class="text-sm text-secondary readonly-text"></span></label>
                                 <input type="text" class="form-control form-control-sm" name="dppFormat" id="dppFormat" placeholder="0">
                                 <input type="hidden" name="dpp" id="dpp">
                             </div>
 
                             <div class="form-group col-lg-6 col-md-6">
-                                <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                                <label class="label-katapanda-sm" for="pphFormat">PPh <span class="text-sm text-secondary readonly-text"></span></label>
                                 <input type="text" class="form-control form-control-sm" id="pphFormat" placeholder="0">
                                 <input type="hidden" name="pph" id="pph">
                             </div>
@@ -196,6 +196,11 @@
                                 <label class="label-katapanda-sm" for="tanggalPemotongan">Tanggal Pemotongan <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
                                 <input type="text" name="tanggalPemotongan" class="form-control form-control-sm" id="tanggalPemotongan" placeholder="">
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-katapanda-sm" for="status_faktur">Status Faktur</label>
+                            <select name="status_faktur" id="status_faktur" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                         </div>
 
                         <div class="form-group">
@@ -269,7 +274,23 @@
                 autoclose: true,
                 todayHighlight: true,
                 clearBtn: true
-            }).datepicker();
+            }).on('changeDate', function(e) {
+                let masaPajak = $(this).val(); // contoh: "09-2025"
+                if (masaPajak) {
+                    let [bulan, tahun] = masaPajak.split('-');
+                    
+                    // hitung tanggal akhir bulan
+                    let lastDate = new Date(tahun, bulan, 0); // triknya: day = 0 => last day prev month
+                    let dd   = String(lastDate.getDate()).padStart(2, '0');
+                    let mm   = String(lastDate.getMonth() + 1).padStart(2, '0');
+                    let yyyy = lastDate.getFullYear();
+
+                    // format ke dd-mm-yyyy
+                    let formatted = yyyy + '-' + mm + '-' + dd;
+
+                    $('#tanggalPemotongan').val(formatted);
+                }
+            });
             $('#tanggalFakturPajak').datepicker({
                 format: 'dd-mm-yyyy',
                 autoclose: true,
@@ -788,6 +809,55 @@
 
             // validate and request add new data and update existing data 
             let validator = $('#formUpdate').validate({
+                rules: {
+                    perusahaanSelect: {
+                        required: true,
+                    },
+                    vendor: {
+                        required: true,
+                    },
+                    kodeFasilitas: {
+                        required: true,
+                    },
+                    nomorFakturPajak: {
+                        required: true
+                    },
+                    tanggalFakturPajak: {
+                        required: true
+                    },
+                    masaPajak: {
+                        required: true
+                    },
+                    statusFakturPajak: {
+                        required: true
+                    },
+                    cek: {
+                        required: true
+                    },
+                },
+                messages: {
+                    perusahaanSelect: {
+                        required: "Please select perusahaan",
+                    },
+                    vendor: {
+                        required: "Please select vendor",
+                    },
+                    nomorFakturPajak: {
+                        required: "Please enter nomor dok",
+                    },
+                    tanggalFakturPajak: {
+                        required: "Please enter tanggal dok",
+                    },
+                    masaPajak: {
+                        required: "Please enter masa pajak",
+                    },
+                    statusFakturPajak: {
+                        maxlength: "Please select status pajak"
+                    },
+                    cek: {
+                        required: "Please select Cek",
+                    },
+                },
                 submitHandler: function(form) {
                     // start loading
                     loadingStart()
@@ -813,7 +883,7 @@
                         dokumen: $('#kodeDokumen').val(),
                         pembayaran: $('#kodePembayaran').val(),
                         nomor_sp2d: $('#nomorSP2D').val(),
-                        dpp_nilai_lain: $('#dpp').val(),
+                        dpp_nilai_lain: $('#dpp').val() ? $('#dpp').val() : 0,
                         ppn: $('#pph').val(),
                         masa_pajak: bulanPajak,
                         tahun_pajak: tahunPajak,

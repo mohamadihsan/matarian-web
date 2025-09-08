@@ -92,13 +92,13 @@
                         <input type="text" name="nama" class="form-control form-control-sm" id="nama" placeholder="">
                     </div>
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="jalan">Jalan <span class="text-danger">*</span></label>
-                        <input type="text" name="jalan" class="form-control form-control-sm" id="jalan" placeholder="">
+                        <label class="label-katapanda-sm" for="jalan">Jalan <span class="text-danger"></span></label>
+                        <input type="text" name="jalan" class="form-control form-control-sm" id="jalan" placeholder="-">
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label class="label-katapanda-sm" for="blok">Blok</label>
-                            <input type="text" name="blok" class="form-control form-control-sm" id="blok" placeholder="">
+                            <input type="text" name="blok" class="form-control form-control-sm" id="blok" placeholder="-">
                         </div>
                         <div class="form-group col-md-3">
                             <label class="label-katapanda-sm" for="nomor">Nomor</label>
@@ -106,15 +106,15 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label class="label-katapanda-sm" for="rt">RT</label>
-                            <input type="text" name="rt" class="form-control form-control-sm" id="rt">
+                            <input type="text" name="rt" class="form-control form-control-sm" id="rt" placeholder="000">
                         </div>
                         <div class="form-group col-md-3">
                             <label class="label-katapanda-sm" for="rw">RW</label>
-                            <input type="text" name="rw" class="form-control form-control-sm" id="rw">
+                            <input type="text" name="rw" class="form-control form-control-sm" id="rw" placeholder="000">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="label-katapanda-sm" for="provinsi">Data Wilayah <span class="text-danger">*</span></label>
+                        <label class="label-katapanda-sm" for="provinsi">Data Wilayah <span class="text-danger"></span></label>
                         <select name="provinsi" id="provinsi" class="selectpicker form-control form-control-sm" data-live-search="true" title="Provinsi">
 
                         </select>
@@ -716,21 +716,21 @@
                     required: true,
                     minlength: 2
                 },
-                provinsi: {
-                    required: true
-                },
-                kabupaten: {
-                    required: true
-                },
-                kecamatan: {
-                    required: true
-                },
-                kelurahan: {
-                    required: true
-                },
-                jalan: {
-                    required: true
-                },
+                // provinsi: {
+                //     required: true
+                // },
+                // kabupaten: {
+                //     required: true
+                // },
+                // kecamatan: {
+                //     required: true
+                // },
+                // kelurahan: {
+                //     required: true
+                // },
+                // jalan: {
+                //     required: true
+                // },
                 rt: {
                     maxlength: 3
                 },
@@ -750,21 +750,21 @@
                     required: "Please enter Nama",
                     minlength: "Your Nama must consist of at least 2 characters"
                 },
-                provinsi: {
-                    required: "Please select Provinsi",
-                },
-                kabupaten: {
-                    required: "Please select Kabupaten",
-                },
-                kecamatan: {
-                    required: "Please select Kecamatan",
-                },
-                kelurahan: {
-                    required: "Please select Kelurahan",
-                },
-                jalan: {
-                    required: "Please enter Jalan",
-                },
+                // provinsi: {
+                //     required: "Please select Provinsi",
+                // },
+                // kabupaten: {
+                //     required: "Please select Kabupaten",
+                // },
+                // kecamatan: {
+                //     required: "Please select Kecamatan",
+                // },
+                // kelurahan: {
+                //     required: "Please select Kelurahan",
+                // },
+                // jalan: {
+                //     required: "Please enter Jalan",
+                // },
                 rt: {
                     maxlength: "RT maximum of 3 characters"
                 },
@@ -796,16 +796,16 @@
                             email: $('#email').val(),
                             nitku: $('#nitku').val(),
                             nitku_digit: nitkuDigit,
-                            provinsi: $('#provinsi option:selected').text(),
-                            kabupaten: $('#kabupaten option:selected').text(),
-                            kecamatan: $('#kecamatan option:selected').text(),
-                            kelurahan: $('#kelurahan option:selected').text(),
-                            kodepos: $('#kodePos option:selected').text(),
-                            jalan: $('#jalan').val(),
-                            blok: $('#blok').val(),
+                            provinsi: $('#provinsi option:selected').text() ? $('#provinsi option:selected').text() : '-',
+                            kabupaten: $('#kabupaten option:selected').text() ? $('#kabupaten option:selected').text() : '-',
+                            kecamatan: $('#kecamatan option:selected').text() ? $('#kecamatan option:selected').text() : '-',
+                            kelurahan: $('#kelurahan option:selected').text() ? $('#kelurahan option:selected').text() : '-',
+                            kodepos: $('#kodePos option:selected').text() ? $('#kodePos option:selected').text() : '-',
+                            jalan: $('#jalan').val() ? $('#jalan').val() : '-',
+                            blok: $('#blok').val() ? $('#blok').val() : '-',
                             nomor: $('#nomor').val(),
-                            rt: $('#rt').val(),
-                            rw: $('#rw').val(),
+                            rt: $('#rt').val() ? $('#rt').val() : '000',
+                            rw: $('#rw').val() ? $('#rw').val() : '000',
                             unifikasi_kode_objek_pajak_id: $('#unifikasi_kode_objek_pajak_id').val(),
                             cek: $('#cek').val(),
                         }
