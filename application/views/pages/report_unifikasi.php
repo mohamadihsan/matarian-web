@@ -313,46 +313,71 @@
             getKodePembayaran();
 
             // button action by user role 
-            actionExportToExcel ? buttonAction.push({
-                extend: 'excelHtml5',
-                exportOptions: {
-                    columns: ':not(:first-child)',
-                    title: '', // kosongkan judul
-                    messageTop: '', // hilangkan message di atas
-                    format: {
-                        body: function(data, row, column, node) {
-                            if (column === 0 || column === 1 || column === 2 || column === 3 || column === 4 || column === 5 || column === 8 || column === 11 || column === 13 || column === 12) {
-                                // Masa Pajak, Tahun Pajak, NPWP, ID TKU Penerima Penghasilan, Fasilitas, Kode Objek Pajak, Jenis Dok. Referensi, ID TKU Pemotong, Opsi Pembayaran (IP), Nomor SP2D (IP)
-                                return `${data}`;
-                            } else if (column === 9) {
-                                // Nomor Dok. Referensi
-                                if (/^\d+$/.test(data)) {
-                                    // Jika semua karakter numeric → tambahkan ' di depan
-                                    return "'" + data;
-                                }
-                                return data; // kalau ada huruf/simbol, biarkan
-                            } else if (column === 6 || column === 15) {
-                                // DPP, PPh
-                                let nominal = data?.replace(/[^\d]/g, ''); // buang semua selain angka
-                                return parseInt(nominal) || 0;
-                            } else if (column === 7) {
-                                // Tarif
-                                let nominal = data?.replace(/[^0-9.]/g, ''); // buang semua selain angka & titik
-                                return parseFloat(nominal) || 0;
-                            } else if (column === 10 || column === 14) {
-                                // Tanggal Dok. Referensi, Tanggal Pemotongan
-                                let parsedDate = moment(data, ['DD/MM/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY'], true);
-                                if (parsedDate.isValid()) {
-                                    return parsedDate.format('DD/MM/YYYY');
-                                }
-                                return data;
-                            }
+            // actionExportToExcel ? buttonAction.push({
+            //     extend: 'excelHtml5',
+            //     exportOptions: {
+            //         columns: ':not(:first-child)',
+            //         title: '', // kosongkan judul
+            //         messageTop: '', // hilangkan message di atas
+            //         format: {
+            //             body: function(data, row, column, node) {
+            //                 if (column === 0 || column === 1 || column === 2 || column === 3 || column === 4 || column === 5 || column === 8 || column === 11 || column === 13 || column === 12) {
+            //                     // Masa Pajak, Tahun Pajak, NPWP, ID TKU Penerima Penghasilan, Fasilitas, Kode Objek Pajak, Jenis Dok. Referensi, ID TKU Pemotong, Opsi Pembayaran (IP), Nomor SP2D (IP)
+            //                     return `${data}`;
+            //                 } else if (column === 9) {
+            //                     // Nomor Dok. Referensi
+            //                     if (/^\d+$/.test(data)) {
+            //                         // Jika semua karakter numeric → tambahkan ' di depan
+            //                         return "'" + data;
+            //                     }
+            //                     return data; // kalau ada huruf/simbol, biarkan
+            //                 } else if (column === 6 || column === 15) {
+            //                     // DPP, PPh
+            //                     let nominal = data?.replace(/[^\d]/g, ''); // buang semua selain angka
+            //                     return parseInt(nominal) || 0;
+            //                 } else if (column === 7) {
+            //                     // Tarif
+            //                     let nominal = data?.replace(/[^0-9.]/g, ''); // buang semua selain angka & titik
+            //                     return parseFloat(nominal) || 0;
+            //                 } else if (column === 10 || column === 14) {
+            //                     // Tanggal Dok. Referensi, Tanggal Pemotongan
+            //                     let parsedDate = moment(data, ['DD/MM/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY'], true);
+            //                     if (parsedDate.isValid()) {
+            //                         return parsedDate.format('DD/MM/YYYY');
+            //                     }
+            //                     return data;
+            //                 }
 
-                            return data;
-                        }
-                    },
-                },
+            //                 return data;
+            //             }
+            //         },
+            //     },
+            // }) : ''; // button export to excel
+
+            actionExportToExcel ? buttonAction.push({
+                text: 'Excel Custom',
+                action: function (e, dt, node, config) {
+                    // Ambil parameter dari input/filter
+                    let periode_awal = $('#periode_awal').val(); // misal: "08-2025"
+                    let periode_akhir = $('#periode_akhir').val(); // misal: "08-2025"
+
+                    let [bulanAwal, tahunAwal] = periode_awal.split('-');
+                    let [bulanAkhir, tahunAkhir] = periode_akhir.split('-');
+
+                    // Buat query string
+                    var params = $.param({
+                        bulan_awal: bulanAwal,
+                        tahun_awal: tahunAwal,
+                        bulan_akhir: bulanAkhir,
+                        tahun_akhir: tahunAkhir,
+                        perusahaan: $('#perusahaanFilter').val(),
+                    });
+
+                    // Trigger download file Excel dari server (PHPExcel)
+                    window.location.href = "<?php echo base_url('report/unifikasi'); ?>?" + params;
+                }
             }) : ''; // button export to excel
+
             actionExportToCsv ? buttonAction.push('csvHtml5') : ''; // button export to csv
             actionExportToPdf ? buttonAction.push({ // button export to pdf
                 text: 'PDF',
