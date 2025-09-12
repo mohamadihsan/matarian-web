@@ -199,8 +199,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="label-katapanda-sm" for="status_faktur">Status Faktur</label>
-                            <select name="status_faktur" id="status_faktur" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
+                            <label class="label-katapanda-sm" for="statusFakturPajak">Status Faktur <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
+                            <select name="statusFakturPajak" id="statusFakturPajak" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose"></select>
                         </div>
 
                         <div class="form-group">
@@ -224,6 +224,29 @@
         </div>
     </div>
 
+    <!-- Confirm Delete Per Row -->
+    <div class="modal fade" id="confirmKatapanda" tabindex="-1" role="dialog" aria-labelledby="confirmKatapandaTitle" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <form id="confirmDeletePerRow">
+                <div class="modal-content">
+                    <div class="modal-header bg-custom">
+                        <h6 class="modal-title" id="confirmTitle"></h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah anda yakin akan menghapus data unifikasi dengan nomor dok. <span class="font-weight-bold" id="dataDelete"></span> ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn bg-custom" id="submitDeleteRow">Yes, delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
 
@@ -232,6 +255,7 @@
             let id = null;
             let actionCreate = <?php echo $action_create == 1 ? 1 : 0; ?>;
             let actionUpdate = <?php echo $action_update == 1 ? 1 : 0; ?>;
+            let actionDelete = <?php echo $action_delete == 1 ? 1 : 0; ?>;
             let actionExportToExcel = <?php echo $action_export_to_excel == 1 ? 1 : 0; ?>;
             let actionExportToCsv = <?php echo $action_export_to_csv == 1 ? 1 : 0; ?>;
             let actionExportToPdf = 0;
@@ -311,6 +335,7 @@
             getKodeFasilitas();
             getKodeObjekPajak();
             getKodePembayaran();
+            getStatusFaktur();
 
             // button action by user role 
             // actionExportToExcel ? buttonAction.push({
@@ -370,7 +395,7 @@
                         tahun_awal: tahunAwal,
                         bulan_akhir: bulanAkhir,
                         tahun_akhir: tahunAkhir,
-                        perusahaan: $('#perusahaanFilter').val(),
+                        perusahaan: $('#perusahaan').val(),
                     });
 
                     // Trigger download file Excel dari server (PHPExcel)
@@ -488,6 +513,7 @@
                             // set by role
                             let action = `<div class="btn-group">`;
                             actionUpdate ? action += `<button class="btn btn-sm btn-outline-warning d-none d-sm-block edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="far fa-edit"></i></button>` : '';
+                            actionDelete ? action += `<button class="btn btn-sm btn-outline-danger d-none d-sm-block delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>` : '';
                             action += `</div>`;
                             return action;
                         }
@@ -519,7 +545,7 @@
                         className: "align-middle text-nowrap"
                     },
                     {
-                        data: "dpp",
+                        data: "nominal_jasa",
                         className: "align-middle text-nowrap text-right",
                         responsivePriority: 3,
                         render: function(data, type, row, meta) {
@@ -613,7 +639,7 @@
 
                     // Format ribuan
                     let itemPPhFormat = item.pph?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                    let itemDPPFormat = item.dpp?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    let itemDPPFormat = item.nominal_jasa?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     let itemTarifFormat = item.tarif?.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
                     // store data to input
@@ -631,12 +657,13 @@
                     $('#pphFormat').val(itemPPhFormat);
                     $('#tarif').val(item.tarif);
                     $('#tarifFormat').val(itemTarifFormat);
-                    $('#dpp').val(item.dpp);
+                    $('#dpp').val(item.nominal_jasa);
                     $('#dppFormat').val(itemDPPFormat);
                     $('#kodeDokumen').val(item.unifikasi_kode_dokumen_id).trigger('change');
                     $('#kodeFasilitas').val(item.unifikasi_kode_fasilitas_id).trigger('change');
                     $('#kodeObjekPajak').val(item.unifikasi_kode_objek_pajak_id).trigger('change');
                     $('#kodePembayaran').val(item.unifikasi_kode_pembayaran_id).trigger('change');
+                    $('#statusFakturPajak').val(item.status_faktur_pajak).trigger('change');
 
                     const masaPajakClicked = bulanToNumber(item.masa_pajak)
                     let masaTahunPajakClicked = ''
@@ -669,6 +696,56 @@
                 });
 
             });
+
+            $('#submitDeleteRow').click(function() {
+
+                // send request 
+                axios({
+                        method: `DELETE`,
+                        url: `<?= site_url() ?>api/web/v1/report/ppn/${id}`,
+                        headers: {
+                            Authorization: 'Bearer <?= $token ?>'
+                        }
+                    })
+                    .then(function(response) {
+                        // console.log(response);
+                        let status = response.data.status;
+                        let message = response.data.message;
+                        let action = `delete`;
+                        if (status) {
+                            // show message
+                            notification(action, 'success', message);
+                            $('#confirmKatapanda').modal('hide');
+                        } else {
+                            // show message
+                            notification(action, 'error', message);
+                        }
+                    })
+                    .catch(function(error) {
+                        let messageError;
+                        let err = error.response;
+
+                        if (err.status === 404) {
+                            messageError = 'Request Failed. Please check your connection!';
+                        } else {
+                            messageError = err.statusText;
+                        }
+
+                        // show message
+                        notification('delete', 'error', messageError);
+                    })
+                    .then(function() {
+                        table.clear().draw();
+                        table.ajax.reload();
+                    })
+            })
+
+            // confirm delete 
+            $('#katapandaTable tbody').on('click', '.delete', function() {
+                // show confirm
+                $('#confirmTitle').html('<i class="fas fa-users"></i> Delete <?= $title ?>');
+                $('#confirmKatapanda').modal('show')
+            })
 
             // modal form add new data  
             $('#newData').click(function() {
@@ -723,6 +800,8 @@
                 $('#tarifFormat').prop('disabled', true);
                 $('#tanggalPemotongan').prop('disabled', true);
                 $('#pphFormat').prop('disabled', true);
+                $('#statusFakturPajak').prop('disabled', true);
+                $('#statusFakturPajak').selectpicker('refresh');
 
                 // kalau pakai selectpicker
                 // $('#formReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
@@ -759,6 +838,8 @@
                 $('#tarifFormat').prop('disabled', true);
                 $('#tanggalPemotongan').prop('disabled', true);
                 $('#pphFormat').prop('disabled', true);
+                $('#statusFakturPajak').prop('disabled', true);
+                $('#statusFakturPajak').selectpicker('refresh');
 
                 // kalau pakai selectpicker
                 // $('#formReportUnifikasi').find('.selectpicker').prop('disabled', false).selectpicker('refresh');
@@ -908,7 +989,7 @@
                         dokumen: $('#kodeDokumen').val(),
                         pembayaran: $('#kodePembayaran').val(),
                         nomor_sp2d: $('#nomorSP2D').val(),
-                        dpp_nilai_lain: $('#dpp').val() ? $('#dpp').val() : 0,
+                        nominal_jasa: $('#dpp').val() ? $('#dpp').val() : 0,
                         ppn: $('#pph').val(),
                         masa_pajak: bulanPajak,
                         tahun_pajak: tahunPajak,
@@ -917,9 +998,9 @@
                         tanggal_faktur_pajak: tanggalFakturPajak,
                         is_unifikasi_only: true,
                         is_jasa: true,
-                        nominal_jasa: null,
                         status_faktur_pajak: null,
                         cek: null,
+                        status_faktur_pajak: $('#statusFakturPajak').val(),
                     }
 
                     if (id) {
@@ -946,7 +1027,7 @@
                             // console.log(response);
                             let status = response.data.status;
                             let message = response.data.message;
-                            let action = `update`;
+                            let action = id === null ? `create` : `update`;
                             if (status) {
                                 // show message
                                 notification(action, 'success', message);
@@ -1178,24 +1259,23 @@
         }
 
         async function getStatusFaktur() {
-            const $select = $('#status_faktur');
+            const $selectStatusFaktur = $('#statusFakturPajak');
 
             // Clear existing options if needed
-            $select.empty();
+            $selectStatusFaktur.empty();
 
             // Tambahkan opsi
-            $select.append('<option value="" selected>SEMUA</option>');
-            $select.append('<option value="AMENDED">AMENDED</option>');
-            $select.append('<option value="APPROVED">APPROVED</option>');
-            $select.append('<option value="CANCELED">CANCELED</option>');
-            $select.append('<option value="CREDITED">CREDITED</option>');
-            $select.append('<option value="UNCREDITED">UNCREDITED</option>');
+            $selectStatusFaktur.append('<option value="AMENDED">AMENDED</option>');
+            $selectStatusFaktur.append('<option value="APPROVED">APPROVED</option>');
+            $selectStatusFaktur.append('<option value="CANCELED">CANCELED</option>');
+            $selectStatusFaktur.append('<option value="CREDITED">CREDITED</option>');
+            $selectStatusFaktur.append('<option value="UNCREDITED">UNCREDITED</option>');
 
             // Refresh selectpicker (jika pakai Bootstrap Select)
             $('.selectpicker').selectpicker('refresh');
 
             // Set value dan trigger change
-            $select.val();
+            $selectStatusFaktur.val();
         }
 
         function formatNumber(number) {
@@ -1238,6 +1318,9 @@
             $('#tarifFormat').prop('disabled', true);
             $('#tanggalPemotongan').prop('disabled', true);
             $('#pphFormat').prop('disabled', true);
+            $('#statusFakturPajak').val('').selectpicker('refresh');
+            $('#statusFakturPajak').prop('disabled', false);
+            $('#statusFakturPajak').selectpicker('refresh');
         }
 
         function bulanToNumber(bulanStr) {

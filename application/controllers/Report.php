@@ -299,9 +299,9 @@ class Report extends CI_Controller
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
         
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
-            $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
+            // $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
-            $query = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen);
+            $query = $this->PPN_Model->get_unifikasi_report($perusahaan, $start, $end, null, null, null, null);
             $data = $query->result();
 
             // Load PHPExcel
@@ -310,35 +310,17 @@ class Report extends CI_Controller
 
             $sheet = $objPHPExcel->setActiveSheetIndex(0);
             $sheet->setCellValue('A1', 'Masa Pajak')
-                ->setCellValue('B1', 'Tahun ')
-                ->setCellValue('C1', 'Nomor Faktur Pajak')
-                ->setCellValue('D1', 'Tgl Faktur Pajak')
-                ->setCellValue('E1', 'Masa Pajak')
-                ->setCellValue('F1', 'Tahun')
-                ->setCellValue('G1', 'Status Faktur')
-                ->setCellValue('H1', 'Harga Jual')
-                ->setCellValue('I1', 'DPP Nilai Lain')
-                ->setCellValue('J1', 'PPN')
-                ->setCellValue('K1', 'Dikreditkan')
-                ->setCellValue('K2', 'B1')
-                ->setCellValue('L2', 'B2')
-                ->setCellValue('M2', 'B3');
-
-            // ===================== MERGE CELLS =====================
-            // A–J merge row 1 & 2
-            $sheet->mergeCells('A1:A2');
-            $sheet->mergeCells('B1:B2');
-            $sheet->mergeCells('C1:C2');
-            $sheet->mergeCells('D1:D2');
-            $sheet->mergeCells('E1:E2');
-            $sheet->mergeCells('F1:F2');
-            $sheet->mergeCells('G1:G2');
-            $sheet->mergeCells('H1:H2');
-            $sheet->mergeCells('I1:I2');
-            $sheet->mergeCells('J1:J2');
-
-            // K–M merge row 1
-            $sheet->mergeCells('K1:M1');
+                ->setCellValue('B1', 'Tahun Pajak')
+                ->setCellValue('C1', 'NPWP')
+                ->setCellValue('D1', 'Nama Vendor')
+                ->setCellValue('E1', 'Fasilitas')
+                ->setCellValue('F1', 'Kode Objek Pajak')
+                ->setCellValue('G1', 'DPP')
+                ->setCellValue('H1', 'Tarif')
+                ->setCellValue('I1', 'PPN')
+                ->setCellValue('J1', 'Jenis Dok. Referensi')
+                ->setCellValue('K1', 'Nomor Dok. Referensi')
+                ->setCellValue('L1', 'Tanggal Dok. Referensi');
 
             // ===================== STYLE HEADER =====================
             $styleHeader = [
@@ -355,29 +337,27 @@ class Report extends CI_Controller
             ];
 
             // Apply style to header rows (A1:M2)
-            $sheet->getStyle('A1:M2')->applyFromArray($styleHeader);
+            $sheet->getStyle('A1:L1')->applyFromArray($styleHeader);
 
             // ===================== ISI DATA =====================
             $row = 3;
             foreach ($data as $item) {
-                $sheet->setCellValue('A' . $row, $item->nama_penjual);
-                $sheet->setCellValue('B' . $row, $item->cek);
+                $sheet->setCellValue('A' . $row, $item->masa_pajak);
+                $sheet->setCellValue('B' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
 
                 // Kolom C & F -> Format TEXT
-                $sheet->setCellValueExplicit('C' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
-                $sheet->setCellValue('D' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
-                $sheet->setCellValue('E' . $row, $item->masa_pajak);
-                $sheet->setCellValueExplicit('F' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit('C' . $row, $item->npwp_penjual, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit('D' . $row, $item->nama_penjual, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValue('E' . $row, $item->fasilitas, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValueExplicit('F' . $row, $item->kode_objek_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
 
-                $sheet->setCellValue('G' . $row, $item->status_faktur_pajak);
+                $sheet->setCellValue('G' . $row, $item->nominal_jasa);
+                $sheet->setCellValue('H' . $row, $item->tarif);
+                $sheet->setCellValue('I' . $row, $item->pph);
 
-                // Kolom H–M -> Number format dengan ribuan
-                $sheet->setCellValue('H' . $row, $item->harga_jual);
-                $sheet->setCellValue('I' . $row, $item->dpp_nilai_lain);
-                $sheet->setCellValue('J' . $row, $item->ppn);
-                $sheet->setCellValue('K' . $row, $item->b1);
-                $sheet->setCellValue('L' . $row, $item->b2);
-                $sheet->setCellValue('M' . $row, $item->b3);
+                $sheet->setCellValue('J' . $row, $item->kode_dokumen, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValue('K' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValue('L' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
 
                 $row++;
             }
@@ -386,14 +366,11 @@ class Report extends CI_Controller
             $lastRow  = $row - 1;     // baris terakhir data
             $totalRow = $row;         // baris untuk total
 
-            $sheet->setCellValue('I' . $totalRow, 'TOTAL');
-            $sheet->setCellValue("J{$totalRow}", "=SUM(J3:J{$lastRow})");
-            $sheet->setCellValue("K{$totalRow}", "=SUM(K3:K{$lastRow})");
-            $sheet->setCellValue("L{$totalRow}", "=SUM(L3:L{$lastRow})");
-            $sheet->setCellValue("M{$totalRow}", "=SUM(M3:M{$lastRow})");
+            $sheet->setCellValue('H' . $totalRow, 'TOTAL');
+            $sheet->setCellValue("I{$totalRow}", "=SUM(I3:J{$lastRow})");
 
             // Bold + border atas untuk baris total
-            $sheet->getStyle("I{$totalRow}:M{$totalRow}")->applyFromArray([
+            $sheet->getStyle("H{$totalRow}:I{$totalRow}")->applyFromArray([
                 'font' => ['bold' => true],
                 'borders' => [
                     'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
@@ -409,22 +386,22 @@ class Report extends CI_Controller
             ]);
 
             // Format kolom tanggal (D)
-            $sheet->getStyle("D3:D{$lastRow}")
+            $sheet->getStyle("L3:L{$lastRow}")
                 ->getNumberFormat()
                 ->setFormatCode('DD/MM/YYYY');
 
             // Format number ribuan untuk H–M (termasuk total)
-            $sheet->getStyle("H3:M{$totalRow}")
+            $sheet->getStyle("G3:H{$totalRow}")
                 ->getNumberFormat()
                 ->setFormatCode('#,##0');
 
             // ===================== AUTO WIDTH =====================
-            foreach (range('A', 'M') as $col) {
+            foreach (range('A', 'L') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
             }
 
             // Nama file
-            $filename = "Report_PPN_" . date('YmdHis') . ".xlsx";
+            $filename = "Report_Unifikasi_" . date('YmdHis') . ".xlsx";
 
             // Header untuk download
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

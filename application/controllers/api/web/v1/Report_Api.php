@@ -703,7 +703,7 @@ class Report_Api extends REST_Controller
             $tahun_pajak_pengreditkan = null;
             $status_faktur_pajak = $this->input->post('status_faktur_pajak');
             $harga_jual = null;
-            $dpp_nilai_lain = $this->input->post('dpp_nilai_lain');
+            $dpp_nilai_lain = 0;
             $ppn = $this->input->post('ppn');
             $is_jasa = $this->input->post('is_jasa');
             $nominal_jasa = $this->input->post('nominal_jasa');
@@ -734,14 +734,16 @@ class Report_Api extends REST_Controller
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
 
-            if (is_numeric($dpp_nilai_lain)) {
-                $dpp_nilai_lain = (int) $dpp_nilai_lain; // atau gunakan intval($nilai);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'Nilai DPP Nilai Lain/DPP tidak valid',
-                    'data' => []
-                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            if ($dpp_nilai_lain) {
+                if (is_numeric($dpp_nilai_lain)) {
+                    $dpp_nilai_lain = (int) $dpp_nilai_lain; // atau gunakan intval($nilai);
+                } else {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Nilai DPP Nilai Lain/DPP tidak valid',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
             }
 
             if (is_numeric($ppn)) {

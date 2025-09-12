@@ -24,6 +24,8 @@ class PPN_Model extends CI_Model {
             CASE 
                 WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("CREDITED", "APPROVED", "UNCREDITED")
                 THEN tbl_upload_dokumen_pajak.ppn
+                WHEN tbl_upload_dokumen_pajak.status_faktur_pajak IN ("AMENDED", "CANCELED")
+                THEN 0
                 ELSE 0
             END AS ppn_condition,
             CASE
@@ -120,9 +122,10 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.tahun_pajak,
             tbl_upload_dokumen_pajak.npwp_penjual,
             CONCAT(tbl_master_vendor.nitku, tbl_master_vendor.nitku_digit) as id_penerima,
+            tbl_upload_dokumen_pajak.nama_penjual,
             tbl_unifikasi_kode_fasilitas.kode as fasilitas,
             tbl_unifikasi_kode_objek_pajak.kode as kode_objek_pajak,
-            tbl_upload_dokumen_pajak.nominal_jasa as dpp,
+            tbl_upload_dokumen_pajak.nominal_jasa,
             tbl_unifikasi_kode_objek_pajak.tarif,
             tbl_unifikasi_kode_dokumen.kode as kode_dokumen,
             tbl_upload_dokumen_pajak.nomor_faktur_pajak,
@@ -137,7 +140,8 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.unifikasi_kode_fasilitas_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id,
-            tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id
+            tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id,
+            tbl_upload_dokumen_pajak.status_faktur_pajak
         ');
 
         $this->db->where('tbl_upload_dokumen_pajak.is_jasa', true);
