@@ -81,8 +81,26 @@ class PPN_Model extends CI_Model {
         ');
 
         $this->db->where('tbl_upload_dokumen_pajak.is_unifikasi_only', false);
-        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
-        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
+        // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
+        // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
+        $this->db->where("
+            STR_TO_DATE(CONCAT(tbl_upload_dokumen_pajak.tahun_pajak, '-', 
+                CASE UPPER(tbl_upload_dokumen_pajak.masa_pajak)
+                    WHEN 'JANUARI'   THEN '01'
+                    WHEN 'FEBRUARI'  THEN '02'
+                    WHEN 'MARET'     THEN '03'
+                    WHEN 'APRIL'     THEN '04'
+                    WHEN 'MEI'       THEN '05'
+                    WHEN 'JUNI'      THEN '06'
+                    WHEN 'JULI'      THEN '07'
+                    WHEN 'AGUSTUS'   THEN '08'
+                    WHEN 'SEPTEMBER' THEN '09'
+                    WHEN 'OKTOBER'   THEN '10'
+                    WHEN 'NOVEMBER'  THEN '11'
+                    WHEN 'DESEMBER'  THEN '12'
+                END, '-01'
+            ), '%Y-%m-%d'
+        ) BETWEEN " . $this->db->escape($start) . " AND " . $this->db->escape($end));
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
 
         if ($nama_bulan_pengkreditkan != '') {
@@ -146,8 +164,26 @@ class PPN_Model extends CI_Model {
 
         $this->db->where('tbl_upload_dokumen_pajak.is_jasa', true);
         $this->db->where('tbl_upload_dokumen_pajak.nominal_jasa >', 0);
-        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
-        $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
+        // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
+        // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
+        $this->db->where("
+            STR_TO_DATE(CONCAT(tbl_upload_dokumen_pajak.tahun_pajak, '-', 
+                CASE UPPER(tbl_upload_dokumen_pajak.masa_pajak)
+                    WHEN 'JANUARI'   THEN '01'
+                    WHEN 'FEBRUARI'  THEN '02'
+                    WHEN 'MARET'     THEN '03'
+                    WHEN 'APRIL'     THEN '04'
+                    WHEN 'MEI'       THEN '05'
+                    WHEN 'JUNI'      THEN '06'
+                    WHEN 'JULI'      THEN '07'
+                    WHEN 'AGUSTUS'   THEN '08'
+                    WHEN 'SEPTEMBER' THEN '09'
+                    WHEN 'OKTOBER'   THEN '10'
+                    WHEN 'NOVEMBER'  THEN '11'
+                    WHEN 'DESEMBER'  THEN '12'
+                END, '-01'
+            ), '%Y-%m-%d'
+        ) BETWEEN " . $this->db->escape($start) . " AND " . $this->db->escape($end));
         $this->db->where('tbl_upload_dokumen_pajak.master_perusahaan_id', $perusahaan);
 
         if (!empty($fasilitas)) {
