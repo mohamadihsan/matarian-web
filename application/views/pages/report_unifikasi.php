@@ -48,43 +48,43 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th class="text-center text-nowrap"></th>
-                                    <th class="text-center text-nowrap">Masa Pajak</th>
-                                    <th class="text-right text-nowrap">Tahun Pajak</th>
-                                    <th class="text-center text-nowrap">NPWP</th>
-                                    <th class="text-right text-nowrap">ID TKU Penerima Penghasilan</th>
-                                    <th class="text-right text-nowrap">Fasilitas</th>
-                                    <th class="text-right text-nowrap">Kode Objek Pajak</th>
+                                    <th class="text-left text-nowrap">Masa Pajak</th>
+                                    <th class="text-left text-nowrap">Tahun Pajak</th>
+                                    <th class="text-left text-nowrap">NPWP</th>
+                                    <th class="text-left text-nowrap">Nama Vendor</th>
+                                    <th class="text-left text-nowrap">Fasilitas</th>
+                                    <th class="text-left text-nowrap">Kode Objek Pajak</th>
                                     <th class="text-right text-nowrap">DPP</th>
                                     <th class="text-right text-nowrap">Tarif</th>
-                                    <th class="text-right text-nowrap">Jenis Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">Nomor Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">Tanggal Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">ID TKU Pemotong</th>
+                                    <th class="text-right text-nowrap">PPN</th>
+                                    <th class="text-left text-nowrap">Jenis Dok. Referensi</th>
+                                    <th class="text-left text-nowrap">Nomor Dok. Referensi</th>
+                                    <th class="text-left text-nowrap">Tanggal Dok. Referensi</th>
+                                    <!-- <th class="text-center text-nowrap">ID TKU Pemotong</th>
                                     <th class="text-right text-nowrap">Opsi Pembayaran (IP)</th>
                                     <th class="text-right text-nowrap">Nomor SP2D (IP)</th>
-                                    <th class="text-right text-nowrap">Tanggal Pemotongan</th>
-                                    <th class="text-right text-nowrap">PPh</th>
+                                    <th class="text-right text-nowrap">Tanggal Pemotongan</th> -->
                                 </tr>
                             </thead>
                             <tfoot class="">
                                 <tr>
                                     <th class="text-center text-nowrap"></th>
-                                    <th class="text-center text-nowrap">Masa Pajak</th>
-                                    <th class="text-right text-nowrap">Tahun Pajak</th>
-                                    <th class="text-center text-nowrap">NPWP</th>
-                                    <th class="text-right text-nowrap">ID TKU Penerima Penghasilan</th>
-                                    <th class="text-right text-nowrap">Fasilitas</th>
-                                    <th class="text-right text-nowrap">Kode Objek Pajak</th>
+                                    <th class="text-left text-nowrap">Masa Pajak</th>
+                                    <th class="text-left text-nowrap">Tahun Pajak</th>
+                                    <th class="text-left text-nowrap">NPWP</th>
+                                    <th class="text-left text-nowrap">Nama Vendor</th>
+                                    <th class="text-left text-nowrap">Fasilitas</th>
+                                    <th class="text-left text-nowrap">Kode Objek Pajak</th>
                                     <th class="text-right text-nowrap">DPP</th>
                                     <th class="text-right text-nowrap">Tarif</th>
-                                    <th class="text-right text-nowrap">Jenis Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">Nomor Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">Tanggal Dok. Referensi</th>
-                                    <th class="text-center text-nowrap">ID TKU Pemotong</th>
+                                    <th class="text-right text-nowrap">PPN</th>
+                                    <th class="text-left text-nowrap">Jenis Dok. Referensi</th>
+                                    <th class="text-left text-nowrap">Nomor Dok. Referensi</th>
+                                    <th class="text-left text-nowrap">Tanggal Dok. Referensi</th>
+                                    <!-- <th class="text-center text-nowrap">ID TKU Pemotong</th>
                                     <th class="text-right text-nowrap">Opsi Pembayaran (IP)</th>
                                     <th class="text-right text-nowrap">Nomor SP2D (IP)</th>
-                                    <th class="text-right text-nowrap">Tanggal Pemotongan</th>
-                                    <th class="text-right text-nowrap">PPh</th>
+                                    <th class="text-right text-nowrap">Tanggal Pemotongan</th> -->
                                 </tr>
                             </tfoot>
                         </table>
@@ -533,7 +533,7 @@
                         responsivePriority: 1
                     },
                     {
-                        data: "id_penerima",
+                        data: "nama_penjual",
                         className: "align-middle text-nowrap"
                     },
                     {
@@ -561,6 +561,14 @@
                         }
                     },
                     {
+                        data: "pph",
+                        className: "align-middle text-nowrap text-right",
+                        responsivePriority: 3,
+                        render: function(data, type, row, meta) {
+                            return data ? formatNumber(data) : data;
+                        }
+                    },
+                    {
                         data: "kode_dokumen",
                         className: "align-middle text-nowrap"
                     },
@@ -576,34 +584,26 @@
                             return date;
                         }
                     },
-                    {
-                        data: "id_pemotong",
-                        className: "align-middle text-nowrap"
-                    },
-                    {
-                        data: "kode_pembayaran",
-                        className: "align-middle text-nowrap"
-                    },
-                    {
-                        data: "nomor_sp2d",
-                        className: "align-middle text-nowrap"
-                    },
-                    {
-                        data: "tanggal_pemotongan",
-                        className: "align-middle text-nowrap",
-                        render: function(data, type, row, meta) {
-                            let date = data !== null ? moment(data, 'YYYY-MM-DD').format('DD-MM-YYYY') : 0;
-                            return date;
-                        }
-                    },
-                    {
-                        data: "pph",
-                        className: "align-middle text-nowrap text-right",
-                        responsivePriority: 3,
-                        render: function(data, type, row, meta) {
-                            return data ? formatNumber(data) : data;
-                        }
-                    },
+                    // {
+                    //     data: "id_pemotong",
+                    //     className: "align-middle text-nowrap"
+                    // },
+                    // {
+                    //     data: "kode_pembayaran",
+                    //     className: "align-middle text-nowrap"
+                    // },
+                    // {
+                    //     data: "nomor_sp2d",
+                    //     className: "align-middle text-nowrap"
+                    // },
+                    // {
+                    //     data: "tanggal_pemotongan",
+                    //     className: "align-middle text-nowrap",
+                    //     render: function(data, type, row, meta) {
+                    //         let date = data !== null ? moment(data, 'YYYY-MM-DD').format('DD-MM-YYYY') : 0;
+                    //         return date;
+                    //     }
+                    // },
                 ],
                 language: {
                     loadingRecords: `<div class="spinner-border text-primary" role="status">
