@@ -13,6 +13,10 @@ SET tipe_dokumen = CASE
     ELSE 'TIN'
 END;
 
+UPDATE tbl_master_npwp_new
+SET new_npwp = TRIM(SUBSTRING_INDEX(new_npwp, '/', 1))
+WHERE new_npwp LIKE '%/%';
+
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Announcement', 'Pengumuman', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('CommercialInvoice', 'Surat Tagihan', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Contract', 'Kontrak', '2025-07-31 22:14:28');

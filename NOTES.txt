@@ -1,0 +1,6 @@
+yg perlu di update
+- bug fixed masa pengkreditkan -> DONE
+- hapus data di npwp16 setelah spasi " /" -> DONE
+- nama kolom npwp16/nitku diubah jadi npwp16 -> DONE
+- kolom tipe dokumen diganti jadi tipe dok -> DONE
+- update import dokumen pajak dengan penambahan handling jika npwp 000000 maka cek nama vendor nya dengan ketentuan hilangkan karakter khusus nya termasuk spasi sebelum dibandingkan
