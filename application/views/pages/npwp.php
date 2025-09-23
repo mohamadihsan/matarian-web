@@ -65,10 +65,10 @@
                         <thead class="thead-light">
                             <tr>
                                 <th class="text-center text-nowrap"></th>
-                                <th class="text-center text-nowrap">NPWP16/NITKU</th>
+                                <th class="text-center text-nowrap">NPWP16</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
-                                <th class="text-center text-nowrap">Tipe Dokumen</th>
+                                <th class="text-center text-nowrap">Tipe Dok</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
@@ -81,10 +81,10 @@
                         <tfoot class="">
                             <tr>
                                 <th class="text-center text-nowrap"></th>
-                                <th class="text-center text-nowrap">NPWP16/NITKU</th>
+                                <th class="text-center text-nowrap">NPWP16</th>
                                 <th class="text-center text-nowrap">NPWP</th>
                                 <th class="text-center text-nowrap">NITKU</th>
-                                <th class="text-center text-nowrap">Tipe Dokumen</th>
+                                <th class="text-center text-nowrap">Tipe Dok</th>
                                 <th class="text-center text-nowrap">Nama</th>
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Kelurahan</th>
