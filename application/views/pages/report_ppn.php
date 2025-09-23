@@ -863,6 +863,8 @@
                         masaTahunPajakPengkreditkanClicked = `${masaPajakPengkreditkanClicked}-${item.tahun_pajak_pengkreditkan}`
                         
                         $('#masaPajakPengkreditkan').datepicker().datepicker('update', moment(masaTahunPajakPengkreditkanClicked, 'MM-YYYY').format('MM-YYYY'));
+                    } else {
+                        $('#masaPajakPengkreditkan').datepicker('clearDates');
                     }
 
                     if (item.is_jasa == true) {
