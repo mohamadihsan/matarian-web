@@ -343,8 +343,14 @@ class Import_Document_Api extends REST_Controller {
                     foreach ($data as $d) {
                         // get vendor
                         $npwpUpload[$i] = $d['NPWP Penjual'];
+                        $namaVendorUpload[$i] = $d['Nama Penjual'];
+                        $namaVendorUploadFormatting[$i] = $d['Nama Penjual'];
                         if ($i == 0 && !empty($d['NPWP Penjual'])) {
-                            $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            if ($d['NPWP Penjual'] == '0000000000000000') {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
+                            } else {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            }
                             if (empty($vendor)) {
                                 $this->response([
                                     'status' => false,
@@ -354,7 +360,11 @@ class Import_Document_Api extends REST_Controller {
                             }
                         } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
                             if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
-                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                if ($d['NPWP Penjual'] == '0000000000000000') {
+                                    $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
+                                } else {
+                                    $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                }
                                 if (empty($vendor)) {
                                     $this->response([
                                         'status' => false,
@@ -498,8 +508,14 @@ class Import_Document_Api extends REST_Controller {
                     foreach ($data as $d) {
                         // get vendor
                         $npwpUpload[$i] = $d['NPWP Penjual'];
+                        $namaVendorUpload[$i] = $d['Nama Penjual'];
+                        $namaVendorUploadFormatting[$i] = $d['Nama Penjual'];
                         if ($i == 0 && !empty($d['NPWP Penjual'])) {
-                            $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            if ($d['NPWP Penjual'] == '0000000000000000') {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
+                            } else {
+                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                            }
                             if (empty($vendor)) {
                                 $this->response([
                                     'status' => false,
@@ -509,7 +525,11 @@ class Import_Document_Api extends REST_Controller {
                             }
                         } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
                             if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
-                                $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                if ($d['NPWP Penjual'] == '0000000000000000') {
+                                    $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
+                                } else {
+                                    $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
+                                }
                                 if (empty($vendor)) {
                                     $this->response([
                                         'status' => false,

@@ -59,6 +59,26 @@ class Import_Document_Model extends CI_Model {
         return $this->db->get('tbl_master_vendor')->row();
     }
 
+    public function get_vendor_by_npwp_and_name($npwp, $name)
+    {
+        // Normalisasi nama input: lowercase, hapus koma, titik, spasi
+        $normalizedName = strtolower(str_replace([' ', ',', '.', '-'], '', $name));
+
+        $this->db->select("*");
+        $this->db->from('tbl_master_vendor');
+        $this->db->where('new_npwp', $npwp);
+        
+        // Buat condition manual pakai REPLACE
+        $this->db->where("
+            REPLACE(REPLACE(REPLACE(REPLACE(LOWER(nama), ',', ''), '.', ''), ' ', ''), '-', '') = " . 
+            $this->db->escape($normalizedName)
+        , null, false);
+
+        $this->db->limit(1);
+
+        return $this->db->get()->row();
+    }
+
     public function get_perusahaan_by_npwp($npwp)
     {
         $this->db->select("*");
