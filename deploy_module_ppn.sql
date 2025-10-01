@@ -17,6 +17,165 @@ UPDATE tbl_master_npwp_new
 SET new_npwp = TRIM(SUBSTRING_INDEX(new_npwp, '/', 1))
 WHERE new_npwp LIKE '%/%';
 
+-- matarian_unit.tbl_unifikasi_kode_dokumen definition
+
+CREATE TABLE `tbl_unifikasi_kode_dokumen` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kode` varchar(255) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `kode` (`kode`)
+) ENGINE=InnoDB AUTO_INCREMENT=15;
+
+-- matarian_unit.tbl_unifikasi_kode_fasilitas definition
+
+CREATE TABLE `tbl_unifikasi_kode_fasilitas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kode` varchar(255) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `kode` (`kode`)
+) ENGINE=InnoDB AUTO_INCREMENT=9;
+
+-- matarian_unit.tbl_unifikasi_kode_objek_pajak definition
+
+CREATE TABLE `tbl_unifikasi_kode_objek_pajak` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kode` varchar(255) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `tarif` float NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `kode` (`kode`)
+) ENGINE=InnoDB AUTO_INCREMENT=201;
+
+-- matarian_unit.tbl_unifikasi_kode_pembayaran definition
+
+CREATE TABLE `tbl_unifikasi_kode_pembayaran` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `kode` varchar(255) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `kode` (`kode`)
+) ENGINE=InnoDB AUTO_INCREMENT=4;
+
+-- matarian_unit.tbl_master_vendor definition
+
+CREATE TABLE `tbl_master_vendor` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nama` varchar(255) NOT NULL,
+  `new_npwp` varchar(255) NOT NULL,
+  `npwp` varchar(255) DEFAULT NULL,
+  `nitku` varchar(255) DEFAULT NULL,
+  `nitku_digit` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
+  `nomor` varchar(255) DEFAULT NULL,
+  `blok` varchar(255) DEFAULT NULL,
+  `rt` varchar(255) DEFAULT NULL,
+  `rw` varchar(255) DEFAULT NULL,
+  `kelurahan` varchar(255) DEFAULT NULL,
+  `kecamatan` varchar(255) DEFAULT NULL,
+  `kabupaten` varchar(255) DEFAULT NULL,
+  `provinsi` varchar(255) DEFAULT NULL,
+  `kodepos` varchar(255) DEFAULT NULL,
+  `unifikasi_kode_objek_pajak_id` int DEFAULT NULL,
+  `cek` varchar(255) NOT NULL COMMENT 'FP, DL1 atau DL2',
+  `status` varchar(255) DEFAULT 'aktif' COMMENT 'aktif atau tidak aktif',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `unifikasi_kode_objek_pajak_id` (`unifikasi_kode_objek_pajak_id`),
+  CONSTRAINT `tbl_master_vendor_ibfk_1` FOREIGN KEY (`unifikasi_kode_objek_pajak_id`) REFERENCES `tbl_unifikasi_kode_objek_pajak` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=68;
+
+-- matarian_unit.tbl_master_perusahaan definition
+
+CREATE TABLE `tbl_master_perusahaan` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nama` varchar(255) NOT NULL,
+  `new_npwp` varchar(255) NOT NULL,
+  `npwp` varchar(255) DEFAULT NULL,
+  `nitku` varchar(255) DEFAULT NULL,
+  `nitku_digit` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
+  `nomor` varchar(255) DEFAULT NULL,
+  `blok` varchar(255) DEFAULT NULL,
+  `rt` varchar(255) DEFAULT NULL,
+  `rw` varchar(255) DEFAULT NULL,
+  `kelurahan` varchar(255) DEFAULT NULL,
+  `kecamatan` varchar(255) DEFAULT NULL,
+  `kabupaten` varchar(255) DEFAULT NULL,
+  `provinsi` varchar(255) DEFAULT NULL,
+  `kodepos` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT 'aktif' COMMENT 'aktif atau tidak aktif',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `new_npwp` (`new_npwp`)
+) ENGINE=InnoDB AUTO_INCREMENT=2;
+
+-- matarian_unit.tbl_upload_dokumen_pajak definition
+
+CREATE TABLE `tbl_upload_dokumen_pajak` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `master_perusahaan_id` int NOT NULL,
+  `master_vendor_id` int NOT NULL,
+  `ppn_persentase` float DEFAULT NULL COMMENT 'maksimal 100%',
+  `jenis_dokumen` varchar(255) NOT NULL COMMENT 'PPN MASUKKAN atau DOKUMEN LAIN',
+  `npwp_penjual` varchar(255) NOT NULL,
+  `nama_penjual` varchar(255) NOT NULL,
+  `cek` varchar(255) DEFAULT NULL COMMENT 'FP, DL1, DL2',
+  `nomor_faktur_pajak` varchar(255) NOT NULL,
+  `tanggal_faktur_pajak` date NOT NULL,
+  `jenis_transaksi` varchar(255) DEFAULT NULL,
+  `masa_pajak` varchar(255) NOT NULL,
+  `tahun_pajak` varchar(255) NOT NULL,
+  `masa_pajak_pengkreditkan` varchar(255) DEFAULT NULL,
+  `tahun_pajak_pengkreditkan` varchar(255) DEFAULT NULL,
+  `status_faktur_pajak` varchar(255) NOT NULL,
+  `harga_jual` bigint DEFAULT NULL,
+  `dpp_nilai_lain` bigint NOT NULL,
+  `ppn` bigint NOT NULL COMMENT 'hasil dari harga jual x ppn_persentase',
+  `ppnbm` bigint DEFAULT '0',
+  `perekam` varchar(255) DEFAULT NULL,
+  `nomor_sp2d` varchar(255) DEFAULT NULL,
+  `valid` varchar(255) DEFAULT NULL,
+  `dilaporkan` varchar(255) DEFAULT NULL,
+  `dilaporkan_oleh_penjual` varchar(255) DEFAULT NULL,
+  `uraian` varchar(255) DEFAULT NULL,
+  `is_jasa` tinyint(1) NOT NULL DEFAULT '0',
+  `nominal_jasa` bigint DEFAULT NULL,
+  `unifikasi_kode_fasilitas_id` int DEFAULT '1' COMMENT '1 = N/A',
+  `unifikasi_kode_objek_pajak_id` int DEFAULT NULL,
+  `unifikasi_kode_dokumen_id` int DEFAULT '12' COMMENT '12 = TaxInvoice',
+  `unifikasi_kode_pembayaran_id` int DEFAULT '1' COMMENT '1 = N/A',
+  `is_unifikasi_only` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `master_perusahaan_id` (`master_perusahaan_id`),
+  KEY `master_vendor_id` (`master_vendor_id`),
+  KEY `unifikasi_kode_fasilitas_id` (`unifikasi_kode_fasilitas_id`),
+  KEY `unifikasi_kode_objek_pajak_id` (`unifikasi_kode_objek_pajak_id`),
+  KEY `unifikasi_kode_dokumen_id` (`unifikasi_kode_dokumen_id`),
+  KEY `unifikasi_kode_pembayaran_id` (`unifikasi_kode_pembayaran_id`),
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_2` FOREIGN KEY (`master_perusahaan_id`) REFERENCES `tbl_master_perusahaan` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_3` FOREIGN KEY (`master_vendor_id`) REFERENCES `tbl_master_vendor` (`id`),
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_4` FOREIGN KEY (`unifikasi_kode_fasilitas_id`) REFERENCES `tbl_unifikasi_kode_fasilitas` (`id`),
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_5` FOREIGN KEY (`unifikasi_kode_objek_pajak_id`) REFERENCES `tbl_unifikasi_kode_objek_pajak` (`id`),
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_6` FOREIGN KEY (`unifikasi_kode_dokumen_id`) REFERENCES `tbl_unifikasi_kode_dokumen` (`id`),
+  CONSTRAINT `tbl_upload_dokumen_pajak_ibfk_7` FOREIGN KEY (`unifikasi_kode_pembayaran_id`) REFERENCES `tbl_unifikasi_kode_pembayaran` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=788;
+
+
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Announcement', 'Pengumuman', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('CommercialInvoice', 'Surat Tagihan', '2025-07-31 22:14:28');
 INSERT INTO matarian_unit.tbl_unifikasi_kode_dokumen (kode, nama, created_at) VALUES('Contract', 'Kontrak', '2025-07-31 22:14:28');
