@@ -56,7 +56,7 @@
                                     <th class="text-left text-nowrap">Kode Objek Pajak</th>
                                     <th class="text-right text-nowrap">DPP</th>
                                     <th class="text-right text-nowrap">Tarif</th>
-                                    <th class="text-right text-nowrap">PPN</th>
+                                    <th class="text-right text-nowrap">PPh</th>
                                     <th class="text-left text-nowrap">Jenis Dok. Referensi</th>
                                     <th class="text-left text-nowrap">Nomor Dok. Referensi</th>
                                     <th class="text-left text-nowrap">Tanggal Dok. Referensi</th>
@@ -77,7 +77,7 @@
                                     <th class="text-left text-nowrap">Kode Objek Pajak</th>
                                     <th class="text-right text-nowrap">DPP</th>
                                     <th class="text-right text-nowrap">Tarif</th>
-                                    <th class="text-right text-nowrap">PPN</th>
+                                    <th class="text-right text-nowrap">PPh</th>
                                     <th class="text-left text-nowrap">Jenis Dok. Referensi</th>
                                     <th class="text-left text-nowrap">Nomor Dok. Referensi</th>
                                     <th class="text-left text-nowrap">Tanggal Dok. Referensi</th>
