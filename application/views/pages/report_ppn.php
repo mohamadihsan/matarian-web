@@ -160,20 +160,20 @@
 
                         <div class="form-group">
                             <label class="label-katapanda-sm" for="hargaJualFormat">Harga Jual <span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-md" id="hargaJualFormat" placeholder="0">
+                            <input type="text" class="form-control form-control-sm" id="hargaJualFormat" placeholder="0">
                             <input type="hidden" name="hargaJual" id="hargaJual" readonly>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group col-lg-6 col-md-6">
                                 <label class="label-katapanda-sm" for="dppNilaiLainFormat">DPP Nilai Lain <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-md" name="dppNilaiLainFormat" id="dppNilaiLainFormat" placeholder="0">
+                                <input type="text" class="form-control form-control-sm" name="dppNilaiLainFormat" id="dppNilaiLainFormat" placeholder="0">
                                 <input type="hidden" name="dppNilaiLain" id="dppNilaiLain" readonly>
                             </div>
 
                             <div class="form-group col-lg-6 col-md-6">
                                 <label class="label-katapanda-sm" for="ppnFormat">PPN <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-md" name="ppnFormat" id="ppnFormat" placeholder="0">
+                                <input type="text" class="form-control form-control-sm" name="ppnFormat" id="ppnFormat" placeholder="0">
                                 <input type="hidden" name="ppn" id="ppn" readonly>
                             </div>
                         </div>
@@ -184,10 +184,16 @@
                         </div>
 
                         <div id="inputNominalJasa">
-                            <div class="form-group">
-                                <label class="label-katapanda-sm" for="nominalJasaFormat">Nominal Jasa <span class="text-danger"></span></label>
-                                <input type="text" class="form-control form-control-md" id="nominalJasaFormat" placeholder="0">
-                                <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
+                            <div class="form-row">
+                                <div class="form-group col-lg-6 col-md-6">
+                                    <label class="label-katapanda-sm" for="masaPajakUnifikasi">Masa Pajak Unifikasi <i class="text-danger"></i></label>
+                                    <input type="text" name="masaPajakUnifikasi" class="form-control form-control-sm" id="masaPajakUnifikasi">
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6">
+                                    <label class="label-katapanda-sm" for="nominalJasaFormat">Nominal Jasa <span class="text-danger"></span></label>
+                                    <input type="text" class="form-control form-control-sm" id="nominalJasaFormat" placeholder="0">
+                                    <input type="hidden" name="nominalJasa" id="nominalJasa" readonly>
+                                </div>
                             </div>
 
                             <div class="form-group" hidden>
@@ -320,6 +326,13 @@
                 todayHighlight: true,
                 clearBtn: true
             }).datepicker();
+            $('#masaPajakUnifikasi').datepicker({
+                format: "mm-yyyy",
+                minViewMode: 1, // 1 = Bulan, 2 = Tahun
+                autoclose: true,
+                todayHighlight: true,
+                clearBtn: true
+            }).datepicker('update', moment().format('MM-YYYY'));
             $('#tanggalFakturPajak').datepicker({
                 format: 'dd-mm-yyyy',
                 autoclose: true,
@@ -867,6 +880,16 @@
                         $('#masaPajakPengkreditkan').datepicker('clearDates');
                     }
 
+                    const masaPajakUnifikasiClicked = bulanToNumber(item.masa_pajak_unifikasi)
+                    let masaTahunPajakUnifikasiClicked = ''
+                    if (item.masa_pajak_unifikasi && item.tahun_pajak_unifikasi) {
+                        masaTahunPajakUnifikasiClicked = `${masaPajakUnifikasiClicked}-${item.tahun_pajak_unifikasi}`
+                        
+                        $('#masaPajakUnifikasi').datepicker().datepicker('update', moment(masaTahunPajakUnifikasiClicked, 'MM-YYYY').format('MM-YYYY'));
+                    } else {
+                        $('#masaPajakUnifikasi').datepicker('clearDates');
+                    }
+
                     if (item.is_jasa == true) {
                         $('#isJasa').prop('checked', true)
                         $('#inputNominalJasa').show();
@@ -1132,10 +1155,12 @@
 
                     const [bulanPajakNum, tahunPajak] = $('#masaPajak').val()?.split("-");
                     const [bulanPajakPengkreditkanNum, tahunPajakPengkreditkan] = $('#masaPajakPengkreditkan').val()?.split("-");
+                    const [bulanPajakUnifikasiNum, tahunPajakUnifikasi] = $('#masaPajakUnifikasi').val()?.split("-");
 
                     // ubah bulan angka ke nama bulan
                     const bulanPajak = monthNames[parseInt(bulanPajakNum, 10) - 1];
                     const bulanPajakPengkreditkan = monthNames[parseInt(bulanPajakPengkreditkanNum, 10) - 1];
+                    const bulanPajakUnifikasi = monthNames[parseInt(bulanPajakUnifikasiNum, 10) - 1];
 
                     const tanggalFakturPajak = moment($('#tanggalFakturPajak').val(), "DD-MM-YYYY").format("YYYY-MM-DD");
 
@@ -1149,6 +1174,8 @@
                         tahun_pajak: tahunPajak,
                         masa_pajak_pengreditkan: bulanPajakPengkreditkan ? bulanPajakPengkreditkan : null,
                         tahun_pajak_pengreditkan: tahunPajakPengkreditkan ? tahunPajakPengkreditkan : null,
+                        masa_pajak_unifikasi: bulanPajakUnifikasi ? bulanPajakUnifikasi : null,
+                        tahun_pajak_unifikasi: tahunPajakUnifikasi ? tahunPajakUnifikasi : null,
                         status_faktur_pajak: $('#statusFakturPajak').val(),
                         harga_jual: $('#hargaJual').val(),
                         dpp_nilai_lain: $('#dppNilaiLain').val(),

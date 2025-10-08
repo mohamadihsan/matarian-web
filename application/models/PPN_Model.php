@@ -17,6 +17,8 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.tahun_pajak,
             tbl_upload_dokumen_pajak.masa_pajak_pengkreditkan,
             tbl_upload_dokumen_pajak.tahun_pajak_pengkreditkan,
+            tbl_upload_dokumen_pajak.masa_pajak_unifikasi,
+            tbl_upload_dokumen_pajak.tahun_pajak_unifikasi,
             tbl_upload_dokumen_pajak.status_faktur_pajak,
             tbl_upload_dokumen_pajak.harga_jual,
             tbl_upload_dokumen_pajak.dpp_nilai_lain,
@@ -136,8 +138,8 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select('
             tbl_upload_dokumen_pajak.id,
-            tbl_upload_dokumen_pajak.masa_pajak,
-            tbl_upload_dokumen_pajak.tahun_pajak,
+            tbl_upload_dokumen_pajak.masa_pajak_unifikasi as masa_pajak,
+            tbl_upload_dokumen_pajak.tahun_pajak_unifikasi as tahun_pajak,
             tbl_upload_dokumen_pajak.npwp_penjual,
             CONCAT(tbl_master_vendor.nitku, tbl_master_vendor.nitku_digit) as id_penerima,
             tbl_upload_dokumen_pajak.nama_penjual,
@@ -167,8 +169,8 @@ class PPN_Model extends CI_Model {
         // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak >=', $start);
         // $this->db->where('tbl_upload_dokumen_pajak.tanggal_faktur_pajak <=', $end);
         $this->db->where("
-            STR_TO_DATE(CONCAT(tbl_upload_dokumen_pajak.tahun_pajak, '-', 
-                CASE UPPER(tbl_upload_dokumen_pajak.masa_pajak)
+            STR_TO_DATE(CONCAT(tbl_upload_dokumen_pajak.tahun_pajak_unifikasi, '-', 
+                CASE UPPER(tbl_upload_dokumen_pajak.masa_pajak_unifikasi)
                     WHEN 'JANUARI'   THEN '01'
                     WHEN 'FEBRUARI'  THEN '02'
                     WHEN 'MARET'     THEN '03'

@@ -572,6 +572,8 @@ class Report_Api extends REST_Controller
             $tahun_pajak = $this->input->post('tahun_pajak');
             $masa_pajak_pengreditkan = $this->input->post('masa_pajak_pengreditkan');
             $tahun_pajak_pengreditkan = $this->input->post('tahun_pajak_pengreditkan');
+            $masa_pajak_unifikasi = $this->input->post('masa_pajak_unifikasi');
+            $tahun_pajak_unifikasi = $this->input->post('tahun_pajak_unifikasi');
             $status_faktur_pajak = $this->input->post('status_faktur_pajak');
             $harga_jual = $this->input->post('harga_jual');
             $dpp_nilai_lain = $this->input->post('dpp_nilai_lain');
@@ -643,6 +645,8 @@ class Report_Api extends REST_Controller
                 "tahun_pajak" => $tahun_pajak,
                 "masa_pajak_pengkreditkan" => $masa_pajak_pengreditkan,
                 "tahun_pajak_pengkreditkan" => $tahun_pajak_pengreditkan,
+                "masa_pajak_unifikasi" => $masa_pajak_unifikasi,
+                "tahun_pajak_unifikasi" => $tahun_pajak_unifikasi,
                 "status_faktur_pajak" => $status_faktur_pajak,
                 "harga_jual" => $harga_jual,
                 "dpp_nilai_lain" => $dpp_nilai_lain,
@@ -701,6 +705,8 @@ class Report_Api extends REST_Controller
             $tahun_pajak = $this->input->post('tahun_pajak');
             $masa_pajak_pengreditkan = null;
             $tahun_pajak_pengreditkan = null;
+            $masa_pajak_unifikasi = $this->input->post('masa_pajak');
+            $tahun_pajak_unifikasi = $this->input->post('tahun_pajak');
             $status_faktur_pajak = $this->input->post('status_faktur_pajak');
             $harga_jual = null;
             $dpp_nilai_lain = 0;
@@ -788,6 +794,8 @@ class Report_Api extends REST_Controller
                 "tahun_pajak" => $tahun_pajak,
                 "masa_pajak_pengkreditkan" => $masa_pajak_pengreditkan,
                 "tahun_pajak_pengkreditkan" => $tahun_pajak_pengreditkan,
+                "masa_pajak_unifikasi" => $masa_pajak_unifikasi,
+                "tahun_pajak_unifikasi" => $tahun_pajak_unifikasi,
                 "status_faktur_pajak" => $status_faktur_pajak,
                 "harga_jual" => $harga_jual,
                 "dpp_nilai_lain" => $dpp_nilai_lain,
