@@ -323,10 +323,10 @@ class Report extends CI_Controller
                 ->setCellValue('F1', 'Kode Objek Pajak')
                 ->setCellValue('G1', 'DPP')
                 ->setCellValue('H1', 'Tarif')
-                ->setCellValue('I1', 'PPN')
-                ->setCellValue('J1', 'Jenis Dok. Referensi')
-                ->setCellValue('K1', 'Nomor Dok. Referensi')
-                ->setCellValue('L1', 'Tanggal Dok. Referensi');
+                ->setCellValue('I1', 'Jenis Dok. Referensi')
+                ->setCellValue('J1', 'Nomor Dok. Referensi')
+                ->setCellValue('K1', 'Tanggal Dok. Referensi')
+                ->setCellValue('L1', 'PPh');
 
             // ===================== STYLE HEADER =====================
             $styleHeader = [
@@ -359,11 +359,11 @@ class Report extends CI_Controller
 
                 $sheet->setCellValue('G' . $row, $item->nominal_jasa);
                 $sheet->setCellValue('H' . $row, $item->tarif);
-                $sheet->setCellValue('I' . $row, $item->pph);
 
-                $sheet->setCellValue('J' . $row, $item->kode_dokumen, PHPExcel_Cell_DataType::TYPE_STRING);
-                $sheet->setCellValue('K' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
-                $sheet->setCellValue('L' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
+                $sheet->setCellValue('I' . $row, $item->kode_dokumen, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValue('J' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->setCellValue('K' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
+                $sheet->setCellValue('L' . $row, $item->pph);
 
                 $row++;
             }
@@ -372,11 +372,11 @@ class Report extends CI_Controller
             $lastRow  = $row - 1;     // baris terakhir data
             $totalRow = $row;         // baris untuk total
 
-            $sheet->setCellValue('H' . $totalRow, 'TOTAL');
-            $sheet->setCellValue("I{$totalRow}", "=SUM(I3:J{$lastRow})");
+            $sheet->setCellValue('K' . $totalRow, 'TOTAL');
+            $sheet->setCellValue("L{$totalRow}", "=SUM(L2:L{$lastRow})");
 
             // Bold + border atas untuk baris total
-            $sheet->getStyle("H{$totalRow}:I{$totalRow}")->applyFromArray([
+            $sheet->getStyle("K{$totalRow}:L{$totalRow}")->applyFromArray([
                 'font' => ['bold' => true],
                 'borders' => [
                     'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
@@ -391,13 +391,17 @@ class Report extends CI_Controller
                 ]
             ]);
 
-            // Format kolom tanggal (D)
-            $sheet->getStyle("L2:L{$lastRow}")
+            // Format kolom tanggal 
+            $sheet->getStyle("K2:K{$lastRow}")
                 ->getNumberFormat()
                 ->setFormatCode('DD/MM/YYYY');
 
             // Format number ribuan untuk H–M (termasuk total)
             $sheet->getStyle("G2:H{$totalRow}")
+                ->getNumberFormat()
+                ->setFormatCode('#,##0');
+                
+            $sheet->getStyle("L2:L{$totalRow}")
                 ->getNumberFormat()
                 ->setFormatCode('#,##0');
 
