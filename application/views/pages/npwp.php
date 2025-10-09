@@ -268,6 +268,9 @@
             <div class="modal-body">
                 <div id="dataLengkap"></div>
             </div>
+            <div class="modal-footer custom-footer">
+               <div id="infoUserUpdate"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -340,6 +343,39 @@
     .npwp-qr img {
         width: 70px;
         height: 70px;
+    }
+
+    .custom-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-direction: column;
+        background-color: #f9f9f9;
+        border-top: 1px solid #ddd;
+        padding: 10px 15px;
+        font-size: 13px;
+        color: #333;
+    }
+
+    .custom-footer .footer-info {
+        width: 100%;
+    }
+
+    .custom-footer p {
+        margin: 3px 0;
+        line-height: 1.4;
+    }
+
+    .custom-footer .role {
+        color: #777;
+        font-style: italic;
+    }
+
+    .custom-footer .footer-date {
+        font-size: 12px;
+        color: #888;
+        text-align: right;
+        margin-top: 5px;
     }
 </style>
 
@@ -727,6 +763,11 @@
                 //     <dd class="col-sm-12" style="font-size: 13px"><b>Updated By / Time</b> : ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } / ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }</dd>
                 // </dl>`;
 
+                // <span>
+                //     <i class="far fa-file-alt ms-2" data-bs-toggle="tooltip" 
+                //     data-bs-placement="top" 
+                //     title="created_by: ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } at ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }&#10;updated_by: ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } at ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }"></i>
+                // </span>
                 let template = `<div class="card-npwp">
                     <!-- Header -->
                     <div class="npwp-header d-flex justify-content-between">
@@ -734,11 +775,7 @@
                             <img src="<?= base_url('assets/img/logo/logo_npwp.png') ?>" alt="NPWP">
                         </div>
                         <div>
-                        <span>
-                            <i class="far fa-file-alt ms-2" data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="created_by: ${item.created_by !== null ? item.created_by +' | '+ item.created_by_user : '-' } at ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }&#10;updated_by: ${item.updated_by !== null ? item.updated_by +' | '+ item.updated_by_user : '-' } at ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '-' }"></i>
-                        </span>
+                        
                         </div>
                     </div>
 
@@ -775,6 +812,15 @@
                     </div>
                     </div>`;
                 $('#dataLengkap').html(template);
+
+                let templateFooter = `
+                    <div class="footer-info">
+                        <p><strong>Created by:</strong> ${item.created_by !== null ? item.created_by : '-'} <span class="role">${item.created_by_user ? '['+item.created_by_user+']' : '' } at ${item.created_at !== null ? moment(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY HH:mm:ss') : '-' }</span></p>
+                        <p><strong>Updated by:</strong> ${item.updated_by !== null ? item.updated_by : '-'} <span class="role">${item.updated_by_user ? '['+item.updated_by_user+']' : '' } at ${item.updated_at !== null ? moment(item.updated_at, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY HH:mm:ss') : '-' }</span></p>
+                    </div>
+                `;
+
+                $('#infoUserUpdate').html(templateFooter);
             });
 
         });
