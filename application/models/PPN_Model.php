@@ -154,7 +154,7 @@ class PPN_Model extends CI_Model {
             tbl_unifikasi_kode_pembayaran.kode as kode_pembayaran,
             tbl_upload_dokumen_pajak.nomor_sp2d,
             LAST_DAY(tbl_upload_dokumen_pajak.tanggal_faktur_pajak) as tanggal_pemotongan,
-            (tbl_upload_dokumen_pajak.nominal_jasa / 100 * tbl_unifikasi_kode_objek_pajak.tarif) as pph,
+            ROUND((tbl_upload_dokumen_pajak.nominal_jasa / 100 * tbl_unifikasi_kode_objek_pajak.tarif), 0) as pph,
             tbl_upload_dokumen_pajak.master_perusahaan_id,
             tbl_upload_dokumen_pajak.master_vendor_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_fasilitas_id,
