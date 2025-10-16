@@ -635,11 +635,20 @@
                         className: "align-middle text-center",
                         responsivePriority: 2,
                         render: function(data, type, row, meta) {
+                            let iconUnifikasi = `<div class="d-flex justify-content-center align-items-center ml-2">
+                                                    <i class="far fa-star fs-6 text-gray-300"></i>
+                                                </div>`
+                            if (row.is_pajak == true || row.is_jasa == "1") {
+                                iconUnifikasi = `<div class="d-flex justify-content-center align-items-center ml-2">
+                                                    <i class="fas fa-star text-warning fs-6 data-toggle="tooltip" data-placement="top" title="Unifikasi""></i>
+                                                </div>`
+                            }
+
                             // set by role
                             let action = `<div class="btn-group"><button class="btn btn-sm btn-outline-info detail" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-info-circle"></i></button>`;
                             actionUpdate ? action += `<button class="btn btn-sm btn-outline-warning d-none d-sm-block edit" data-toggle="tooltip" data-placement="top" title="Edit"><i class="far fa-edit"></i></button>` : '';
                             actionDelete ? action += `<button class="btn btn-sm btn-outline-danger d-none d-sm-block delete" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>` : '';
-                            action += `</div>`;
+                            action += ` ${iconUnifikasi} </div>`;
                             return action;
                         }
                     },
