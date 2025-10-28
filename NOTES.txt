@@ -1,6 +1,121 @@
-yg perlu di update
-- bug fixed masa pengkreditkan -> DONE
-- hapus data di npwp16 setelah spasi " /" -> DONE
-- nama kolom npwp16/nitku diubah jadi npwp16 -> DONE
-- kolom tipe dokumen diganti jadi tipe dok -> DONE
-- update import dokumen pajak dengan penambahan handling jika npwp 000000 maka cek nama vendor nya dengan ketentuan hilangkan karakter khusus nya termasuk spasi sebelum dibandingkan -> DONE
+# query untuk mencocokan data vendor antara data di table master vendor dengan table upload dokumen pajak apakah match atau mismatch:
+
+SELECT
+    v.id AS vendor_id,
+    v.nama AS vendor_nama,
+    v.new_npwp AS vendor_npwp,
+    d.id as id_dokumen,
+    d.nama_penjual,
+    d.npwp_penjual,
+    CASE
+        WHEN v.id IS NOT NULL
+         AND d.npwp_penjual IS NOT NULL
+         AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') = REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '')
+         AND v.new_npwp = d.npwp_penjual
+        THEN 'MATCH'
+        ELSE 'MISMATCH'
+    END AS match_status
+FROM
+    tbl_master_vendor v
+LEFT JOIN
+    tbl_upload_dokumen_pajak d
+ON
+    v.new_npwp = d.npwp_penjual
+    AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') = REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '')
+
+UNION
+
+SELECT
+    v.id AS vendor_id,
+    v.nama AS vendor_nama,
+    v.new_npwp AS vendor_npwp,
+    d.id as id_dokumen,
+    d.nama_penjual,
+    d.npwp_penjual,
+    CASE
+        WHEN v.id IS NOT NULL
+         AND d.npwp_penjual IS NOT NULL
+         AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') = REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '')
+         AND v.new_npwp = d.npwp_penjual
+        THEN 'MATCH'
+        ELSE 'MISMATCH'
+    END AS match_status
+FROM
+    tbl_master_vendor v
+RIGHT JOIN
+    tbl_upload_dokumen_pajak d
+ON
+    v.new_npwp = d.npwp_penjual
+    AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') = REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '');
+
+
+
+
+
+#   berikut query untuk menampilkan data yang mismatch nya saja:
+
+SELECT DISTINCT
+  data.id_dokumen,
+  data.nomor_faktur_pajak,
+  data.master_vendor_id as vendor_id_on_table_pajak,
+  data.nama_penjual,
+  data.npwp_penjual,
+  CASE
+    WHEN data.vendor_id IS NOT NULL
+      AND data.id_dokumen IS NOT NULL
+      AND data.vendor_npwp = data.npwp_penjual
+      AND REGEXP_REPLACE(LOWER(COALESCE(data.vendor_nama, '')), '[^a-z0-9]', '') =
+          REGEXP_REPLACE(LOWER(COALESCE(data.nama_penjual, '')), '[^a-z0-9]', '')
+    THEN 'MATCH'
+    ELSE 'MISMATCH'
+  END AS match_status,
+  CASE
+    WHEN data.vendor_id IS NULL OR data.id_dokumen IS NULL THEN 'nama vendor berbeda dengan master data'
+    WHEN data.vendor_npwp <> data.npwp_penjual THEN 'nama vendor berbeda dengan master data'
+    WHEN REGEXP_REPLACE(LOWER(COALESCE(data.vendor_nama, '')), '[^a-z0-9]', '') <>
+         REGEXP_REPLACE(LOWER(COALESCE(data.nama_penjual, '')), '[^a-z0-9]', '')
+    THEN 'nama vendor berbeda dengan master data'
+    ELSE NULL
+  END AS keterangan
+FROM (
+  -- LEFT JOIN (ambil semua vendor, gabungkan dokumen jika cocok)
+  SELECT
+      v.id AS vendor_id,
+      v.nama AS vendor_nama,
+      v.new_npwp AS vendor_npwp,
+      d.id AS id_dokumen,
+      d.master_vendor_id,
+      d.nama_penjual,
+      d.npwp_penjual,
+      d.nomor_faktur_pajak
+  FROM tbl_master_vendor v
+  LEFT JOIN tbl_upload_dokumen_pajak d
+    ON v.new_npwp = d.npwp_penjual
+    AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') =
+        REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '')
+
+  UNION
+
+  -- RIGHT JOIN (ambil semua dokumen, gabungkan vendor jika cocok)
+  SELECT
+      v.id AS vendor_id,
+      v.nama AS vendor_nama,
+      v.new_npwp AS vendor_npwp,
+      d.id AS id_dokumen,
+      d.master_vendor_id,
+      d.nama_penjual,
+      d.npwp_penjual,
+      d.nomor_faktur_pajak
+  FROM tbl_master_vendor v
+  RIGHT JOIN tbl_upload_dokumen_pajak d
+    ON v.new_npwp = d.npwp_penjual
+    AND REGEXP_REPLACE(LOWER(v.nama), '[^a-z0-9]', '') =
+        REGEXP_REPLACE(LOWER(d.nama_penjual), '[^a-z0-9]', '')
+) AS data
+WHERE
+  -- tampilkan hanya baris yang mismatch
+  data.vendor_id IS NULL
+  OR data.id_dokumen IS NULL
+  OR data.vendor_npwp <> data.npwp_penjual
+  OR REGEXP_REPLACE(LOWER(COALESCE(data.vendor_nama, '')), '[^a-z0-9]', '') <>
+     REGEXP_REPLACE(LOWER(COALESCE(data.nama_penjual, '')), '[^a-z0-9]', '');
