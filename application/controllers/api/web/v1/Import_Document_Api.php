@@ -351,7 +351,7 @@ class Import_Document_Api extends REST_Controller {
                             } else {
                                 $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
                             }
-                            if (empty($vendor)) {
+                            if (empty($vendor->id)) {
                                 $this->response([
                                     'status' => false,
                                     'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
@@ -359,20 +359,20 @@ class Import_Document_Api extends REST_Controller {
                                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
                             }
                         } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
-                            if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
+                            // if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
                                 if ($d['NPWP Penjual'] == '0000000000000000') {
                                     $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
                                 } else {
                                     $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
                                 }
-                                if (empty($vendor)) {
+                                if (empty($vendor->id)) {
                                     $this->response([
                                         'status' => false,
                                         'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
                                         'data' => []
                                     ], REST_Controller::HTTP_PARTIAL_CONTENT);
                                 }
-                            }
+                            // }
                         } else {
                             $this->response([
                                 'status' => false,
@@ -516,7 +516,7 @@ class Import_Document_Api extends REST_Controller {
                             } else {
                                 $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
                             }
-                            if (empty($vendor)) {
+                            if (empty($vendor->id)) {
                                 $this->response([
                                     'status' => false,
                                     'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
@@ -524,20 +524,20 @@ class Import_Document_Api extends REST_Controller {
                                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
                             }
                         } else if ($i > 0 && !empty($d['NPWP Penjual'])) {
-                            if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
+                            // if ($npwpUpload[$i-1] != $d['NPWP Penjual']) {
                                 if ($d['NPWP Penjual'] == '0000000000000000') {
                                     $vendor = $this->Import_Document_Model->get_vendor_by_npwp_and_name($d['NPWP Penjual'], $namaVendorUploadFormatting[$i]);
                                 } else {
                                     $vendor = $this->Import_Document_Model->get_vendor_by_npwp($d['NPWP Penjual']);
                                 }
-                                if (empty($vendor)) {
+                                if (empty($vendor->id)) {
                                     $this->response([
                                         'status' => false,
                                         'message' => 'Vendor dengan NPWP '.$d['NPWP Penjual'].' tidak ditemukan. Silakan buatkan master datanya terlebih dahulu!',
                                         'data' => []
                                     ], REST_Controller::HTTP_PARTIAL_CONTENT);
                                 }
-                            }
+                            // }
                         } else {
                             $this->response([
                                 'status' => false,
