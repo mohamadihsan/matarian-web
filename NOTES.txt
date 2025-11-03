@@ -119,3 +119,23 @@ WHERE
   OR data.vendor_npwp <> data.npwp_penjual
   OR REGEXP_REPLACE(LOWER(COALESCE(data.vendor_nama, '')), '[^a-z0-9]', '') <>
      REGEXP_REPLACE(LOWER(COALESCE(data.nama_penjual, '')), '[^a-z0-9]', '');
+
+
+
+-   [unifikasi] data filter ilang setelah sukses insert -> DONE
+-   [unifikasi] setelah sukses insert, datatable refresh dan paginationnya ingin tidak pindah tetap di pagination terkahir -> DONE
+-   [ppn] form add ppn, perusahaan masih harus manual di select -> DONE
+-   [ppn] add filter unifikasi (Jasa : yes or no)-> DONE
+-   [ppn] add checkbox disamping is jasa (nilai jasa) if click nominal jual copy to field nominal jasa -> DONE
+-   [ppn] export excel ppn 
+    judul kolom PPN nya ilang, -> DONE
+    kasih title di row 1 = REKAPITULASI PPN MASUKAN, -> DONE
+    row 2 = NAMA PERUSAHAAN, 
+    row 3 = MASA: MARET 2025 dari filter, 
+    font kolom and value = 12, -> DONE
+    title = 14, -> DONE
+    row height = 20, -> DONE
+    diatas B1, B2, B3 isi dengna Dikreditkan, -> DONE 
+    kasih halaman di excel jika di print, -> DONE
+    sort by name, cek (FP, DL1, DL2, lainnya), 1 -> DONE
+    rows repeat to top -> DONE
