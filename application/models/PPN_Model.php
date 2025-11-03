@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class PPN_Model extends CI_Model {
 
-    public function get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)
+    public function get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa)
     {
         $this->db->select('
             tbl_upload_dokumen_pajak.id,
@@ -121,6 +121,10 @@ class PPN_Model extends CI_Model {
             $this->db->where('tbl_upload_dokumen_pajak.status_faktur_pajak', $status_faktur);
         }
 
+        if ($is_jasa != '') {
+            $this->db->where('tbl_upload_dokumen_pajak.is_jasa', $is_jasa);
+        }
+
         $this->db->join('tbl_master_perusahaan', 'tbl_master_perusahaan.id = tbl_upload_dokumen_pajak.master_perusahaan_id', 'left');
         $this->db->join('tbl_master_vendor', 'tbl_master_vendor.id = tbl_upload_dokumen_pajak.master_vendor_id', 'left');
         $this->db->join('tbl_unifikasi_kode_dokumen', 'tbl_unifikasi_kode_dokumen.id = tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id', 'left');
@@ -129,6 +133,15 @@ class PPN_Model extends CI_Model {
         $this->db->join('tbl_unifikasi_kode_pembayaran', 'tbl_unifikasi_kode_pembayaran.id = tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id', 'left');
 
         $this->db->order_by('tbl_master_perusahaan.nama', 'asc');
+        $this->db->order_by('tbl_upload_dokumen_pajak.nama_penjual', 'ASC');
+        $this->db->order_by("
+            CASE 
+                WHEN tbl_upload_dokumen_pajak.cek = 'FP' THEN 1
+                WHEN tbl_upload_dokumen_pajak.cek = 'DL1' THEN 2
+                WHEN tbl_upload_dokumen_pajak.cek = 'DL2' THEN 3
+                ELSE 4
+            END
+        ", 'ASC', false);
         $this->db->order_by('tbl_upload_dokumen_pajak.tanggal_faktur_pajak', 'desc');
 
         return $this->db->get('tbl_upload_dokumen_pajak');

@@ -305,6 +305,7 @@ class Report_Api extends REST_Controller
             $tahun_pengkreditkan = $this->input->post('tahun_pengkreditkan');
             $jenis_dokumen = $this->input->post('jenis_dokumen');
             $status_faktur = $this->input->post('status_faktur');
+            $is_jasa = $this->input->post('is_jasa');
             $perusahaan = $this->input->post('perusahaan');
 
             $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
@@ -313,7 +314,7 @@ class Report_Api extends REST_Controller
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
-            $response = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen)->result();
+            $response = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa)->result();
             $total_rows = count($response);
 
             $totalPPN = 0;

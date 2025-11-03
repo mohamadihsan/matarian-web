@@ -123,6 +123,7 @@ class Report extends CI_Controller
             $tahun_pengkreditkan = $this->input->get('tahun_pengkreditkan');
             $jenis_dokumen = $this->input->get('jenis_dokumen');
             $status_faktur = $this->input->get('status_faktur');
+            $is_jasa = $this->input->get('is_jasa');
 
             $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
@@ -130,7 +131,7 @@ class Report extends CI_Controller
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
-            $query = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen);
+            $query = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa);
             $data = $query->result();
 
             // Load PHPExcel
@@ -138,44 +139,96 @@ class Report extends CI_Controller
             $objPHPExcel = new PHPExcel();
 
             $sheet = $objPHPExcel->setActiveSheetIndex(0);
-            $sheet->setCellValue('A1', 'Nama Penjual')
-                ->setCellValue('B1', 'Cek')
-                ->setCellValue('C1', 'Nomor Faktur Pajak')
-                ->setCellValue('D1', 'Tgl Faktur Pajak')
-                ->setCellValue('E1', 'Masa Pajak')
-                ->setCellValue('F1', 'Tahun')
-                ->setCellValue('G1', 'Masa Pajak')
-                ->setCellValue('H1', 'Tahun')
-                ->setCellValue('I1', 'Status Faktur')
-                ->setCellValue('J1', 'Harga Jual')
-                ->setCellValue('K1', 'DPP Nilai Lain')
-                ->setCellValue('L1', 'PPN')
-                ->setCellValue('M1', 'Dikreditkan')
-                ->setCellValue('M2', 'B1')
-                ->setCellValue('N2', 'B2')
-                ->setCellValue('O2', 'B3');
+
+            // Judul utama
+            $sheet->setCellValue('A1', 'REKAPITULASI PPN MASUKAN');
+            $sheet->mergeCells('A1:O1'); // sesuaikan dengan kolom terakhir datamu
+            $sheet->getStyle('A1')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14,
+                ],
+                'alignment' => [
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
+                ]
+            ]);
+            $sheet->getRowDimension(1)->setRowHeight(20);
+
+            // Nama perusahaan
+            $sheet->setCellValue('A2', 'NAMA PERUSAHAAN');
+            $sheet->mergeCells('A2:O2');
+            $sheet->getStyle('A2')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14
+                ],
+                'alignment' => [
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
+                ]
+            ]);
+            $sheet->getRowDimension(2)->setRowHeight(20);
+
+            // Masa pajak (dari filter)
+            $masa = $nama_bulan_pengkreditkan;   // contoh dari filter
+            $tahun = $tahun_pengkreditkan;   // contoh dari filter
+            $sheet->setCellValue('A3', "MASA: {$masa} {$tahun}");
+            $sheet->mergeCells('A3:O3');
+            $sheet->getStyle('A3')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14
+                ],
+                'alignment' => [
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
+                ]
+            ]);
+            $sheet->getRowDimension(3)->setRowHeight(20);
+
+
+            $sheet->setCellValue('A4', 'Nama Penjual')
+                ->setCellValue('B4', 'Cek')
+                ->setCellValue('C4', 'Nomor Faktur Pajak')
+                ->setCellValue('D4', 'Tgl Faktur Pajak')
+                ->setCellValue('E4', 'Masa Pajak')
+                ->setCellValue('F4', 'Tahun')
+                ->setCellValue('G4', 'Masa Pajak')
+                ->setCellValue('H4', 'Tahun')
+                ->setCellValue('I4', 'Status Faktur')
+                ->setCellValue('J4', 'Harga Jual')
+                ->setCellValue('K4', 'DPP Nilai Lain')
+                ->setCellValue('L4', 'PPN')
+                ->setCellValue('M4', 'Dikreditkan')
+                ->setCellValue('M5', 'B4')
+                ->setCellValue('N5', 'B5')
+                ->setCellValue('O5', 'B3');
 
             // ===================== MERGE CELLS =====================
             // A–J merge row 1 & 2
-            $sheet->mergeCells('A1:A2');
-            $sheet->mergeCells('B1:B2');
-            $sheet->mergeCells('C1:C2');
-            $sheet->mergeCells('D1:D2');
-            $sheet->mergeCells('E1:E2');
-            $sheet->mergeCells('F1:F2');
-            $sheet->mergeCells('G1:G2');
-            $sheet->mergeCells('H1:H2');
-            $sheet->mergeCells('I1:I2');
-            $sheet->mergeCells('J1:J2');
-            $sheet->mergeCells('K1:K2');
-            $sheet->mergeCells('L1:L2');
+            $sheet->mergeCells('A4:A5');
+            $sheet->mergeCells('B4:B5');
+            $sheet->mergeCells('C4:C5');
+            $sheet->mergeCells('D4:D5');
+            $sheet->mergeCells('E4:E5');
+            $sheet->mergeCells('F4:F5');
+            $sheet->mergeCells('G4:G5');
+            $sheet->mergeCells('H4:H5');
+            $sheet->mergeCells('I4:I5');
+            $sheet->mergeCells('J4:J5');
+            $sheet->mergeCells('K4:K5');
+            $sheet->mergeCells('L4:L5');
 
             // K–M merge row 1
-            $sheet->mergeCells('K1:O1');
+            $sheet->mergeCells('M4:O4');
 
             // ===================== STYLE HEADER =====================
             $styleHeader = [
-                'font' => ['bold' => true],
+                'font' => [
+                    'bold' => true,
+                    'size' => 12
+                ],
                 'alignment' => [
                     'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                     'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
@@ -187,11 +240,11 @@ class Report extends CI_Controller
                 ]
             ];
 
-            // Apply style to header rows (A1:M2)
-            $sheet->getStyle('A1:M2')->applyFromArray($styleHeader);
+            // Apply style to header rows (A4:M2)
+            $sheet->getStyle('A4:M5')->applyFromArray($styleHeader);
 
             // ===================== ISI DATA =====================
-            $row = 3;
+            $row = 6;
             foreach ($data as $item) {
                 $sheet->setCellValue('A' . $row, $item->nama_penjual);
                 $sheet->setCellValue('B' . $row, $item->cek);
@@ -229,7 +282,10 @@ class Report extends CI_Controller
 
             // Bold + border atas untuk baris total
             $sheet->getStyle("K{$totalRow}:O{$totalRow}")->applyFromArray([
-                'font' => ['bold' => true],
+                'font' => [
+                    'bold' => true,
+                    'size' => 12
+                ],
                 'borders' => [
                     'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
                 ]
@@ -237,11 +293,16 @@ class Report extends CI_Controller
 
             // ===================== STYLE ISI =====================
             // Border isi table
-            $sheet->getStyle('A1:O' . $totalRow)->applyFromArray([
+            $sheet->getStyle('A4:O' . $totalRow)->applyFromArray([
+                'font' => [
+                    'size' => 12
+                ],
                 'borders' => [
                     'allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
                 ]
             ]);
+
+            $sheet->getDefaultRowDimension()->setRowHeight(20);
 
             // Format kolom tanggal (D)
             $sheet->getStyle("D3:D{$lastRow}")
@@ -257,6 +318,22 @@ class Report extends CI_Controller
             foreach (range('A', 'O') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
             }
+
+            // Tambahkan nomor halaman di footer tengah
+            $sheet->getHeaderFooter()->setOddFooter('&CPage &P of &N');
+
+            // Penjelasan:
+            // &C  → posisi tengah (Center)
+            // &P  → current page (halaman sekarang)
+            // &N  → total pages (jumlah total halaman)
+
+            // Jika kamu ingin di kanan, gunakan &R
+            // $sheet->getHeaderFooter()->setOddFooter('&RPage &P of &N');
+
+            // Kalau mau juga di halaman genap:
+            $sheet->getHeaderFooter()->setEvenFooter('&CPage &P of &N');
+
+            $sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 5);
 
             // Nama file
             $filename = "Report_PPN_" . date('YmdHis') . ".xlsx";

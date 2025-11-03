@@ -134,7 +134,7 @@
                             <label class="label-katapanda-sm" for="nitkuPenjual">ID TKU Penerima Penghasilan <span class="text-sm text-secondary readonly-text"></span><span class="field-required text-danger"></span></label>
                             <input type="text" name="nitkuPenjual" class="form-control form-control-sm" id="nitkuPenjual" placeholder="">
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group col-lg-6 col-md-6">
                                 <label class="label-katapanda-sm" for="kodeFasilitas">Fasilitas <i class="text-danger"></i></label>
@@ -158,7 +158,7 @@
                                 <input type="text" name="nomorSP2D" class="form-control form-control-sm" id="nomorSP2D" placeholder="">
                             </div>
                         </div>
-                                
+
                         <div class="form-row">
                             <div class="form-group col-lg-6 col-md-6">
                                 <label class="label-katapanda-sm" for="kodeObjekPajak">Kode Objek Pajak <i class="text-danger"></i></label>
@@ -302,11 +302,11 @@
                 let masaPajak = $(this).val(); // contoh: "09-2025"
                 if (masaPajak) {
                     let [bulan, tahun] = masaPajak.split('-');
-                    
+
                     // hitung tanggal akhir bulan
                     let lastDate = new Date(tahun, bulan, 0); // triknya: day = 0 => last day prev month
-                    let dd   = String(lastDate.getDate()).padStart(2, '0');
-                    let mm   = String(lastDate.getMonth() + 1).padStart(2, '0');
+                    let dd = String(lastDate.getDate()).padStart(2, '0');
+                    let mm = String(lastDate.getMonth() + 1).padStart(2, '0');
                     let yyyy = lastDate.getFullYear();
 
                     // format ke dd-mm-yyyy
@@ -381,7 +381,7 @@
 
             actionExportToExcel ? buttonAction.push({
                 text: 'Excel Custom',
-                action: function (e, dt, node, config) {
+                action: function(e, dt, node, config) {
                     // Ambil parameter dari input/filter
                     let periode_awal = $('#periode_awal').val(); // misal: "08-2025"
                     let periode_akhir = $('#periode_akhir').val(); // misal: "08-2025"
@@ -736,7 +736,7 @@
                     })
                     .then(function() {
                         table.clear().draw();
-                        table.ajax.reload();
+                        table.ajax.reload(null, false);
                     })
             })
 
@@ -1011,7 +1011,7 @@
                             dokumen: $('#kodeDokumen').val(),
                             pembayaran: $('#kodePembayaran').val(),
                             nomor_sp2d: $('#nomorSP2D').val(),
-                        }   
+                        }
                     }
 
                     // send request 
@@ -1032,7 +1032,7 @@
                                 // show message
                                 notification(action, 'success', message);
                                 $('#formReportUnifikasi').modal('hide');
-                                $('#katapandaTable').DataTable().ajax.reload();
+                                $('#katapandaTable').DataTable().ajax.reload(null, false);
                             } else {
                                 // show message
                                 notification(action, 'error', message);
@@ -1058,6 +1058,13 @@
                 }
             })
 
+            // Pastikan selectpicker di-refresh setelah modal tampil
+            $('#formReportUnifikasi').on('shown.bs.modal', function() {
+                if (id === null) {
+                    getPerusahaan();
+                }
+            });
+
         });
 
         // get perusahaan
@@ -1070,18 +1077,31 @@
                     }
                 })
                 .then(function(response) {
-                    let selected = '';
-                    response.data.data.forEach(element => {
-                        selected = element.id
-                        // add option
-                        $('#perusahaan').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
-                        $('#perusahaanSelect').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-nitku="' + element.nitku + element.nitku_digit + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
-                    });
-                    // refresh selectpicker
-                    $('.selectpicker').selectpicker('refresh');
+                    const $perusahaan = $('#perusahaan');
+                    const $perusahaanSelect = $('#perusahaanSelect');
+                    $perusahaan.empty(); // hapus isi lama
+                    $perusahaanSelect.empty(); // hapus isi lama
 
-                    $('#perusahaan').val(selected).trigger('change');
-                    $('#perusahaanSelect').val(selected).trigger('change');
+                    response.data.data.forEach(element => {
+                        // add option
+                        $perusahaan.append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
+                        $perusahaanSelect.append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-nitku="' + element.nitku + element.nitku_digit + '">' + element.new_npwp + ' - ' + element.nama + '</option><option data-divider="true"></option>')
+                    });
+
+                    // refresh setelah opsi masuk
+                    $perusahaan.selectpicker('refresh');
+                    $perusahaanSelect.selectpicker('refresh');
+
+                    // refresh selectpicker
+                    // $('.selectpicker').selectpicker('refresh');
+
+                    // set default value pakai selectpicker API
+                    const selected = response.data.data[0]?.id || '';
+                    $perusahaan.selectpicker('val', selected);
+                    $perusahaanSelect.selectpicker('val', selected);
+
+                    // $('#perusahaan').val(selected).trigger('change');
+                    // $('#perusahaanSelect').val(selected).trigger('change');
 
                     if (selected) {
                         let idTKUPemotong = element.nitku + element.nitku_digit;
@@ -1116,16 +1136,16 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-nitku="' + element.nitku+element.nitku_digit + '" data-cek="' + element.cek + '" data-pajak="' + element.unifikasi_kode_objek_pajak_id + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-nitku="' + element.nitku + element.nitku_digit + '" data-cek="' + element.cek + '" data-pajak="' + element.unifikasi_kode_objek_pajak_id + '">' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
 
                     // $('#vendor').val(selected).trigger('change');
-                    setTimeout(
-                        function() {
-                            $('#filter').trigger('click');
-                        }, 1000);
+                    // setTimeout(
+                    //     function() {
+                    //         $('#filter').trigger('click');
+                    //     }, 1000);
                 })
                 .catch(function(error) {
                     // console.log(error);
@@ -1152,10 +1172,10 @@
                     $('.selectpicker').selectpicker('refresh');
 
                     // $('#kodeDokumen').val(selected).trigger('change');
-                    setTimeout(
-                        function() {
-                            $('#filter').trigger('click');
-                        }, 1000);
+                    // setTimeout(
+                    //     function() {
+                    //         $('#filter').trigger('click');
+                    //     }, 1000);
                 })
                 .catch(function(error) {
                     // console.log(error);
@@ -1175,9 +1195,9 @@
                     let selected = '';
                     response.data.data.forEach(element => {
                         if (element.id == 1) {
-                            selected = element.id    
+                            selected = element.id
                         }
-                        
+
                         // add option
                         $('#kodeFasilitas').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.kode + '</option><option data-divider="true"></option>')
                     });
@@ -1185,10 +1205,10 @@
                     $('.selectpicker').selectpicker('refresh');
 
                     $('#kodeFasilitas').val(selected).trigger('change');
-                    setTimeout(
-                        function() {
-                            $('#filter').trigger('click');
-                        }, 1000);
+                    // setTimeout(
+                    //     function() {
+                    //         $('#filter').trigger('click');
+                    //     }, 1000);
                 })
                 .catch(function(error) {
                     // console.log(error);
@@ -1238,7 +1258,7 @@
                     let selected = '';
                     response.data.data.forEach(element => {
                         if (element.id == 1) {
-                            selected = element.id    
+                            selected = element.id
                         }
 
                         // add option
@@ -1286,7 +1306,7 @@
         function resetFormInput() {
             $('#form').trigger("reset");
             // $('#perusahaan').val('').selectpicker('refresh');
-            // $('#perusahaanFilter').val('').selectpicker('refresh');
+            // $('#perusahaanSelect').val('').selectpicker('refresh');
             $('#vendor').val('').selectpicker('refresh');
             $('#inputNominalJasa').hide();
 
