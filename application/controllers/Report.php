@@ -131,6 +131,8 @@ class Report extends CI_Controller
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
+            $data_perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan);
+            
             $query = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa);
             $data = $query->result();
 
@@ -156,7 +158,7 @@ class Report extends CI_Controller
             $sheet->getRowDimension(1)->setRowHeight(20);
 
             // Nama perusahaan
-            $sheet->setCellValue('A2', 'NAMA PERUSAHAAN');
+            $sheet->setCellValue('A2', strtoupper($data_perusahaan->nama));
             $sheet->mergeCells('A2:O2');
             $sheet->getStyle('A2')->applyFromArray([
                 'font' => [
@@ -201,8 +203,8 @@ class Report extends CI_Controller
                 ->setCellValue('K4', 'DPP Nilai Lain')
                 ->setCellValue('L4', 'PPN')
                 ->setCellValue('M4', 'Dikreditkan')
-                ->setCellValue('M5', 'B4')
-                ->setCellValue('N5', 'B5')
+                ->setCellValue('M5', 'B1')
+                ->setCellValue('N5', 'B2')
                 ->setCellValue('O5', 'B3');
 
             // ===================== MERGE CELLS =====================
@@ -241,7 +243,7 @@ class Report extends CI_Controller
             ];
 
             // Apply style to header rows (A4:M2)
-            $sheet->getStyle('A4:M5')->applyFromArray($styleHeader);
+            $sheet->getStyle('A4:O5')->applyFromArray($styleHeader);
 
             // ===================== ISI DATA =====================
             $row = 6;
@@ -275,10 +277,10 @@ class Report extends CI_Controller
             $totalRow = $row;         // baris untuk total
 
             $sheet->setCellValue('K' . $totalRow, 'TOTAL');
-            $sheet->setCellValue("L{$totalRow}", "=SUM(L3:L{$lastRow})");
-            $sheet->setCellValue("M{$totalRow}", "=SUM(M3:M{$lastRow})");
-            $sheet->setCellValue("N{$totalRow}", "=SUM(N3:N{$lastRow})");
-            $sheet->setCellValue("O{$totalRow}", "=SUM(O3:O{$lastRow})");
+            $sheet->setCellValue("L{$totalRow}", "=SUM(L6:L{$lastRow})", PHPExcel_Cell_DataType::TYPE_FORMULA);
+            $sheet->setCellValue("M{$totalRow}", "=SUM(M6:M{$lastRow})", PHPExcel_Cell_DataType::TYPE_FORMULA);
+            $sheet->setCellValue("N{$totalRow}", "=SUM(N6:N{$lastRow})", PHPExcel_Cell_DataType::TYPE_FORMULA);
+            $sheet->setCellValue("O{$totalRow}", "=SUM(O6:O{$lastRow})", PHPExcel_Cell_DataType::TYPE_FORMULA);
 
             // Bold + border atas untuk baris total
             $sheet->getStyle("K{$totalRow}:O{$totalRow}")->applyFromArray([
@@ -305,12 +307,12 @@ class Report extends CI_Controller
             $sheet->getDefaultRowDimension()->setRowHeight(20);
 
             // Format kolom tanggal (D)
-            $sheet->getStyle("D3:D{$lastRow}")
+            $sheet->getStyle("D6:D{$lastRow}")
                 ->getNumberFormat()
                 ->setFormatCode('DD/MM/YYYY');
 
             // Format number ribuan untuk H–M (termasuk total)
-            $sheet->getStyle("J3:O{$totalRow}")
+            $sheet->getStyle("J6:O{$totalRow}")
                 ->getNumberFormat()
                 ->setFormatCode('#,##0');
 
@@ -333,7 +335,10 @@ class Report extends CI_Controller
             // Kalau mau juga di halaman genap:
             $sheet->getHeaderFooter()->setEvenFooter('&CPage &P of &N');
 
-            $sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 5);
+            $sheet->getPageSetup()
+                ->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE)
+                ->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4)
+                ->setRowsToRepeatAtTopByStartAndEnd(1, 5);
 
             // Nama file
             $filename = "Report_PPN_" . date('YmdHis') . ".xlsx";
