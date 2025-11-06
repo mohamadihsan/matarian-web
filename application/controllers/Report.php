@@ -151,7 +151,7 @@ class Report extends CI_Controller
                     'size' => 14,
                 ],
                 'alignment' => [
-                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                     'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
                 ]
             ]);
@@ -166,7 +166,7 @@ class Report extends CI_Controller
                     'size' => 14
                 ],
                 'alignment' => [
-                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                     'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
                 ]
             ]);
@@ -183,7 +183,7 @@ class Report extends CI_Controller
                     'size' => 14
                 ],
                 'alignment' => [
-                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                     'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER
                 ]
             ]);
@@ -455,11 +455,25 @@ class Report extends CI_Controller
             $totalRow = $row;         // baris untuk total
 
             $sheet->setCellValue('K' . $totalRow, 'TOTAL');
-            $sheet->setCellValue("L{$totalRow}", "=SUM(L2:L{$lastRow})");
+            $sheet->setCellValue("L{$totalRow}", "=SUM(L2:L{$lastRow})", PHPExcel_Cell_DataType::TYPE_FORMULA);
+
+            $sheet->getStyle('A2:L' . $totalRow)->applyFromArray([
+                'font' => [
+                    'size' => 12
+                ],
+                'borders' => [
+                    'allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
+                ]
+            ]);
+
+            $sheet->getDefaultRowDimension()->setRowHeight(20);
 
             // Bold + border atas untuk baris total
             $sheet->getStyle("K{$totalRow}:L{$totalRow}")->applyFromArray([
-                'font' => ['bold' => true],
+                'font' => [
+                    'bold' => true,
+                    'size' => 12
+                ],
                 'borders' => [
                     'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
                 ]
@@ -491,6 +505,25 @@ class Report extends CI_Controller
             foreach (range('A', 'L') as $col) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
             }
+
+            // Tambahkan nomor halaman di footer tengah
+            $sheet->getHeaderFooter()->setOddFooter('&CPage &P of &N');
+
+            // Penjelasan:
+            // &C  → posisi tengah (Center)
+            // &P  → current page (halaman sekarang)
+            // &N  → total pages (jumlah total halaman)
+
+            // Jika kamu ingin di kanan, gunakan &R
+            // $sheet->getHeaderFooter()->setOddFooter('&RPage &P of &N');
+
+            // Kalau mau juga di halaman genap:
+            $sheet->getHeaderFooter()->setEvenFooter('&CPage &P of &N');
+
+            $sheet->getPageSetup()
+                ->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE)
+                ->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4)
+                ->setRowsToRepeatAtTopByStartAndEnd(1, 1);
 
             // Nama file
             $filename = "Report_Unifikasi_" . date('YmdHis') . ".xlsx";
