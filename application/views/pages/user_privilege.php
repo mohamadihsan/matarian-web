@@ -14,13 +14,13 @@
                         <div id="actionCreate"></div>
                     </div>
                 </div>
-                <div class="table-responsive p-3">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label class="label-katapanda-sm" for="userGroup">Filter :</label>
-                            <select name="userGroup" id="userGroup" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose User Group"></select>
-                        </div>
+                <div class="form-row pl-3">
+                    <div class="form-group col-md-4">
+                        <label class="label-katapanda-sm" for="userGroup">Filter :</label>
+                        <select name="userGroup" id="userGroup" class="selectpicker form-control form-control-sm" data-live-search="true" title="Choose User Group"></select>
                     </div>
+                </div>
+                <div class="table-responsive p-3">
                     <table class="table table-striped table-bordered nowrap table-md text-katapanda-sm" id="katapandaTable" width="100%">
                         <thead class="thead-light">
                             <tr>
