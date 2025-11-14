@@ -125,14 +125,14 @@ class Report extends CI_Controller
             $status_faktur = $this->input->get('status_faktur');
             $is_jasa = $this->input->get('is_jasa');
 
-            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal);
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
-        
+
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
             $data_perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan);
-            
+
             $query = $this->PPN_Model->get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa);
             $data = $query->result();
 
@@ -252,12 +252,39 @@ class Report extends CI_Controller
                 $sheet->setCellValue('B' . $row, $item->cek);
 
                 // Kolom C & F -> Format TEXT
-                $sheet->setCellValueExplicit('C' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValueExplicit('C' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('C' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'C' . $row,
+                    $item->nomor_faktur_pajak,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
                 $sheet->setCellValue('D' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
                 $sheet->setCellValue('E' . $row, $item->masa_pajak);
-                $sheet->setCellValueExplicit('F' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValueExplicit('F' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('F' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'F' . $row,
+                    $item->tahun_pajak,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
                 $sheet->setCellValue('G' . $row, $item->masa_pajak_pengkreditkan);
-                $sheet->setCellValueExplicit('H' . $row, $item->tahun_pajak_pengkreditkan, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValueExplicit('H' . $row, $item->tahun_pajak_pengkreditkan, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('H' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'H' . $row,
+                    $item->tahun_pajak_pengkreditkan,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
 
                 $sheet->setCellValue('I' . $row, $item->status_faktur_pajak);
 
@@ -383,9 +410,9 @@ class Report extends CI_Controller
             $bulan_akhir = $this->input->get('bulan_akhir');
             $tahun_akhir = $this->input->get('tahun_akhir');
 
-            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal);
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
-        
+
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             // $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
@@ -431,10 +458,28 @@ class Report extends CI_Controller
             $row = 2;
             foreach ($data as $item) {
                 $sheet->setCellValue('A' . $row, $item->masa_pajak);
-                $sheet->setCellValue('B' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValue('B' . $row, $item->tahun_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('B' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'B' . $row,
+                    $item->tahun_pajak,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
 
                 // Kolom C & F -> Format TEXT
-                $sheet->setCellValueExplicit('C' . $row, $item->npwp_penjual, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValueExplicit('C' . $row, $item->npwp_penjual, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('C' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'C' . $row,
+                    $item->npwp_penjual,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
                 $sheet->setCellValueExplicit('D' . $row, $item->nama_penjual, PHPExcel_Cell_DataType::TYPE_STRING);
                 $sheet->setCellValue('E' . $row, $item->fasilitas, PHPExcel_Cell_DataType::TYPE_STRING);
                 $sheet->setCellValueExplicit('F' . $row, $item->kode_objek_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
@@ -443,7 +488,16 @@ class Report extends CI_Controller
                 $sheet->setCellValue('H' . $row, $item->tarif);
 
                 $sheet->setCellValue('I' . $row, $item->kode_dokumen, PHPExcel_Cell_DataType::TYPE_STRING);
-                $sheet->setCellValue('J' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                // $sheet->setCellValue('J' . $row, $item->nomor_faktur_pajak, PHPExcel_Cell_DataType::TYPE_STRING);
+                $sheet->getStyle('J' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+                $sheet->setCellValueExplicit(
+                    'J' . $row,
+                    $item->nomor_faktur_pajak,
+                    PHPExcel_Cell_DataType::TYPE_STRING
+                );
                 $sheet->setCellValue('K' . $row, PHPExcel_Shared_Date::PHPToExcel(strtotime($item->tanggal_faktur_pajak)));
                 $sheet->setCellValue('L' . $row, $item->pph);
 
@@ -496,7 +550,7 @@ class Report extends CI_Controller
             $sheet->getStyle("G2:H{$totalRow}")
                 ->getNumberFormat()
                 ->setFormatCode('#,##0');
-                
+
             $sheet->getStyle("L2:L{$totalRow}")
                 ->getNumberFormat()
                 ->setFormatCode('#,##0');
