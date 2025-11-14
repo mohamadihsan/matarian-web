@@ -419,9 +419,10 @@
 
             $('#nilaiJasa').change(function() {
                 if ($(this).is(':checked')) {
-                    let hargaJual = $('#hargaJual').val().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
+                    let hargaJual = $('#hargaJual').val()
+                    let hargaJualFormat = hargaJual.replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
                     $('#nominalJasa').val(hargaJual);
-                    $('#nominalJasaFormat').val(hargaJual);
+                    $('#nominalJasaFormat').val(hargaJualFormat);
                 } else {
                     $('#nominalJasa').val(0);
                     $('#nominalJasaFormat').val(0);
