@@ -132,8 +132,7 @@ class PPN_Model extends CI_Model {
         $this->db->join('tbl_unifikasi_kode_objek_pajak', 'tbl_unifikasi_kode_objek_pajak.id = tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id', 'left');
         $this->db->join('tbl_unifikasi_kode_pembayaran', 'tbl_unifikasi_kode_pembayaran.id = tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id', 'left');
 
-        $this->db->order_by('tbl_master_perusahaan.nama', 'asc');
-        $this->db->order_by('tbl_upload_dokumen_pajak.nama_penjual', 'ASC');
+        $this->db->order_by('tbl_master_perusahaan.nama', 'ASC');
         $this->db->order_by("
             CASE 
                 WHEN tbl_upload_dokumen_pajak.cek = 'FP' THEN 1
@@ -142,7 +141,8 @@ class PPN_Model extends CI_Model {
                 ELSE 4
             END
         ", 'ASC', false);
-        $this->db->order_by('tbl_upload_dokumen_pajak.tanggal_faktur_pajak', 'desc');
+        $this->db->order_by('tbl_upload_dokumen_pajak.nama_penjual', 'ASC');
+        $this->db->order_by('tbl_upload_dokumen_pajak.tanggal_faktur_pajak', 'ASC');
 
         return $this->db->get('tbl_upload_dokumen_pajak');
     }
