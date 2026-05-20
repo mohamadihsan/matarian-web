@@ -659,6 +659,7 @@ class Report_Api extends REST_Controller
                 "dilaporkan" => null,
                 "dilaporkan_oleh_penjual" => null,
                 "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
+                "unifikasi_kode_fasilitas_id" => $is_jasa ? $vendor->unifikasi_kode_fasilitas_id : null,
                 "is_jasa" => $is_jasa,
                 "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
                 'updated_at' => $this->time_server,
