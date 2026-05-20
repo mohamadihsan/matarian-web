@@ -30,6 +30,9 @@ class Master_Vendor_Model extends CI_Model
             tbl_unifikasi_kode_objek_pajak.id as unifikasi_kode_objek_pajak_id,
             tbl_unifikasi_kode_objek_pajak.kode as unifikasi_kode_objek_pajak_kode,
             tbl_unifikasi_kode_objek_pajak.nama as unifikasi_kode_objek_pajak_nama,
+            tbl_unifikasi_kode_fasilitas.id as unifikasi_kode_fasilitas_id,
+            tbl_unifikasi_kode_fasilitas.kode as unifikasi_kode_fasilitas_kode,
+            tbl_unifikasi_kode_fasilitas.nama as unifikasi_kode_fasilitas_nama,
             tbl_master_vendor.cek,
             tbl_master_vendor.status,
             tbl_master_vendor.created_by,
@@ -37,6 +40,7 @@ class Master_Vendor_Model extends CI_Model
             tbl_master_vendor.updated_by,
             tbl_master_vendor.updated_at');
         $this->db->join('tbl_unifikasi_kode_objek_pajak', 'tbl_unifikasi_kode_objek_pajak.id = tbl_master_vendor.unifikasi_kode_objek_pajak_id', 'left');
+        $this->db->join('tbl_unifikasi_kode_fasilitas', 'tbl_unifikasi_kode_fasilitas.id = tbl_master_vendor.unifikasi_kode_fasilitas_id', 'left');
         $this->db->order_by('tbl_master_vendor.nama', 'asc');
         if ($param != null) {
             $this->db->where('tbl_master_vendor.id', $param);
@@ -87,6 +91,9 @@ class Master_Vendor_Model extends CI_Model
             tbl_unifikasi_kode_objek_pajak.id as unifikasi_kode_objek_pajak_id,
             tbl_unifikasi_kode_objek_pajak.kode as unifikasi_kode_objek_pajak_kode,
             tbl_unifikasi_kode_objek_pajak.nama as unifikasi_kode_objek_pajak_nama,
+            tbl_unifikasi_kode_fasilitas.id as unifikasi_kode_fasilitas_id,
+            tbl_unifikasi_kode_fasilitas.kode as unifikasi_kode_fasilitas_kode,
+            tbl_unifikasi_kode_fasilitas.nama as unifikasi_kode_fasilitas_nama,
             tbl_master_vendor.cek,
             tbl_master_vendor.status,
             tbl_master_vendor.created_by,
@@ -94,6 +101,7 @@ class Master_Vendor_Model extends CI_Model
             tbl_master_vendor.updated_by,
             tbl_master_vendor.updated_at');
         $this->db->join('tbl_unifikasi_kode_objek_pajak', 'tbl_unifikasi_kode_objek_pajak.id = tbl_master_vendor.unifikasi_kode_objek_pajak_id', 'left');
+        $this->db->join('tbl_unifikasi_kode_fasilitas', 'tbl_unifikasi_kode_fasilitas.id = tbl_master_vendor.unifikasi_kode_fasilitas_id', 'left');
         
         if ($search != null) {
             $this->db->like('tbl_master_vendor.new_npwp', $search);
@@ -101,6 +109,7 @@ class Master_Vendor_Model extends CI_Model
             $this->db->or_like('tbl_master_vendor.nama', $search);
             $this->db->or_like('tbl_master_vendor.nitku', $search);
             $this->db->or_like('tbl_unifikasi_kode_objek_pajak.kode', $search);
+            $this->db->or_like('tbl_unifikasi_kode_fasilitas.kode', $search);
         }
         $this->db->order_by('tbl_master_vendor.nama', 'asc');
         if ($page > 0 && $per_page > 0) {
@@ -134,6 +143,9 @@ class Master_Vendor_Model extends CI_Model
             tbl_unifikasi_kode_objek_pajak.id as unifikasi_kode_objek_pajak_id,
             tbl_unifikasi_kode_objek_pajak.kode as unifikasi_kode_objek_pajak_kode,
             tbl_unifikasi_kode_objek_pajak.nama as unifikasi_kode_objek_pajak_nama,
+            tbl_unifikasi_kode_fasilitas.id as unifikasi_kode_fasilitas_id,
+            tbl_unifikasi_kode_fasilitas.kode as unifikasi_kode_fasilitas_kode,
+            tbl_unifikasi_kode_fasilitas.nama as unifikasi_kode_fasilitas_nama,
             tbl_master_vendor.cek,
             tbl_master_vendor.status,
             tbl_master_vendor.created_by,
@@ -141,6 +153,7 @@ class Master_Vendor_Model extends CI_Model
             tbl_master_vendor.updated_by,
             tbl_master_vendor.updated_at');
         $this->db->join('tbl_unifikasi_kode_objek_pajak', 'tbl_unifikasi_kode_objek_pajak.id = tbl_master_vendor.unifikasi_kode_objek_pajak_id', 'left');
+        $this->db->join('tbl_unifikasi_kode_fasilitas', 'tbl_unifikasi_kode_fasilitas.id = tbl_master_vendor.unifikasi_kode_fasilitas_id', 'left');
 
         if ($search != null) {
             $this->db->like('tbl_master_vendor.new_npwp', $search);
@@ -148,6 +161,7 @@ class Master_Vendor_Model extends CI_Model
             $this->db->or_like('tbl_master_vendor.nama', $search);
             $this->db->or_like('tbl_master_vendor.nitku', $search);
             $this->db->or_like('tbl_unifikasi_kode_objek_pajak.kode', $search);
+            $this->db->or_like('tbl_unifikasi_kode_fasilitas.kode', $search);
         }
         $this->db->order_by('tbl_master_vendor.nama', 'asc');
 
@@ -200,6 +214,9 @@ class Master_Vendor_Model extends CI_Model
             tbl_unifikasi_kode_objek_pajak.id as unifikasi_kode_objek_pajak_id,
             tbl_unifikasi_kode_objek_pajak.kode as unifikasi_kode_objek_pajak_kode,
             tbl_unifikasi_kode_objek_pajak.nama as unifikasi_kode_objek_pajak_nama,
+            tbl_unifikasi_kode_fasilitas.id as unifikasi_kode_fasilitas_id,
+            tbl_unifikasi_kode_fasilitas.kode as unifikasi_kode_fasilitas_kode,
+            tbl_unifikasi_kode_fasilitas.nama as unifikasi_kode_fasilitas_nama,
             tbl_master_vendor.cek,
             tbl_master_vendor.status,
             tbl_master_vendor.created_by,
@@ -207,6 +224,7 @@ class Master_Vendor_Model extends CI_Model
             tbl_master_vendor.updated_by,
             tbl_master_vendor.updated_at');
         $this->db->join('tbl_unifikasi_kode_objek_pajak', 'tbl_unifikasi_kode_objek_pajak.id = tbl_master_vendor.unifikasi_kode_objek_pajak_id', 'left');
+        $this->db->join('tbl_unifikasi_kode_fasilitas', 'tbl_unifikasi_kode_fasilitas.id = tbl_master_vendor.unifikasi_kode_fasilitas_id', 'left');
         $this->db->order_by('tbl_master_vendor.nama', 'asc');
         $this->db->where('tbl_master_vendor.new_npwp', $npwp);
         if (!empty($nama_vendor)) {

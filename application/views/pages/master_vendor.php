@@ -1,6 +1,6 @@
 <!-- Container Fluid-->
 <div class="container-fluid" id="container-wrapper">
-    
+
     <!-- Row -->
     <div class="row">
         <!-- DataTable with Hover -->
@@ -26,6 +26,7 @@
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
                                 <th class="text-center text-nowrap">Kode Objek Pajak</th>
+                                <th class="text-center text-nowrap">Kode Fasilitas</th>
                                 <th class="text-center text-nowrap">Cek</th>
                             </tr>
                         </thead>
@@ -39,6 +40,7 @@
                                 <th class="text-center text-nowrap">Alamat</th>
                                 <th class="text-center text-nowrap">Provinsi</th>
                                 <th class="text-center text-nowrap">Kode Objek Pajak</th>
+                                <th class="text-center text-nowrap">Kode Fasilitas</th>
                                 <th class="text-center text-nowrap">Cek</th>
                             </tr>
                         </tfoot>
@@ -79,12 +81,12 @@
                         <div class="form-group col-md-8">
                             <label class="label-katapanda-sm" for="nitku">NITKU</label>
                             <input type="text" name="nitku" class="form-control form-control-sm" id="nitku" placeholder="">
-                        <small id="charNitkuCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
+                            <small id="charNitkuCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="label-katapanda-sm text-white" for="nitku_digit">DIGIT</label>
                             <input type="text" name="nitku_digit" class="form-control form-control-sm" id="nitku_digit" placeholder="" value="000000">
-                        <small id="charNitkuDigitCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
+                            <small id="charNitkuDigitCount" class="form-text text-muted mt-1">Jumlah karakter: 0</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -145,13 +147,19 @@
                     <div class="form-group">
                         <label class="label-katapanda-sm" for="unifikasi_kode_objek_pajak_id">Objek Pajak<span class="text-danger"></span></label>
                         <select name="unifikasi_kode_objek_pajak_id" id="unifikasi_kode_objek_pajak_id" class="selectpicker form-control form-control-sm" data-live-search="true" title="Objek Pajak">
-                            
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="label-katapanda-sm" for="cek">Cek<span class="text-danger">*</span></label>
-                            <select name="cek" id="cek" class="selectpicker form-control form-control-sm" data-live-search="true" title="Cek">
-                            </select>
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-katapanda-sm" for="cek">Cek<span class="text-danger">*</span></label>
+                        <select name="cek" id="cek" class="selectpicker form-control form-control-sm" data-live-search="true" title="Cek">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label-katapanda-sm" for="unifikasi_kode_fasilitas_id">Fasilitas<span class="text-danger"></span></label>
+                        <select name="unifikasi_kode_fasilitas_id" id="unifikasi_kode_fasilitas_id" class="selectpicker form-control form-control-sm" data-live-search="true" title="Fasilitas">
+
+                        </select>
                     </div>
         </form>
     </div>
@@ -221,6 +229,7 @@
         // init function
         getProvinsi();
         getObjekPajak();
+        getFasilitas();
         getCek();
 
         $('#nitku_digit').mask('000000', {
@@ -239,9 +248,9 @@
             placeholder: ""
         });
 
-        $('#new_npwp').on('input', function () {
+        $('#new_npwp').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNewNPWPCount').text('Jumlah karakter: ' + count).show();
                 $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
@@ -251,9 +260,9 @@
             }
         });
 
-        $('#npwp').on('input', function () {
+        $('#npwp').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNPWPCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -261,9 +270,9 @@
             }
         });
 
-        $('#nitku').on('input', function () {
+        $('#nitku').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNitkuCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -271,9 +280,9 @@
             }
         });
 
-        $('#nitku_digit').on('input', function () {
+        $('#nitku_digit').on('input', function() {
             var count = $(this).val().length;
-            
+
             if (count > 0) {
                 $('#charNitkuDigitCount').text('Jumlah karakter: ' + count).show();
             } else {
@@ -310,7 +319,7 @@
                 doc.styles.tableFooter.fontSize = 7;
                 doc.styles.tableHeader.alignment = 'left';
                 doc.pageMargins = [20, 60, 20, 30];
-                doc.content[1].table.widths = ['10%', '10%', '20%', '15%', '13%', '10%', '10%', '12%', '5%', '0%'];
+                doc.content[1].table.widths = ['0%', '10%', '10%', '12%', '17%', '20%', '10%', '8%', '8%', '5%'];
                 var rowCount = doc.content[1].table.body.length;
                 for (i = 1; i < rowCount; i++) {
                     doc.content[1].table.body[i][0].alignment = 'left';
@@ -321,7 +330,8 @@
                     doc.content[1].table.body[i][5].alignment = 'left';
                     doc.content[1].table.body[i][6].alignment = 'left';
                     doc.content[1].table.body[i][7].alignment = 'left';
-                    doc.content[1].table.body[i][8].alignment = 'center';
+                    doc.content[1].table.body[i][8].alignment = 'left';
+                    doc.content[1].table.body[i][9].alignment = 'center';
                 }
                 doc['footer'] = (function(page, pages) {
                     return {
@@ -392,8 +402,7 @@
                     Authorization: 'Bearer <?= $token ?>'
                 }
             },
-            columns: [
-                {
+            columns: [{
                     data: "id",
                     className: "align-middle text-center",
                     responsivePriority: 2,
@@ -445,9 +454,14 @@
                     responsivePriority: 7
                 },
                 {
-                    data: "cek",
+                    data: "unifikasi_kode_fasilitas_kode",
                     className: "align-left text-nowrap",
                     responsivePriority: 8
+                },
+                {
+                    data: "cek",
+                    className: "align-left text-nowrap",
+                    responsivePriority: 9
                 },
             ],
             language: {
@@ -511,7 +525,8 @@
                 $('#rt').val(item.rt);
                 $('#rw').val(item.rw);
                 $('#unifikasi_kode_objek_pajak_id').val(item.unifikasi_kode_objek_pajak_id);
-                $('#cek').val(item.cek);                
+                $('#cek').val(item.cek);
+                $('#unifikasi_kode_fasilitas_id').val(item.unifikasi_kode_fasilitas_id);
 
                 // set
                 id = item.id;
@@ -616,7 +631,7 @@
 
                 $('#dataLengkap').html(template);
 
-                
+
                 // store to detail
                 $('#new_npwp_detail').val(item.new_npwp ?? '-');
                 $('#npwp_detail').val(item.npwp ?? '-');
@@ -641,7 +656,7 @@
 
         });
 
-        $('#new_npwp').on('input', function () {
+        $('#new_npwp').on('input', function() {
             let npwp16Value = $(this).val();
             $('#nitku').val(npwp16Value);
         });
@@ -808,6 +823,7 @@
                             rw: $('#rw').val() ? $('#rw').val() : '000',
                             unifikasi_kode_objek_pajak_id: $('#unifikasi_kode_objek_pajak_id').val(),
                             cek: $('#cek').val(),
+                            unifikasi_kode_fasilitas_id: $('#unifikasi_kode_fasilitas_id').val(),
                         }
                     })
                     .then(function(response) {
@@ -1171,6 +1187,35 @@
                     let namaObjekPajak = element.nama?.length > 45 ? element.nama?.slice(0, 45) + '...' : element.nama;
                     // add option
                     $('#unifikasi_kode_objek_pajak_id').append('<option value="' + element.id + '" ' + selected + '>' + element.kode.toUpperCase() + ' - ' + namaObjekPajak + '</option>')
+                });
+                // refresh selectpicker
+                $('.selectpicker').selectpicker('refresh');
+            })
+            .catch(function(error) {
+                // console.log(error);
+            })
+    }
+
+    // get Kode Fasilitas
+    async function getFasilitas(id = null) {
+
+        await axios({
+                method: `GET`,
+                url: `<?= site_url() ?>api/web/v1/unifikasi/kode-fasilitas`,
+                headers: {
+                    Authorization: 'Bearer <?= $token ?>'
+                }
+            })
+            .then(function(response) {
+                response.data.data.forEach(element => {
+                    let selected = '';
+                    if (element.id == id) {
+                        selected = 'selected';
+                    }
+
+                    let namaFasilitas = element.nama?.length > 45 ? element.nama?.slice(0, 45) + '...' : element.nama;
+                    // add option
+                    $('#unifikasi_kode_fasilitas_id').append('<option value="' + element.id + '" ' + selected + '>' + element.kode.toUpperCase() + ' - ' + namaFasilitas + '</option>')
                 });
                 // refresh selectpicker
                 $('.selectpicker').selectpicker('refresh');

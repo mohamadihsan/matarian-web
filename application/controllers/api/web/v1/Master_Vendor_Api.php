@@ -91,6 +91,7 @@ class Master_Vendor_Api extends REST_Controller
             $rt = $this->input->post('rt');
             $rw = $this->input->post('rw');
             $unifikasi_kode_objek_pajak_id = !empty($this->input->post('unifikasi_kode_objek_pajak_id')) ? $this->input->post('unifikasi_kode_objek_pajak_id') : null;
+            $unifikasi_kode_fasilitas_id = !empty($this->input->post('unifikasi_kode_fasilitas_id')) ? $this->input->post('unifikasi_kode_fasilitas_id') : null;
             $cek = $this->input->post('cek');
             $created_by = $this->token->data->username;
 
@@ -133,6 +134,7 @@ class Master_Vendor_Api extends REST_Controller
                 'rt' => $rt,
                 'rw' => $rw,
                 'unifikasi_kode_objek_pajak_id' => $unifikasi_kode_objek_pajak_id,
+                'unifikasi_kode_fasilitas_id' => $unifikasi_kode_fasilitas_id,
                 'cek' => $cek,
                 'created_by' => $created_by
             );
@@ -187,6 +189,7 @@ class Master_Vendor_Api extends REST_Controller
             $rt = $this->input->post('rt');
             $rw = $this->input->post('rw');
             $unifikasi_kode_objek_pajak_id = !empty($this->input->post('unifikasi_kode_objek_pajak_id')) ? $this->input->post('unifikasi_kode_objek_pajak_id') : null;
+            $unifikasi_kode_fasilitas_id = !empty($this->input->post('unifikasi_kode_fasilitas_id')) ? $this->input->post('unifikasi_kode_fasilitas_id') : null;
             $cek = $this->input->post('cek');
             $updated_at =  $this->time_server;
             $updated_by = $this->token->data->username;
@@ -209,6 +212,7 @@ class Master_Vendor_Api extends REST_Controller
                 'rt' => $rt,
                 'rw' => $rw,
                 'unifikasi_kode_objek_pajak_id' => $unifikasi_kode_objek_pajak_id,
+                'unifikasi_kode_fasilitas_id' => $unifikasi_kode_fasilitas_id,
                 'cek' => $cek,
                 'updated_at' => $updated_at,
                 'updated_by' => $updated_by
