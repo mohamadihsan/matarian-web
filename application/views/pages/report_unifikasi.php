@@ -873,13 +873,15 @@
                 let idTKUPenerima = selectedOption.data('nitku');
                 let kodeObjekPajak = selectedOption.data('pajak');
                 let kodeFasilitas = selectedOption.data('fasilitas');
-                
-                console.log('Fasilitas:', kodeObjekPajak);
-
+                if (kodeFasilitas) {
+                    $('#kodeFasilitas').val(kodeFasilitas).trigger('change');
+                } else {
+                    $('#kodeFasilitas').val(1).trigger('change');
+                }
+            
                 $('#npwpPenjual').val(npwpPenerima)
                 $('#nitkuPenjual').val(idTKUPenerima)
                 $('#kodeObjekPajak').val(kodeObjekPajak).trigger('change');
-                $('#kodeFasilitas').val(kodeFasilitas).trigger('change');
             });
 
             $('#kodeObjekPajak').on('change', function() {
