@@ -83,6 +83,7 @@ CREATE TABLE `tbl_master_vendor` (
   `provinsi` varchar(255) DEFAULT NULL,
   `kodepos` varchar(255) DEFAULT NULL,
   `unifikasi_kode_objek_pajak_id` int DEFAULT NULL,
+  `unifikasi_kode_fasilitas_id` int DEFAULT '1' COMMENT '1 = N/A',
   `cek` varchar(255) NOT NULL COMMENT 'FP, DL1 atau DL2',
   `status` varchar(255) DEFAULT 'aktif' COMMENT 'aktif atau tidak aktif',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -91,7 +92,9 @@ CREATE TABLE `tbl_master_vendor` (
   `updated_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `unifikasi_kode_objek_pajak_id` (`unifikasi_kode_objek_pajak_id`),
-  CONSTRAINT `tbl_master_vendor_ibfk_1` FOREIGN KEY (`unifikasi_kode_objek_pajak_id`) REFERENCES `tbl_unifikasi_kode_objek_pajak` (`id`) ON UPDATE CASCADE
+  KEY `unifikasi_kode_fasilitas_id` (`unifikasi_kode_fasilitas_id`),
+  CONSTRAINT `tbl_master_vendor_ibfk_1` FOREIGN KEY (`unifikasi_kode_objek_pajak_id`) REFERENCES `tbl_unifikasi_kode_objek_pajak` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `tbl_master_vendor_ibfk_2` FOREIGN KEY (`unifikasi_kode_fasilitas_id`) REFERENCES `tbl_unifikasi_kode_fasilitas` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=68;
 
 -- matarian_unit.tbl_master_perusahaan definition
