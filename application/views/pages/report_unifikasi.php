@@ -872,10 +872,14 @@
                 let npwpPenerima = selectedOption.data('npwp');
                 let idTKUPenerima = selectedOption.data('nitku');
                 let kodeObjekPajak = selectedOption.data('pajak');
+                let kodeFasilitas = selectedOption.data('fasilitas');
+                
+                console.log('Fasilitas:', kodeObjekPajak);
 
                 $('#npwpPenjual').val(npwpPenerima)
                 $('#nitkuPenjual').val(idTKUPenerima)
                 $('#kodeObjekPajak').val(kodeObjekPajak).trigger('change');
+                $('#kodeFasilitas').val(kodeFasilitas).trigger('change');
             });
 
             $('#kodeObjekPajak').on('change', function() {
@@ -1136,7 +1140,7 @@
                     response.data.data.forEach(element => {
                         selected = element.id
                         // add option
-                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-nitku="' + element.nitku + element.nitku_digit + '" data-cek="' + element.cek + '" data-pajak="' + element.unifikasi_kode_objek_pajak_id + '">' + element.nama + '</option><option data-divider="true"></option>')
+                        $('#vendor').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-npwp="' + element.new_npwp + '" data-nitku="' + element.nitku + element.nitku_digit + '" data-cek="' + element.cek + '" data-pajak="' + element.unifikasi_kode_objek_pajak_id + '" data-fasilitas="' + element.unifikasi_kode_fasilitas_id + '">' + element.nama + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
