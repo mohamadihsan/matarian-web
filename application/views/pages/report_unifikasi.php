@@ -878,7 +878,7 @@
                 } else {
                     $('#kodeFasilitas').val(1).trigger('change');
                 }
-            
+
                 $('#npwpPenjual').val(npwpPenerima)
                 $('#nitkuPenjual').val(idTKUPenerima)
                 $('#kodeObjekPajak').val(kodeObjekPajak).trigger('change');
@@ -887,6 +887,14 @@
             $('#kodeObjekPajak').on('change', function() {
                 let selectedOption = $(this).find('option:selected');
                 let tarif = selectedOption.data('tarif');
+
+                let selectedFasilitasOption = $('#kodeFasilitas').find('option:selected');
+                let kode = selectedFasilitasOption.data('kode');
+                
+                if (kode == 'TaxExAr23') {
+                    tarif = 0
+                }
+
                 $('#tarifFormat').val(tarif)
                 $('#tarif').val(tarif)
 
@@ -896,6 +904,42 @@
 
                 $('#pph').val(pph)
                 $('#pphFormat').val(pphFormatted)
+            });
+
+            $('#kodeFasilitas').on('change', function() {
+                let selectedOption = $(this).find('option:selected');
+                let kode = selectedOption.data('kode');
+
+                if (kode == 'TaxExAr23') {
+                    $('#tarifFormat').val(0)
+                    $('#tarif').val(0)
+
+                    let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
+                    let pph = (parseFloat(0) / 100) * dpp
+                    let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                    $('#pph').val(pph)
+                    $('#pphFormat').val(pphFormatted)
+                } else {
+                    let selectedObjekPajakOption = $('#kodeObjekPajak').find('option:selected');
+                    let tarif = selectedObjekPajakOption.data('tarif');
+                    
+                    if (tarif >= 0) {
+                        tarif = tarif
+                    } else {
+                        tarif = 0
+                    }
+
+                    $('#tarifFormat').val(tarif)
+                    $('#tarif').val(tarif)
+
+                    let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
+                    let pph = (parseFloat(tarif) / 100) * dpp
+                    let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                    $('#pph').val(pph)
+                    $('#pphFormat').val(pphFormatted)
+                }
             });
 
             $('#dppFormat').on('input', function() {
@@ -1205,7 +1249,7 @@
                         }
 
                         // add option
-                        $('#kodeFasilitas').append('<option value="' + element.id + '" data-nama="' + element.nama + '">' + element.kode + '</option><option data-divider="true"></option>')
+                        $('#kodeFasilitas').append('<option value="' + element.id + '" data-nama="' + element.nama + '" data-kode="' + element.kode + '">' + element.kode + '</option><option data-divider="true"></option>')
                     });
                     // refresh selectpicker
                     $('.selectpicker').selectpicker('refresh');
