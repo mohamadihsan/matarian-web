@@ -1,8 +1,9 @@
-<?php 
+<?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class PPN_Model extends CI_Model {
+class PPN_Model extends CI_Model
+{
 
     public function get_ppn_report($perusahaan, $start, $end, $nama_bulan_pengkreditkan, $tahun_pengkreditkan, $status_faktur, $jenis_dokumen, $is_jasa)
     {
@@ -174,7 +175,8 @@ class PPN_Model extends CI_Model {
             tbl_upload_dokumen_pajak.unifikasi_kode_objek_pajak_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_dokumen_id,
             tbl_upload_dokumen_pajak.unifikasi_kode_pembayaran_id,
-            tbl_upload_dokumen_pajak.status_faktur_pajak
+            tbl_upload_dokumen_pajak.status_faktur_pajak,
+            tbl_upload_dokumen_pajak.is_unifikasi_only
         ');
 
         $this->db->where('tbl_upload_dokumen_pajak.is_jasa', true);
@@ -262,7 +264,7 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_master_vendor')->row();
     }
 
@@ -270,7 +272,7 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_master_perusahaan')->row();
     }
 
@@ -284,16 +286,64 @@ class PPN_Model extends CI_Model {
     // update
     public function update($data, $id)
     {
-        $this->db->where('id', $id);
-        $this->db->update('tbl_upload_dokumen_pajak', $data);
-        return ($this->db->affected_rows() > 0) ? TRUE : FALSE;
+        try {
+
+            $this->db->where('id', $id);
+            $result = $this->db->update('tbl_upload_dokumen_pajak', $data);
+
+            // cek query gagal
+            if (!$result) {
+
+                $error = $this->db->error();
+
+                log_message(
+                    'error',
+                    'Update tbl_upload_dokumen_pajak failed: '
+                        . json_encode($error)
+                );
+
+                return [
+                    'status' => false,
+                    'message' => $error['message'],
+                    'code' => $error['code']
+                ];
+            }
+
+
+            // cek tidak ada data berubah
+            if ($this->db->affected_rows() == 0) {
+
+                return [
+                    'status' => false,
+                    'message' => 'No data updated'
+                ];
+            }
+
+
+            return [
+                'status' => true,
+                'message' => 'Update success'
+            ];
+        } catch (Exception $e) {
+
+            log_message(
+                'error',
+                'Exception update tbl_upload_dokumen_pajak: '
+                    . $e->getMessage()
+            );
+
+            return [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
+        }
     }
 
     public function get_dokumen_by_id($id)
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_unifikasi_kode_dokumen')->row();
     }
 
@@ -301,7 +351,7 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_unifikasi_kode_fasilitas')->row();
     }
 
@@ -309,7 +359,7 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_unifikasi_kode_objek_pajak')->row();
     }
 
@@ -317,7 +367,7 @@ class PPN_Model extends CI_Model {
     {
         $this->db->select("*");
         $this->db->where('id', $id);
-        
+
         return $this->db->get('tbl_unifikasi_kode_pembayaran')->row();
     }
 }

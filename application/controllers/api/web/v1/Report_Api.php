@@ -308,9 +308,9 @@ class Report_Api extends REST_Controller
             $is_jasa = $this->input->post('is_jasa');
             $perusahaan = $this->input->post('perusahaan');
 
-            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal);
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
-        
+
             // $nama_bulan = $this->get_nama_bulan($bulan_awal);
             $nama_bulan_pengkreditkan = $this->get_nama_bulan($bulan_pengkreditkan);
 
@@ -378,9 +378,9 @@ class Report_Api extends REST_Controller
             $kode_pembayaran = $this->input->post('kode_pembayaran');
 
             // $nama_bulan = $this->get_nama_bulan($bulan);
-            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal); 
+            $start = sprintf('%04d-%02d-01', $tahun_awal, $bulan_awal);
             $end   = date("Y-m-t", strtotime(sprintf('%04d-%02d-01', $tahun_akhir, $bulan_akhir)));
-        
+
 
             $response = $this->PPN_Model->get_unifikasi_report($perusahaan, $start, $end, $fasilitas, $kode_objek_pajak, $kode_dokumen, $kode_pembayaran)->result();
             $total_rows = count($response);
@@ -434,6 +434,8 @@ class Report_Api extends REST_Controller
             $tahun_pajak = $this->input->post('tahun_pajak');
             $masa_pajak_pengreditkan = $this->input->post('masa_pajak_pengreditkan');
             $tahun_pajak_pengreditkan = $this->input->post('tahun_pajak_pengreditkan');
+            $masa_pajak_unifikasi = $this->input->post('masa_pajak_unifikasi');
+            $tahun_pajak_unifikasi = $this->input->post('tahun_pajak_unifikasi');
             $status_faktur_pajak = $this->input->post('status_faktur_pajak');
             $harga_jual = $this->input->post('harga_jual');
             $dpp_nilai_lain = $this->input->post('dpp_nilai_lain');
@@ -514,6 +516,8 @@ class Report_Api extends REST_Controller
                 "tahun_pajak" => $tahun_pajak,
                 "masa_pajak_pengkreditkan" => $masa_pajak_pengreditkan,
                 "tahun_pajak_pengkreditkan" => $tahun_pajak_pengreditkan,
+                "masa_pajak_unifikasi" => $masa_pajak_unifikasi,
+                "tahun_pajak_unifikasi" => $tahun_pajak_unifikasi,
                 "status_faktur_pajak" => $status_faktur_pajak,
                 "harga_jual" => $harga_jual,
                 "dpp_nilai_lain" => $dpp_nilai_lain,
@@ -525,6 +529,7 @@ class Report_Api extends REST_Controller
                 "dilaporkan" => null,
                 "dilaporkan_oleh_penjual" => null,
                 "unifikasi_kode_objek_pajak_id" => $vendor->unifikasi_kode_objek_pajak_id,
+                "unifikasi_kode_fasilitas_id" => $is_jasa ? $vendor->unifikasi_kode_fasilitas_id : null,
                 "is_jasa" => $is_jasa,
                 "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
                 "is_unifikasi_only" => $is_unifikasi_only,
@@ -851,12 +856,63 @@ class Report_Api extends REST_Controller
 
             $_POST = json_decode($this->input->raw_input_stream, true);
 
-            $unifikasi_kode_fasilitas_id = $this->input->post('fasilitas');
-            $unifikasi_kode_objek_pajak_id = $this->input->post('objek_pajak');
-            $unifikasi_kode_dokumen_id = $this->input->post('dokumen');
-            $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
-            $nomor_sp2d = $this->input->post('nomor_sp2d');
-            $updated_by = $this->token->data->username;
+            $perusahaan_id = $this->input->post('perusahaan');
+
+            if ($perusahaan_id) {
+                $vendor_id = $this->input->post('vendor');
+                // $cek = $this->input->post('cek');
+                $nomor_faktur_pajak = $this->input->post('nomor_faktur_pajak');
+                $tanggal_faktur_pajak = $this->input->post('tanggal_faktur_pajak');
+                $masa_pajak = $this->input->post('masa_pajak');
+                $tahun_pajak = $this->input->post('tahun_pajak');
+                $masa_pajak_pengreditkan = null;
+                $tahun_pajak_pengreditkan = null;
+                $masa_pajak_unifikasi = $this->input->post('masa_pajak');
+                $tahun_pajak_unifikasi = $this->input->post('tahun_pajak');
+                $status_faktur_pajak = $this->input->post('status_faktur_pajak');
+                $harga_jual = null;
+                $dpp_nilai_lain = 0;
+                $ppn = $this->input->post('ppn');
+                $is_jasa = $this->input->post('is_jasa');
+                $nominal_jasa = $this->input->post('nominal_jasa');
+                $is_unifikasi_only = $this->input->post('is_unifikasi_only');
+                $unifikasi_kode_fasilitas_id = $this->input->post('fasilitas');
+                $unifikasi_kode_objek_pajak_id = $this->input->post('objek_pajak');
+                $unifikasi_kode_dokumen_id = $this->input->post('dokumen');
+                $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
+                $nomor_sp2d = $this->input->post('nomor_sp2d');
+                $updated_by = $this->token->data->username;
+            } else {
+                $unifikasi_kode_fasilitas_id = $this->input->post('fasilitas');
+                $unifikasi_kode_objek_pajak_id = $this->input->post('objek_pajak');
+                $unifikasi_kode_dokumen_id = $this->input->post('dokumen');
+                $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
+                $nomor_sp2d = $this->input->post('nomor_sp2d');
+                $updated_by = $this->token->data->username;
+            }
+
+            if ($perusahaan_id) {
+                $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
+                if (empty($perusahaan)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Data perusahaan tidak terdaftar',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
+
+            if ($vendor_id) {
+                // get vendor
+                $vendor = $this->PPN_Model->get_vendor_by_id($vendor_id);
+                if (empty($vendor)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => 'Data vendor tidak terdaftar!',
+                        'data' => []
+                    ], REST_Controller::HTTP_PARTIAL_CONTENT);
+                }
+            }
 
             if ($unifikasi_kode_fasilitas_id) {
                 $fasilitas = $this->PPN_Model->get_fasilitas_by_id($unifikasi_kode_fasilitas_id);
@@ -902,29 +958,82 @@ class Report_Api extends REST_Controller
                 }
             }
 
-            $post = array(
-                "unifikasi_kode_fasilitas_id" => $unifikasi_kode_fasilitas_id,
-                "unifikasi_kode_objek_pajak_id" => $unifikasi_kode_objek_pajak_id,
-                "unifikasi_kode_dokumen_id" => $unifikasi_kode_dokumen_id,
-                "unifikasi_kode_pembayaran_id" => $unifikasi_kode_pembayaran_id,
-                "nomor_sp2d" => $nomor_sp2d,
-                'updated_at' => $this->time_server,
-                'updated_by' => $updated_by
-            );
+            if ($perusahaan_id) {
+                $post = array(
+                    "master_perusahaan_id" => $perusahaan->id,
+                    "master_vendor_id" => $vendor->id,
+                    'ppn_persentase' => null,
+                    'jenis_dokumen' => $vendor->cek == 'FP' ? 'PPN MASUKKAN' : 'DOKUMEN LAIN',
+                    "npwp_penjual" => $vendor->new_npwp,
+                    "nama_penjual" => $vendor->nama,
+                    "cek" => $vendor->cek,
+                    "nomor_faktur_pajak" => $nomor_faktur_pajak,
+                    "tanggal_faktur_pajak" => $tanggal_faktur_pajak,
+                    "masa_pajak" => $masa_pajak,
+                    "tahun_pajak" => $tahun_pajak,
+                    "masa_pajak_pengkreditkan" => $masa_pajak_pengreditkan,
+                    "tahun_pajak_pengkreditkan" => $tahun_pajak_pengreditkan,
+                    "masa_pajak_unifikasi" => $masa_pajak_unifikasi,
+                    "tahun_pajak_unifikasi" => $tahun_pajak_unifikasi,
+                    "status_faktur_pajak" => $status_faktur_pajak,
+                    "harga_jual" => $harga_jual,
+                    "dpp_nilai_lain" => $dpp_nilai_lain,
+                    "ppn" => $ppn,
+                    "ppnbm" => null,
+                    "perekam" => null,
+                    "nomor_sp2d" => $nomor_sp2d,
+                    "valid" => null,
+                    "dilaporkan" => null,
+                    "dilaporkan_oleh_penjual" => null,
+                    "unifikasi_kode_objek_pajak_id" => $unifikasi_kode_objek_pajak_id,
+                    "unifikasi_kode_fasilitas_id" => $unifikasi_kode_fasilitas_id,
+                    "unifikasi_kode_dokumen_id" => $unifikasi_kode_dokumen_id,
+                    "unifikasi_kode_pembayaran_id" => $unifikasi_kode_pembayaran_id,
+                    "is_jasa" => $is_jasa,
+                    "nominal_jasa" => $is_jasa ? $nominal_jasa : null,
+                    "is_unifikasi_only" => $is_unifikasi_only,
+                    "updated_at" => $this->time_server,
+                    "updated_by" => $updated_by
+                );
+            } else {
+
+                if (!empty($unifikasi_kode_fasilitas_id)) {
+                    $post["unifikasi_kode_fasilitas_id"] = $unifikasi_kode_fasilitas_id;
+                }
+
+                if (!empty($unifikasi_kode_objek_pajak_id)) {
+                    $post["unifikasi_kode_objek_pajak_id"] = $unifikasi_kode_objek_pajak_id;
+                }
+
+                if (!empty($unifikasi_kode_dokumen_id)) {
+                    $post["unifikasi_kode_dokumen_id"] = $unifikasi_kode_dokumen_id;
+                }
+
+                if (!empty($unifikasi_kode_pembayaran_id)) {
+                    $post["unifikasi_kode_pembayaran_id"] = $unifikasi_kode_pembayaran_id;
+                }
+
+                if (!empty($nomor_sp2d)) {
+                    $post["nomor_sp2d"] = $nomor_sp2d;
+                }
+
+                $post["updated_at"] = $this->time_server;
+                $post["updated_by"] = $updated_by;
+            }
 
             $update = $this->PPN_Model->update($post, $id);
-            if ($update) {
+            if ($update['status']) {
                 //response success with data
                 $this->response([
                     'status' => true,
                     'message' => 'Data berhasil diperbaharui',
-                    'data' => $update
+                    'data' => $post
                 ], REST_Controller::HTTP_OK);
             } else {
                 // response failed
                 $this->response([
                     'status' => false,
-                    'message' => 'Data gagal diperbaharui',
+                    'message' => 'Data gagal diperbaharui. ' . $update['message'],
                     'data' => []
                 ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
