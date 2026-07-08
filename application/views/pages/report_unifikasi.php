@@ -1007,7 +1007,8 @@
                         status_faktur_pajak: $('#statusFakturPajak').val(),
                     }
 
-                    if (!isUnifikasiOnly) {
+                    // if (!isUnifikasiOnly) {
+                    if (id) {
                         // request for update
                         requestData = {
                             fasilitas: $('#kodeFasilitas').val(),
