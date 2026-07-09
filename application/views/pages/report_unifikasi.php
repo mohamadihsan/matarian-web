@@ -1008,16 +1008,15 @@
                     }
 
                     // if (!isUnifikasiOnly) {
-                    if (id) {
-                        // request for update
-                        requestData = {
-                            fasilitas: $('#kodeFasilitas').val(),
-                            objek_pajak: $('#kodeObjekPajak').val(),
-                            dokumen: $('#kodeDokumen').val(),
-                            pembayaran: $('#kodePembayaran').val(),
-                            nomor_sp2d: $('#nomorSP2D').val(),
-                        }
-                    }
+                    //     // request for update
+                    //     requestData = {
+                    //         fasilitas: $('#kodeFasilitas').val(),
+                    //         objek_pajak: $('#kodeObjekPajak').val(),
+                    //         dokumen: $('#kodeDokumen').val(),
+                    //         pembayaran: $('#kodePembayaran').val(),
+                    //         nomor_sp2d: $('#nomorSP2D').val(),
+                    //     }
+                    // }
 
                     // send request 
                     axios({
