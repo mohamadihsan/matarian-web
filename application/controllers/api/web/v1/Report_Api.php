@@ -50,6 +50,53 @@ class Report_Api extends REST_Controller
         return $nama_bulan;
     }
 
+    public function last_date_of_month($masa_pajak, $tahun_pajak)
+    {
+        if (empty($masa_pajak) || empty($tahun_pajak)) {
+            return null;
+        }
+
+        $bulanMap = [
+            'JANUARI'   => '01',
+            'FEBRUARI'  => '02',
+            'MARET'     => '03',
+            'APRIL'     => '04',
+            'MEI'       => '05',
+            'JUNI'      => '06',
+            'JULI'      => '07',
+            'AGUSTUS'   => '08',
+            'SEPTEMBER' => '09',
+            'OKTOBER'   => '10',
+            'NOVEMBER'  => '11',
+            'DESEMBER'  => '12',
+            'JANUARY'   => '01',
+            'FEBRUARY'  => '02',
+            'MARCH'     => '03',
+            'MAY'       => '05',
+            'JUNE'      => '06',
+            'JULY'      => '07',
+            'AUGUST'    => '08',
+            'OCTOBER'   => '10',
+            'DECEMBER'  => '12'
+        ];
+
+        $bulanKey = strtoupper(trim($masa_pajak));
+        if (isset($bulanMap[$bulanKey])) {
+            $month = $bulanMap[$bulanKey];
+        } elseif (is_numeric($masa_pajak) && (int)$masa_pajak >= 1 && (int)$masa_pajak <= 12) {
+            $month = str_pad((int)$masa_pajak, 2, '0', STR_PAD_LEFT);
+        } else {
+            return null;
+        }
+
+        $year = trim($tahun_pajak);
+        if (!is_numeric($year)) {
+            return null;
+        }
+
+        return date('Y-m-t', strtotime("{$year}-{$month}-01"));
+    }
+
     // all sales
     public function sales_post()
     {
@@ -445,6 +492,16 @@ class Report_Api extends REST_Controller
             $is_unifikasi_only = $this->input->post('is_unifikasi_only');
             $created_by = $this->token->data->username;
 
+            // validasi tanggal faktur harus lebih kecil dari masa pajak (tidak boleh melewati akhir masa pajak)
+            $last_date = $this->last_date_of_month($masa_pajak, $tahun_pajak);
+            if ($last_date && !empty($tanggal_faktur_pajak) && strtotime($tanggal_faktur_pajak) > strtotime($last_date)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Tanggal faktur pajak tidak boleh melebihi masa pajak',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
             $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
             if (empty($perusahaan)) {
                 $this->response([
@@ -588,6 +645,16 @@ class Report_Api extends REST_Controller
             $nominal_jasa = $this->input->post('nominal_jasa');
             $updated_by = $this->token->data->username;
 
+            // validasi tanggal faktur harus lebih kecil dari masa pajak (tidak boleh melewati akhir masa pajak)
+            $last_date = $this->last_date_of_month($masa_pajak, $tahun_pajak);
+            if ($last_date && !empty($tanggal_faktur_pajak) && strtotime($tanggal_faktur_pajak) > strtotime($last_date)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Tanggal faktur pajak tidak boleh melebihi masa pajak',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
             $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
             if (empty($perusahaan)) {
                 $this->response([
@@ -717,6 +784,7 @@ class Report_Api extends REST_Controller
             $status_faktur_pajak = $this->input->post('status_faktur_pajak');
             $harga_jual = null;
             $dpp_nilai_lain = 0;
+            $tarif = $this->input->post('tarif');
             $ppn = $this->input->post('ppn');
             $is_jasa = $this->input->post('is_jasa');
             $nominal_jasa = $this->input->post('nominal_jasa');
@@ -806,6 +874,7 @@ class Report_Api extends REST_Controller
                 "status_faktur_pajak" => $status_faktur_pajak,
                 "harga_jual" => $harga_jual,
                 "dpp_nilai_lain" => $dpp_nilai_lain,
+                "tarif" => $tarif,
                 "ppn" => $ppn,
                 "ppnbm" => null,
                 "perekam" => null,
@@ -872,6 +941,7 @@ class Report_Api extends REST_Controller
                 $status_faktur_pajak = $this->input->post('status_faktur_pajak');
                 $harga_jual = null;
                 $dpp_nilai_lain = 0;
+                $tarif = $this->input->post('tarif');
                 $ppn = $this->input->post('ppn');
                 $is_jasa = $this->input->post('is_jasa');
                 $nominal_jasa = $this->input->post('nominal_jasa');
@@ -978,6 +1048,7 @@ class Report_Api extends REST_Controller
                     "status_faktur_pajak" => $status_faktur_pajak,
                     "harga_jual" => $harga_jual,
                     "dpp_nilai_lain" => $dpp_nilai_lain,
+                    "tarif" => $tarif,
                     "ppn" => $ppn,
                     "ppnbm" => null,
                     "perekam" => null,

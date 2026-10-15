@@ -1005,6 +1005,7 @@
                         is_jasa: true,
                         cek: null,
                         status_faktur_pajak: $('#statusFakturPajak').val(),
+                        tarif: $('#tarif').val(),
                     }
 
                     // if (!isUnifikasiOnly) {
