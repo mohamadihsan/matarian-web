@@ -796,6 +796,16 @@ class Report_Api extends REST_Controller
             $nomor_sp2d = $this->input->post('nomor_sp2d');
             $created_by = $this->token->data->username;
 
+            // validasi tanggal faktur harus lebih kecil dari masa pajak (tidak boleh melewati akhir masa pajak)
+            $last_date = $this->last_date_of_month($masa_pajak, $tahun_pajak);
+            if ($last_date && !empty($tanggal_faktur_pajak) && strtotime($tanggal_faktur_pajak) > strtotime($last_date)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Tanggal faktur pajak tidak boleh melebihi masa pajak',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
+            }
+
             $perusahaan = $this->PPN_Model->get_perusahaan_by_id($perusahaan_id);
             if (empty($perusahaan)) {
                 $this->response([
@@ -959,6 +969,16 @@ class Report_Api extends REST_Controller
                 $unifikasi_kode_pembayaran_id = $this->input->post('pembayaran');
                 $nomor_sp2d = $this->input->post('nomor_sp2d');
                 $updated_by = $this->token->data->username;
+            }
+
+            // validasi tanggal faktur harus lebih kecil dari masa pajak (tidak boleh melewati akhir masa pajak)
+            $last_date = $this->last_date_of_month($masa_pajak, $tahun_pajak);
+            if ($last_date && !empty($tanggal_faktur_pajak) && strtotime($tanggal_faktur_pajak) > strtotime($last_date)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Tanggal faktur pajak tidak boleh melebihi masa pajak',
+                    'data' => []
+                ], REST_Controller::HTTP_PARTIAL_CONTENT);
             }
 
             if ($perusahaan_id) {
