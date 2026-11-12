@@ -846,66 +846,48 @@
                 $('#kodeObjekPajak').val(kodeObjekPajak).trigger('change');
             });
 
-            $('#kodeObjekPajak').on('change', function() {
-                if (isPopulatingForm) return;
-
-                let selectedOption = $(this).find('option:selected');
-                let tarif = selectedOption.data('tarif') || 0;
-
-                let selectedFasilitasOption = $('#kodeFasilitas').find('option:selected');
-                let kode = selectedFasilitasOption.data('kode');
-
-                if (kode == 'TaxExAr23') {
-                    tarif = 0
+            function calculateAndSetPPh(customDpp) {
+                let selectedOption = $('#kodeObjekPajak').find('option:selected');
+                let tarifVal = selectedOption.attr('data-tarif') !== undefined 
+                    ? selectedOption.attr('data-tarif') 
+                    : selectedOption.data('tarif');
+                let tarif = parseFloat(tarifVal);
+                if (isNaN(tarif)) {
+                    tarif = 0;
                 }
 
-                $('#tarifFormat').val(tarif)
-                $('#tarif').val(tarif)
+                // Pengecualian jika kode objek pajak atau kode fasilitas = TaxExAr23 maka tarif set jadi 0
+                let selectedFasilitas = $('#kodeFasilitas').find('option:selected');
+                let kodeFasilitas = selectedFasilitas.attr('data-kode') ?? selectedFasilitas.data('kode') ?? selectedFasilitas.text()?.trim();
+                let kodeObjekPajak = selectedOption.attr('data-kode') ?? selectedOption.data('kode') ?? selectedOption.text()?.trim();
 
-                let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
-                let pph = (parseFloat(tarif) / 100) * dpp
+                if (kodeObjekPajak == 'TaxExAr23' || kodeFasilitas == 'TaxExAr23') {
+                    tarif = 0;
+                }
+
+                $('#tarifFormat').val(tarif);
+                $('#tarif').val(tarif);
+
+                let dpp = customDpp !== undefined ? customDpp : ($('#dpp').val() ? parseInt($('#dpp').val()) : 0);
+                if (isNaN(dpp)) {
+                    dpp = 0;
+                }
+
+                let pph = Math.round((parseFloat(tarif) / 100) * dpp);
                 let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-                $('#pph').val(pph)
-                $('#pphFormat').val(pphFormatted)
+                $('#pph').val(pph);
+                $('#pphFormat').val(pphFormatted);
+            }
+
+            $('#kodeObjekPajak').on('change', function() {
+                if (isPopulatingForm) return;
+                calculateAndSetPPh();
             });
 
             $('#kodeFasilitas').on('change', function() {
                 if (isPopulatingForm) return;
-
-                let selectedOption = $(this).find('option:selected');
-                let kode = selectedOption.data('kode');
-
-                if (kode == 'TaxExAr23') {
-                    $('#tarifFormat').val(0)
-                    $('#tarif').val(0)
-
-                    let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
-                    let pph = (parseFloat(0) / 100) * dpp
-                    let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-                    $('#pph').val(pph)
-                    $('#pphFormat').val(pphFormatted)
-                } else {
-                    let selectedObjekPajakOption = $('#kodeObjekPajak').find('option:selected');
-                    let tarif = selectedObjekPajakOption.data('tarif');
-
-                    if (tarif >= 0) {
-                        tarif = tarif
-                    } else {
-                        tarif = 0
-                    }
-
-                    $('#tarifFormat').val(tarif)
-                    $('#tarif').val(tarif)
-
-                    let dpp = $('#dpp').val() ? parseInt($('#dpp').val()) : 0
-                    let pph = (parseFloat(tarif) / 100) * dpp
-                    let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-                    $('#pph').val(pph)
-                    $('#pphFormat').val(pphFormatted)
-                }
+                calculateAndSetPPh();
             });
 
             $('#dppFormat').on('input', function() {
@@ -923,12 +905,8 @@
                 // Simpan nilai asli ke hidden input
                 $('#dpp').val(rawValue);
 
-                let tarif = $('#tarif').val() ? $('#tarif').val() : 0
-                let pph = parseInt(rawValue) * (parseFloat(tarif) / 100)
-                let pphFormatted = pph.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-                $('#pph').val(pph)
-                $('#pphFormat').val(pphFormatted)
+                let dpp = parseInt(rawValue) || 0;
+                calculateAndSetPPh(dpp);
             });
 
             // validate and request add new data and update existing data 
