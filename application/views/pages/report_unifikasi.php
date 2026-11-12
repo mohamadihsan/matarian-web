@@ -302,6 +302,7 @@
             let actionExportToPdf = 0;
             var perusahaanName = ''
             let isUnifikasiOnly = false
+            let isPopulatingForm = false
 
             actionCreate ? $('#actionCreate').html('<button class="btn btn-sm btn-outline-primary" id="newData"><i class="fas fa-plus"></i> New Data</button>') : '';
 
@@ -740,32 +741,34 @@
 
 
                 // Format ribuan
-                let itemPPhFormat = item.pph?.replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
-                let itemDPPFormat = item.nominal_jasa?.replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
-                let itemTarifFormat = item.tarif?.replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
+                let itemPPhFormat = item.pph?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
+                let itemDPPFormat = item.nominal_jasa?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
+                let itemTarifFormat = item.tarif?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || 0;
 
                 // store data to input
-                $('#perusahaan').val(item.master_perusahaan_id).trigger('change');
+                isPopulatingForm = true;
+
+                $('#perusahaanSelect').val(item.master_perusahaan_id).selectpicker('refresh');
                 $('#nitkuPerusahaan').val(item.id_pemotong);
-                $('#vendor').val(item.master_vendor_id).trigger('change');
+                $('#vendor').val(item.master_vendor_id).selectpicker('refresh');
                 $('#npwpPenjual').val(item.npwp_penjual);
                 $('#nitkuPenjual').val(item.id_penerima);
-                $('#cek').val(item.cek).trigger('change');
+                $('#cek').val(item.cek);
                 $('#nomorFakturPajak').val(item.nomor_faktur_pajak);
                 $('#tanggalFakturPajak').datepicker().datepicker('update', moment(new Date(item.tanggal_faktur_pajak)).format('DD-MM-YYYY'));
                 $('#tanggalPemotongan').datepicker().datepicker('update', moment(new Date(item.tanggal_pemotongan)).format('DD-MM-YYYY'));
                 $('#nomorSP2D').val(item.nomor_sp2d);
-                $('#pph').val(item.pph);
-                $('#pphFormat').val(itemPPhFormat);
-                $('#tarif').val(item.tarif);
-                $('#tarifFormat').val(itemTarifFormat);
                 $('#dpp').val(item.nominal_jasa);
                 $('#dppFormat').val(itemDPPFormat);
-                $('#kodeDokumen').val(item.unifikasi_kode_dokumen_id).trigger('change');
-                $('#kodeFasilitas').val(item.unifikasi_kode_fasilitas_id).trigger('change');
-                $('#kodeObjekPajak').val(item.unifikasi_kode_objek_pajak_id).trigger('change');
-                $('#kodePembayaran').val(item.unifikasi_kode_pembayaran_id).trigger('change');
-                $('#statusFakturPajak').val(item.status_faktur_pajak).trigger('change');
+                $('#tarif').val(item.tarif);
+                $('#tarifFormat').val(itemTarifFormat);
+                $('#pph').val(item.pph);
+                $('#pphFormat').val(itemPPhFormat);
+                $('#kodeDokumen').val(item.unifikasi_kode_dokumen_id).selectpicker('refresh');
+                $('#kodeFasilitas').val(item.unifikasi_kode_fasilitas_id).selectpicker('refresh');
+                $('#kodeObjekPajak').val(item.unifikasi_kode_objek_pajak_id).selectpicker('refresh');
+                $('#kodePembayaran').val(item.unifikasi_kode_pembayaran_id).selectpicker('refresh');
+                $('#statusFakturPajak').val(item.status_faktur_pajak).selectpicker('refresh');
 
                 const masaPajakClicked = bulanToNumber(item.masa_pajak)
                 let masaTahunPajakClicked = ''
@@ -795,6 +798,8 @@
                 // store data to confirm delete text
                 $('#dataDelete').text(item.nomor_faktur_pajak);
 
+                isPopulatingForm = false;
+
                 $('#formReportUnifikasi').modal({
                     backdrop: 'static'
                 }, 'show');
@@ -823,6 +828,8 @@
             });
 
             $('#vendor').on('change', function() {
+                if (isPopulatingForm) return;
+
                 let selectedOption = $(this).find('option:selected');
                 let npwpPenerima = selectedOption.data('npwp');
                 let idTKUPenerima = selectedOption.data('nitku');
@@ -840,6 +847,8 @@
             });
 
             $('#kodeObjekPajak').on('change', function() {
+                if (isPopulatingForm) return;
+
                 let selectedOption = $(this).find('option:selected');
                 let tarif = selectedOption.data('tarif') || 0;
 
@@ -862,6 +871,8 @@
             });
 
             $('#kodeFasilitas').on('change', function() {
+                if (isPopulatingForm) return;
+
                 let selectedOption = $(this).find('option:selected');
                 let kode = selectedOption.data('kode');
 
@@ -898,6 +909,8 @@
             });
 
             $('#dppFormat').on('input', function() {
+                if (isPopulatingForm) return;
+
                 // Ambil nilai murni hanya angka
                 let rawValue = $(this).val().replace(/\D/g, '');
 
